@@ -34,6 +34,7 @@ int main(int argc, char *argv[]){
 		cout << "Usage: " << argv[0] << " <filename>\n";
 	else{
 		string inputFile = argv[1];
+		parser::fileName = inputFile;
 		ifstream file; 
 		ofstream out;
 		/*START HEX-VIEWER*/

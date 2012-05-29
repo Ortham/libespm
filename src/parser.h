@@ -15,7 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "fileFormat.h"
+//#include "fileFormat.h"
 #define RANGE_MIN 0x41
 #define RANGE_MAX 0x5A
 using namespace std;
@@ -30,6 +30,29 @@ namespace parser{
 	 * The file header.
 	 */
 	string header;
+	/**
+	 * @var fileName
+	 * The file name.
+	 */
+	string fileName;
+	/**
+	 * @brief Checks whether or not a file has the ESM extension;
+	 * @details It checks the file's extension to see if it matches ".esm"
+	 * @returns <tt> \b true </tt> if the file has the ESM extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESM();
+	/**
+	 * @brief Checks whether or not a file has the ESP extension;
+	 * @details It checks the file's extension to see if it matches ".esp"
+	 * @returns <tt> \b true </tt> if the file has the ESP extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESP();
+	/**
+	 * @brief Checks whether or not a file has the ESS extension;
+	 * @details It checks the file's extension to see if it matches ".ess"
+	 * @returns <tt> \b true </tt> if the file has the ESS extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESS();
 	/**
 	 * @brief Checks whether or not a file is a mod (plugin).
 	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files.
@@ -132,8 +155,29 @@ namespace parser{
 	 * @todo Extract the fields from the records as well.
 	 */
 	void eraseTrailing(string &line);
+	bool isESM(){
+		size_t pos;
+		pos = fileName.find(".esm");
+		if(pos == string::npos)
+			return false;
+		return true;
+	}
+	bool isESP(){
+		size_t pos;
+		pos = fileName.find(".esp");
+		if(pos == string::npos)
+			return false;
+		return true;
+	}
+	bool isESS(){
+		size_t pos;
+		pos = fileName.find(".ess");
+		if(pos == string::npos)
+			return false;
+		return true;
+	}
 	bool isMod(ifstream &file){
-		return ((getFileHeader().compare(0, 4, "TES4") == 0) || (getFileHeader().compare(0, 4, "TES3") == 0));
+		return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
 	}
 	bool isOp(string data){
 		return (data[0] == '.' && data[1] == '?');
@@ -152,7 +196,7 @@ namespace parser{
 		return (getFileHeader().compare(0, 3, "BSA") == 0);
 	}
 	bool isSave(ifstream &file){
-		return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0));
+		return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? isESS() : false));
 	}
 	int countLeading(string line){
 		int count = 0;
