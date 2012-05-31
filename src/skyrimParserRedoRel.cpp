@@ -5,21 +5,14 @@
  * @brief The main program that manages all the parsing.
  * @details All the parsing of the records is managed here and passes arguments to functions and the 
  * hex-viewer in order to extract all the record information from the EXE and ESMs/ESPs.
- * @def RANGE_MIN
- * The lowest hexidecimal value that is allowed. In this case, the lowest allowed would be 0x41 as that corresponds to the capital letter 'A'
- * and all records consist of 3 or 4 capital letters.
- * @def RANGE_MAX
- * The highest hexidecimal value that is allowed. In this case, the highest allowed would be 0x5A as that corresponds to the capital letter 'Z'
- * and all records consist of 3 or 4 capital letters.
  */
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "constants.h"
 #include "commonSupport.h"
-#include "parser.h"
+#include "parserClasses.h"
 #include "viewer.h"
-#define RANGE_MIN 0x41
-#define RANGE_MAX 0x5A
 using namespace std;
 /**
  * @brief The main program
@@ -34,7 +27,7 @@ int main(int argc, char *argv[]){
 		cout << "Usage: " << argv[0] << " <filename>\n";
 	else{
 		string inputFile = argv[1];
-		parser::fileName = inputFile;
+		parser::setFileName(inputFile);
 		ifstream file; 
 		ofstream out;
 		/*START HEX-VIEWER*/
@@ -136,6 +129,27 @@ int main(int argc, char *argv[]){
 					}
 					out.close();
 				}	
+				file.close();
+			}
+			else if(parser::isSave(file)){
+				#ifdef __WIN32__
+					out.open(common::inputName(inputFile, " - Variables.txt"));
+				#else
+					out.open(common::inputName(inputFile, " - Variables"));
+				#endif
+				if(parser::getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0)
+					line.erase(13, line.size());
+				else if(parser::getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0)
+					line.erase(12, line.size());
+				else if(parser::getFileHeader().compare(0, 4, "TES3") == 0)
+					line.erase(4, line.size());
+				out << line << endl;
+				while(file.good()){
+					getline(file, line);
+					if(parser::isVar(line))
+						out << line << endl;
+				}
+				out.close();
 				file.close();
 			}
 			else{

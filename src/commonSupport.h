@@ -9,8 +9,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <cstdlib>
-#include <vector>
 using namespace std;
 /**
  * @namespace common
@@ -28,6 +26,14 @@ namespace common{
 	 * @returns A C-string of the combined form, which is also easily passed to the I/O functions in the standard library.
 	 */
 	const char* inputName(string base, string addon);
+	/**
+	 * @brief Counts up the amount of junk in front of the lines.
+	 * @details This is to account for excess characters being added to the front of the desired values, and is used to determine how much stuff to delete.
+	 * @param line
+	 * The line that is desired to have its leading junk counted up and possibly removed.
+	 * @returns The number of characters that are junk at the beginning of the line.
+	 */
+	int countLeading(string line);
 	//int numLines(ifstream &in);
 	/**
 	 * @brief Calls the hex-viewer.
@@ -39,6 +45,23 @@ namespace common{
 	 */
 	void callViewer(string fileName);
 	/**
+	 * @brief Erases the junk from the beginning of a line.
+	 * @details It uses the countLeading(string line) function to determine how much to erase.
+	 * @param &line
+	 * The line to erase the junk from
+	 */
+	void eraseLeading(string &line);
+	/**
+	 * @brief Erases the junk from the end of a record..
+	 * @details It uses the fact that all 4 allowable character have to be an uppercase character to determine if it's a record or a field.
+	 * A field is either going to be longer than 4 characters or will not be entirely uppercase characters.
+	 * It also accounts for the TIF fields by speficially checking for them, although this can be extended for any format or string in the future.
+	 * @param &line
+	 * The line to erase the junk from
+	 * @todo Extract the fields from the records as well.
+	 */
+	void eraseTrailing(string &line);
+	/**
 	 * @brief Writes a label to the output file.
 	 * @details Writes the label specifying the data type to the output file to make things a bit more clear.
 	 * @param label
@@ -47,39 +70,5 @@ namespace common{
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
 	void writeLabel(string label, ofstream &out);
-	const char* inputName(string base, string addon){
-		//cout << base << endl;
-		//cout << addon << endl;
-		//cout << base + addon << endl;
-		return (base + addon).c_str();
-	}
-	/*int numLines(ifstream &in){
-		///in.seekg(0, ios::beg);
-		string line;
-		vector<string> lines;
-		while(getline(in, line))
-			lines.push_back(line);
-		//in.seekg(0, ios::beg);
-		return lines.size();
-	}*/
-	void callViewer(string fileName){
-		fileName = "\"" + fileName + "\"";
-		#ifdef __WIN32__
-			const char * callName = (".\\Viewer.exe " + fileName).c_str();
-			system(callName);
-		#else
-			const char * callName = ("./Viewer " + fileName).c_str();
-			system(callName);
-		#endif
-	}
-	void writeLabel(string label, ofstream &out){
-		out << label << endl;
-		string labelLine;
-		for(unsigned int i = 0; i < label.size(); ++i)
-			labelLine = labelLine + "-";
-		out << labelLine << endl;
-		out << endl;
-		out << endl;
-	}
 	/*END OF LINE*/
 }
