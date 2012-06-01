@@ -4,6 +4,7 @@
  * @file parser.h
  * @brief Contains the parser specific functions.
  * @details The main library of functions that the parser uses to dig through the files that the hex-viewer has generated after picking apart the inputted files.
+ * @attention Do not include this file if using parserClasses.h.
  */
 #pragma once
 #include <iostream>

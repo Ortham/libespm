@@ -4,6 +4,7 @@
  * @file parserClasses.cpp
  * @brief Contains the parser specific classes (such as the file we're working with).
  * @details Holds the objects for the parser to work with, such as files, so that we can work with multiple files in a single run and not need to re-run the program.
+ * @attention Do not include parser.h if using this file.
  */
 #include "parserClasses.h"
 bool parser::GameFile::isBSA(ifstream &file){
