@@ -9,7 +9,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
 /**
  * @namespace common
  * @brief The common stuff to all programs.
@@ -25,7 +24,7 @@ namespace common{
 	 * The text used to identify the file.
 	 * @returns A C-string of the combined form, which is also easily passed to the I/O functions in the standard library.
 	 */
-	const char* inputName(string base, string addon);
+	const char* inputName(std::string base, std::string addon);
 	/**
 	 * @brief Counts up the amount of junk in front of the lines.
 	 * @details This is to account for excess characters being added to the front of the desired values, and is used to determine how much stuff to delete.
@@ -33,7 +32,7 @@ namespace common{
 	 * The line that is desired to have its leading junk counted up and possibly removed.
 	 * @returns The number of characters that are junk at the beginning of the line.
 	 */
-	int countLeading(string line);
+	int countLeading(std::string line);
 	//int numLines(ifstream &in);
 	/**
 	 * @brief Calls the hex-viewer.
@@ -43,14 +42,14 @@ namespace common{
 	 * @note The file name must be enclosed in quotes for files that include whitespace in their names.
 	 * @bug Call doesn't work on Windows.
 	 */
-	void callViewer(string fileName);
+	void callViewer(std::string fileName);
 	/**
 	 * @brief Erases the junk from the beginning of a line.
 	 * @details It uses the countLeading(string line) function to determine how much to erase.
 	 * @param &line
 	 * The line to erase the junk from
 	 */
-	void eraseLeading(string &line);
+	void eraseLeading(std::string &line);
 	/**
 	 * @brief Erases the junk from the end of a record..
 	 * @details It uses the fact that all 4 allowable character have to be an uppercase character to determine if it's a record or a field.
@@ -60,7 +59,7 @@ namespace common{
 	 * The line to erase the junk from
 	 * @todo Extract the fields from the records as well.
 	 */
-	void eraseTrailing(string &line);
+	void eraseTrailing(std::string &line);
 	/**
 	 * @brief Writes a label to the output file.
 	 * @details Writes the label specifying the data type to the output file to make things a bit more clear.
@@ -69,6 +68,6 @@ namespace common{
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writeLabel(string label, ofstream &out);
+	void writeLabel(std::string label, std::ofstream &out);
 	/*END OF LINE*/
 }

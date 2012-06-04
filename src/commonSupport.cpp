@@ -9,14 +9,13 @@
 #include <vector>
 #include "constants.h"
 #include "commonSupport.h"
-using namespace std;
-const char* common::inputName(string base, string addon){
+const char* common::inputName(std::string base, std::string addon){
 	//cout << base << endl;
 	//cout << addon << endl;
 	//cout << base + addon << endl;
 	return (base + addon).c_str();
 }
-int common::countLeading(string line){
+int common::countLeading(std::string line){
 	int count = 0;
 	for(int i = 0; i < line.size(); ++i){
 		if(line[i] >= RANGE_MIN && line[i] <= RANGE_MAX)
@@ -34,7 +33,7 @@ int common::countLeading(string line){
 	//in.seekg(0, ios::beg);
 	return lines.size();
 }*/
-void common::callViewer(string fileName){
+void common::callViewer(std::string fileName){
 	fileName = "\"" + fileName + "\"";
 	#ifdef __WIN32__
 		const char * callName = (".\\Viewer.exe " + fileName).c_str();
@@ -44,11 +43,11 @@ void common::callViewer(string fileName){
 		system(callName);
 	#endif
 }
-void common::eraseLeading(string &line){
+void common::eraseLeading(std::string &line){
 	int leading = countLeading(line);
 	line.erase(0, leading);
 }
-void common::eraseTrailing(string &line){
+void common::eraseTrailing(std::string &line){
 	if(line.size() >= 4){
 		if(line[3] >= RANGE_MIN && line[3] <= RANGE_MAX)
 			line.erase(4, line.size());
@@ -57,13 +56,13 @@ void common::eraseTrailing(string &line){
 				line.erase(3, line.size());
 	}
 }
-void common::writeLabel(string label, ofstream &out){
-	out << label << endl;
-	string labelLine;
+void common::writeLabel(std::string label, std::ofstream &out){
+	out << label << std::endl;
+	std::string labelLine;
 	for(unsigned int i = 0; i < label.size(); ++i)
 		labelLine = labelLine + "-";
-	out << labelLine << endl;
-	out << endl;
-	out << endl;
+	out << labelLine << std::endl;
+	out << std::endl;
+	out << std::endl;
 }
 /*END OF LINE*/

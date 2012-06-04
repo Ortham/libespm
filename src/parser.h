@@ -11,7 +11,6 @@
 #include <fstream>
 #include <string>
 //#include "fileFormat.h"
-using namespace std;
 /**
  * @namespace parser
  * @brief Contains the parser specific functions.
@@ -22,12 +21,12 @@ namespace parser{
 	 * @var fileName
 	 * The file name.
 	 */
-	extern string fileName;
+	extern std::string fileName;
 	/**
 	 * @var header
 	 * The file header.
 	 */
-	extern string header;
+	extern std::string header;
 	/**
 	 * @brief Checks whether or not a file is a BSA.
 	 * @details It checks the file's header to see if it matches "BSA", which is the current header for BSAs.
@@ -35,7 +34,7 @@ namespace parser{
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a BSA, <tt> \b false </tt> otherwise.
 	 */
-	bool isBSA(ifstream &file);
+	bool isBSA(std::ifstream &file);
 	/**
 	 * @brief Checks whether or not a file has the ESM extension;
 	 * @details It checks the file's extension to see if it matches ".esm"
@@ -63,7 +62,7 @@ namespace parser{
 	 * @returns <tt> \b true </tt> if the line is a GRUP, <tt> \b false </tt> otherwise.
 	 * @todo Integrate the rest of the checks from the main program to make this function more complete.
 	 */
-	bool isGRUP(string data);
+	bool isGRUP(std::string data);
 	/**
 	 * @brief Checks whether or not a file is a mod (plugin).
 	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files.
@@ -71,7 +70,7 @@ namespace parser{
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
 	 */
-	bool isMod(ifstream &file);
+	bool isMod(std::ifstream &file);
 	/**
 	 * @brief Checks whether or not a line is an operation.
 	 * @details It checks a line to see if it begins with ".?", which denotes an operation.
@@ -80,7 +79,7 @@ namespace parser{
 	 * The line to be checked
 	 * @returns <tt> \b true </tt> if the line is an operation, <tt> \b false </tt> otherwise.
 	 */
-	bool isOp(string data);
+	bool isOp(std::string data);
 	/**
 	 * @brief Checks whether or not a line is a record.
 	 * @details It checks a line to see if it consists of 3 capital letters in the first 3 positions.
@@ -90,7 +89,7 @@ namespace parser{
 	 * @returns <tt> \b true </tt> if the line is a record, <tt> \b false </tt> otherwise.
 	 * @todo Integrate the rest of the checks from the main program to make this function more complete.
 	 */
-	bool isRecord(string data);
+	bool isRecord(std::string data);
 	/**
 	 * @brief Checks whether or not a file is a saved game.
 	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files.
@@ -98,7 +97,7 @@ namespace parser{
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
 	 */
-	bool isSave(ifstream &file);
+	bool isSave(std::ifstream &file);
 	/**
 	 * @brief Checks whether or not a line is a variable in a saved game.
 	 * @details It checks a line to see if it begins with "::", which denotes a variable in a saved game.
@@ -107,7 +106,7 @@ namespace parser{
 	 * The line to be checked
 	 * @returns <tt> \b true </tt> if the line is a variable, <tt> \b false </tt> otherwise.
 	 */
-	bool isVar(string data);
+	bool isVar(std::string data);
 	/**
 	 * @brief Counts up the amount of junk in front of the lines.
 	 * @details This is to account for excess characters being added to the front of the desired values, and is used to determine how much stuff to delete.
@@ -115,28 +114,28 @@ namespace parser{
 	 * The line that is desired to have its leading junk counted up and possibly removed.
 	 * @returns The number of characters that are junk at the beginning of the line.
 	 */
-	int countLeading(string line);
+	int countLeading(std::string line);
 	/**
 	 * @brief Gets the file header.
 	 * @details Is here to allow for future compartmentalization.
 	 * @returns The file header.
 	 * @todo Set things up as an object for each file, possibly, to allow for multiple uses of various functions without causing problems.
 	 */
-	inline string getFileHeader();
+	inline std::string getFileHeader();
 	/**
 	 * @brief Gets the file name.
 	 * @details Is here to allow for future compartmentalization.
 	 * @returns The file name.
 	 * @todo Set things up as an object for each file, possibly, to allow for multiple uses of various functions without causing problems.
 	 */
-	inline string getFileName();
+	inline std::string getFileName();
 	/**
 	 * @brief Erases the junk from the beginning of a line.
 	 * @details It uses the countLeading(string line) function to determine how much to erase.
 	 * @param &line
 	 * The line to erase the junk from
 	 */
-	void eraseLeading(string &line);
+	void eraseLeading(std::string &line);
 	/**
 	 * @brief Erases the junk from the end of a record..
 	 * @details It uses the fact that all 4 allowable character have to be an uppercase character to determine if it's a record or a field.
@@ -146,31 +145,31 @@ namespace parser{
 	 * The line to erase the junk from
 	 * @todo Extract the fields from the records as well.
 	 */
-	void eraseTrailing(string &line);
+	void eraseTrailing(std::string &line);
 	/**
 	 * @brief Sets the file header.
 	 * @details Is here to allow for future compartmentalization.
 	 * @param &file
 	 * The file to extract the header from.
 	 */
-	inline void setFileHeader(ifstream &file);
+	inline void setFileHeader(std::ifstream &file);
 	/**
 	 * @brief Sets the file name.
 	 * @details Is here to allow for future compartmentalization.
 	 * @param name
 	 * The name of the file to store.
 	 */
-	inline void setFileName(string name);
-	inline string getFileHeader(){
+	inline void setFileName(std::string name);
+	inline std::string getFileHeader(){
 		return header;
 	}
-	inline string getFileName(){
+	inline std::string getFileName(){
 		return fileName;
 	}
-	inline void setFileHeader(ifstream &file){
+	inline void setFileHeader(std::ifstream &file){
 		getline(file, header);
 	}
-	inline void setFileName(string name){
+	inline void setFileName(std::string name){
 		fileName = name;
 	}
 	/*END OF LINE*/

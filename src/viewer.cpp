@@ -9,22 +9,21 @@
 #include "constants.h"
 #include "viewer.h"
 #include "commonSupport.h"
-using namespace std;
-ifstream::pos_type viewer::size;
+std::ifstream::pos_type viewer::size;
 bool viewer::isPrintable(unsigned int data){
 	return ((PRINT_START <= data) && (PRINT_END >= data));
 }	
-unsigned char * viewer::readFile(ifstream &file){
+unsigned char * viewer::readFile(std::ifstream &file){
 	unsigned char * data = new unsigned char[getSize()];
-	file.seekg(0, ios::beg);
+	file.seekg(0, std::ios::beg);
 	for(unsigned int i = 0; i < getSize(); ++i)
 		file >> data[i];
 	//file.read(data, getSize()); //Read function for binary files. Will need to test this against the old algorithm and compare the results.
 	return data;
 }
-void viewer::runView(string inputFile, ifstream &file, ofstream &out){
+void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &out){
 	unsigned char * memblock;
-	file.open(inputFile.c_str(), ios::in|ios::binary|ios::ate);
+	file.open(inputFile.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 	if(file.is_open()){
 		setSize(file);
 		memblock = readFile(file);
@@ -35,7 +34,7 @@ void viewer::runView(string inputFile, ifstream &file, ofstream &out){
 		#endif
 		common::writeLabel("Char data", out);
 		writePrintableChar(memblock, out);
-		out << endl;
+		out << std::endl;
 		common::writeLabel("Hex data", out);
 		writePrintableHex(memblock, out);
 		out.close();
@@ -73,24 +72,24 @@ void viewer::runView(string inputFile, ifstream &file, ofstream &out){
 		delete[] memblock;
 	}
 	else
-		cout << "Unable to open file";
+		std::cout << "Unable to open file" << std::endl;
 }
-void viewer::writePrintableHex(unsigned char data[], ofstream &out){
+void viewer::writePrintableHex(unsigned char data[], std::ofstream &out){
 	bool flag = false;
 	for(unsigned int i = 0; i < getSize(); ++i){
 		if(isPrintable((unsigned int)data[i])){
-			out << hex << (unsigned int)data[i] << "\t";
+			out << std::hex << (unsigned int)data[i] << "\t";
 			flag = true;
 		}
 		else{
 			if(flag){
-				out << endl;
+				out << std::endl;
 				flag = false;
 			}
 		}
 	}
 }
-void viewer::writePrintableChar(unsigned char data[], ofstream &out){
+void viewer::writePrintableChar(unsigned char data[], std::ofstream &out){
 	bool flag = false;
 	for(unsigned int i = 0; i < getSize(); ++i){
 		if(isPrintable((unsigned int)data[i])){
@@ -99,17 +98,17 @@ void viewer::writePrintableChar(unsigned char data[], ofstream &out){
 		}
 		else{
 			if(flag){
-				out << endl;
+				out << std::endl;
 				flag = false;
 			}
 		}
 	}
 }
-void viewer::writeRawHex(unsigned char data[], ofstream &out){
+void viewer::writeRawHex(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
-		out << hex << (unsigned int)data[i] << "\t";
+		out << std::hex << (unsigned int)data[i] << "\t";
 }
-void viewer::writeRawChar(unsigned char data[], ofstream &out){
+void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
 		out << data[i];
 	//out.write(data, getSize()); //Write function for binary files. Will need to test this against the old algorithm and compare the results.

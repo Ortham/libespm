@@ -10,7 +10,6 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-using namespace std;
 /**
  * @namespace viewer
  * @brief Contains the viewer specific functions.
@@ -22,7 +21,7 @@ namespace viewer{
 	 * @var size
 	 * The size of the file.
 	 */
-	extern ifstream::pos_type size;
+	extern std::ifstream::pos_type size;
 	/**
 	 * @brief Checks whether or not a piece of data is printable.
 	 * @details It checks the hexidecimal value of a piece of data and determines whether or not it is a printable character.
@@ -38,20 +37,20 @@ namespace viewer{
 	 * The file to read in.
 	 * @returns A <tt>char</tt> array containing all the data in the file.
 	 */
-	unsigned char * readFile(ifstream &file);
+	unsigned char * readFile(std::ifstream &file);
 	/**
 	 * @brief Gets the size of the file we are currently dealing with.
 	 * @details It gives us the file's size so that we can more easily refer to it in various ways.
 	 * @returns The file size.
 	 */
-	inline ifstream::pos_type getSize();
+	inline std::ifstream::pos_type getSize();
 	/**
 	 * @brief Stores the size of the file we are currently dealing with.
 	 * @details It stores the file's size for us so that we can more easily refer to it in various ways.
 	 * @param &file
 	 * The file we are currently dealing with.
 	 */
-	inline void setSize(ifstream &file);
+	inline void setSize(std::ifstream &file);
 	/**
 	 * @brief The main program
 	 * @details Runs the hex-viewer. Included as kind of a ready-made implementation of the API here.
@@ -64,7 +63,7 @@ namespace viewer{
 	 * @deprecated This is here mainly for legacy reasons in case folks have some desire to use a program that spits out 5 very large files.
 	 * It is recommended to implement the API instead of using this function unless you \em really want to.
 	 */
-	void runView(string inputFile, ifstream &file, ofstream &out);
+	void runView(std::string inputFile, std::ifstream &file, std::ofstream &out);
 	/**
 	 * @brief Writes the hexidecimal data to a file.
 	 * @details Writes the printable hexidecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.
@@ -73,7 +72,7 @@ namespace viewer{
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writePrintableHex(unsigned char data[], ofstream &out);
+	void writePrintableHex(unsigned char data[], std::ofstream &out);
 	/**
 	 * @brief Writes the character data to a file.
 	 * @details Writes the printable character data to a file to allow for analysis later on. This allows us to parse the data later on and turn it into usable information.
@@ -82,7 +81,7 @@ namespace viewer{
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writePrintableChar(unsigned char data[], ofstream &out);
+	void writePrintableChar(unsigned char data[], std::ofstream &out);
 	/**
 	 * @brief Writes the hexidecimal data to a file.
 	 * @details Writes the raw hexidecimal data to a file to allow for analysis later on.
@@ -91,7 +90,7 @@ namespace viewer{
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writeRawHex(unsigned char data[], ofstream &out);
+	void writeRawHex(unsigned char data[], std::ofstream &out);
 	/**
 	 * @brief Writes the character data to a file.
 	 * @details Writes the raw character data to a file. Essentially makes a backup copy of the data we are using.
@@ -103,11 +102,11 @@ namespace viewer{
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writeRawChar(unsigned char data[], ofstream &out);
-	inline ifstream::pos_type getSize(){
+	void writeRawChar(unsigned char data[], std::ofstream &out);
+	inline std::ifstream::pos_type getSize(){
 		return size;
 	}
-	inline void setSize(ifstream &file){
+	inline void setSize(std::ifstream &file){
 		size = file.tellg();
 	}
 	/*END OF LINE*/

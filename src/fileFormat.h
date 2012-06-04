@@ -48,9 +48,15 @@ namespace parser{
 			unsigned int moreStuff5;
 		};
 		struct BASE_FORMAT{
+			unsigned char record[4];
+			unsigned short size;
+			unsigned char data[size];
+		};
+		struct BASE_HEADER_FORMAT{
 			unsigned char header[4];
 			unsigned short size;
-			unsigned int stuff;
-		}
+			unsigned char stuff[18];
+			BASE_FORMAT base;
+		};
 	}
 }
