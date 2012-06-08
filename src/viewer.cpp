@@ -77,8 +77,8 @@ void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &
 void viewer::writePrintableHex(unsigned char data[], std::ofstream &out){
 	bool flag = false;
 	for(unsigned int i = 0; i < getSize(); ++i){
-		if(isPrintable((unsigned int)data[i])){
-			out << std::hex << (unsigned int)data[i] << "\t";
+		if(isPrintable(static_cast<unsigned int>(data[i]))){
+			out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
 			flag = true;
 		}
 		else{
@@ -92,7 +92,7 @@ void viewer::writePrintableHex(unsigned char data[], std::ofstream &out){
 void viewer::writePrintableChar(unsigned char data[], std::ofstream &out){
 	bool flag = false;
 	for(unsigned int i = 0; i < getSize(); ++i){
-		if(isPrintable((unsigned int)data[i])){
+		if(isPrintable(static_cast<unsigned int>(data[i]))){
 			out << data[i];
 			flag = true;
 		}
@@ -106,7 +106,7 @@ void viewer::writePrintableChar(unsigned char data[], std::ofstream &out){
 }
 void viewer::writeRawHex(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
-		out << std::hex << (unsigned int)data[i] << "\t";
+		out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
 }
 void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
