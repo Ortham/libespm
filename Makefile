@@ -3,7 +3,7 @@ OBJECTS =																			src/skyrimParserRedoRel.o src/commonSupport.o src/pa
 #OBJECTS2 =																			src/commonSupport.cpp src/parser.cpp src/parserClasses.cpp src/viewer.cpp
 #all :																				Viewer Viewer.exe Parse Parse.exe
 #all :																				Parse Parse.exe
-all :																				Parse
+all :																				Parse Release
 #Viewer :																			$(OBJECTS1)
 #																					g++ -o Viewer $(OBJECTS1)
 #Viewer.exe :																		src/viewerRedoRel.cpp
@@ -19,6 +19,8 @@ src/commonSupport.o src/viewer.o :													src/commonSupport.h
 src/parser.o src/parserClasses.o :													src/parser.h
 src/parserClasses.o :																src/parserClasses.h
 src/viewer.o :																		src/viewer.h
+Release :																			Parse
+																					7z a -t7z -m0=lzma2 -mx=9 -ms=on -i@fileList Parser.7z
 .PHONY :																			clean
 clean :
-																					rm Parse $(OBJECTS)
+																					rm Parse $(OBJECTS) Parser.7z
