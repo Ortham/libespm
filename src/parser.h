@@ -65,12 +65,22 @@ namespace parser{
 	bool isGRUP(std::string data);
 	/**
 	 * @brief Checks whether or not a file is a mod (plugin).
-	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files.
+	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files, and then the file extension to see if
+	 * it matches .esm or .esp, which are the current extensions for plugins.
 	 * @param &file
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
 	 */
 	bool isMod(std::ifstream &file);
+	/**
+	 * @brief Checks whether or not a file is a mod (plugin).
+	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files.
+	 * \n\n This one is for use for when the file extension is already verified.
+	 * @param head
+	 * The file header to be checked.
+	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
+	 */
+	bool isMod(std::string head);
 	/**
 	 * @brief Checks whether or not a line is an operation.
 	 * @details It checks a line to see if it begins with ".?", which denotes an operation.
@@ -92,12 +102,22 @@ namespace parser{
 	bool isRecord(std::string data);
 	/**
 	 * @brief Checks whether or not a file is a saved game.
-	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files.
+	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
+	 * extensionto see if it matches .ess, which is the current file extension for save files.
 	 * @param &file
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
 	 */
 	bool isSave(std::ifstream &file);
+	/**
+	 * @brief Checks whether or not a file is a saved game.
+	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME".
+	 * \n\n This one is for use for when the file extension is already verified.
+	 * @param head
+	 * The file header to be checked.
+	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
+	 */
+	bool isSave(std::string head);
 	/**
 	 * @brief Checks whether or not a line is a variable in a saved game.
 	 * @details It checks a line to see if it begins with "::", which denotes a variable in a saved game.
