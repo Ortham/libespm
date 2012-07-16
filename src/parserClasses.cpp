@@ -32,9 +32,9 @@ bool parser::GameFile::isESS(){
 	return true;
 }
 bool parser::GameFile::isMod(std::ifstream &file){
-	return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
+	return (((getFileHeader().compare(0, 4, "TES4") == 0) || (getFileHeader().compare(0, 4, "TES3") == 0)) && ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") != 0) && (getFileHeader().compare(0, 12, "TES4SAVEGAME") != 0))) ? (isESM() || isESP()) : false;
 }
 bool parser::GameFile::isSave(std::ifstream &file){
-	return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? isESS() : false));
+	return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || (getFileHeader().compare(0, 4, "TES3") == 0)) ? isESS() : false;
 }
 /*END OF LINE*/
