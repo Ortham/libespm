@@ -39,7 +39,8 @@ bool parser::isGRUP(std::string data){
 		return ((data[0] == 'G') && (data[1] == 'R') && (data[2] == 'U') && (data[3] == 'P'));
 }
 bool parser::isMod(std::ifstream &file){
-	return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
+	//return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
+	return (((getFileHeader().compare(0, 4, "TES4") == 0) || (getFileHeader().compare(0, 4, "TES3") == 0)) && ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") != 0) && (getFileHeader().compare(0, 12, "TES4SAVEGAME") != 0))) ? (isESM() || isESP()) : false;
 }
 bool parser::isOp(std::string data){
 	return (data[0] == '.' && data[1] == '?');
@@ -48,7 +49,8 @@ bool parser::isRecord(std::string data){
 	return ((data[0] >= RANGE_MIN && data[0] <= RANGE_MAX) && (data[1] >= RANGE_MIN && data[1] <= RANGE_MAX) && (data[2] >= RANGE_MIN && data[2] <= RANGE_MAX));
 }
 bool parser::isSave(std::ifstream &file){
-	return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? isESS() : false));
+	//return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? isESS() : false));
+	return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || (getFileHeader().compare(0, 4, "TES3") == 0)) ? isESS() : false;
 }
 bool parser::isVar(std::string data){
 	return (data[0] == ':' && data[1] == ':');
