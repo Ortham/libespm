@@ -1,3 +1,23 @@
+/*
+ * viewer.h
+ * This file is part of Parse
+ *
+ * Copyright (C) 2012 - deaths_soul(MCP)
+ *
+ * Parse is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Parse is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Parse. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -64,6 +84,19 @@ namespace viewer{
 	 * It is recommended to implement the API instead of using this function unless you \em really want to.
 	 */
 	void runView(std::string inputFile, std::ifstream &file, std::ofstream &out);
+	/**
+	 * @brief The main program
+	 * @details Runs the hex-viewer. Included as kind of a ready-made implementation of the API here.
+	 * @param *inputFile1
+	 * The name of the file to extract data from.
+	 * @param &file
+	 * The file stream to use for the input. This is so that we are not making multiple streams and use as few as possible.
+	 * @param &out
+	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
+	 * @deprecated This is here mainly for legacy reasons in case folks have some desire to use a program that spits out 5 very large files.
+	 * It is recommended to implement the API instead of using this function unless you \em really want to.
+	 */
+	extern "C" void runView(char * inputFile1, std::ifstream &file, std::ofstream &out);
 	/**
 	 * @brief Writes the hexidecimal data to a file.
 	 * @details Writes the printable hexidecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.

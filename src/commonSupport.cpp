@@ -1,3 +1,23 @@
+/*
+ * commonSupport.cpp
+ * This file is part of Parse
+ *
+ * Copyright (C) 2012 - deaths_soul(MCP)
+ *
+ * Parse is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Parse is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Parse. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -15,14 +35,13 @@ const char* common::inputName(std::string base, std::string addon){
 	//cout << base + addon << endl;
 	return (base + addon).c_str();
 }
-int common::countLeading(std::string line){
-	int count = 0;
-	for(int i = 0; i < line.size(); ++i){
-		if(line[i] >= RANGE_MIN && line[i] <= RANGE_MAX)
-			break;
-		++count;
-	}
-	return count;
+const char* common::inputName(char * base1, char * addon1){
+	std::string base(base1);
+	std::string addon(addon1);
+	//cout << base << endl;
+	//cout << addon << endl;
+	//cout << base + addon << endl;
+	return (base + addon).c_str();
 }
 /*int common::numLines(ifstream &in){
 	///in.seekg(0, ios::beg);
@@ -43,9 +62,16 @@ void common::callViewer(std::string fileName){
 		system(callName);
 	#endif
 }
-void common::eraseLeading(std::string &line){
-	int leading = countLeading(line);
-	line.erase(0, leading);
+void common::callViewer(char * fileName1){
+	std::string fileName(fileName1);
+	fileName = "\"" + fileName + "\"";
+	#ifdef __WIN32__
+		const char * callName = (".\\Viewer.exe " + fileName).c_str();
+		system(callName);
+	#else
+		const char * callName = ("./Viewer " + fileName).c_str();
+		system(callName);
+	#endif
 }
 void common::eraseTrailing(std::string &line){
 	if(line.size() >= 4){
@@ -57,6 +83,16 @@ void common::eraseTrailing(std::string &line){
 	}
 }
 void common::writeLabel(std::string label, std::ofstream &out){
+	out << label << std::endl;
+	std::string labelLine;
+	for(unsigned int i = 0; i < label.size(); ++i)
+		labelLine = labelLine + "-";
+	out << labelLine << std::endl;
+	out << std::endl;
+	out << std::endl;
+}
+void common::writeLabel(char * label1, std::ofstream &out){
+	std::string label(label1);
 	out << label << std::endl;
 	std::string labelLine;
 	for(unsigned int i = 0; i < label.size(); ++i)

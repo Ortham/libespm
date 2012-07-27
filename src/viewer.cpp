@@ -1,3 +1,23 @@
+/*
+ * viewer.cpp
+ * This file is part of Parse
+ *
+ * Copyright (C) 2012 - deaths_soul(MCP)
+ *
+ * Parse is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Parse is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Parse. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -32,10 +52,10 @@ void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &
 		#else
 			out.open(common::inputName(inputFile, " - printable"));
 		#endif
-		common::writeLabel("Char data", out);
+		common::writeLabel((std::string)"Char data", out);
 		writePrintableChar(memblock, out);
 		out << std::endl;
-		common::writeLabel("Hex data", out);
+		common::writeLabel((std::string)"Hex data", out);
 		writePrintableHex(memblock, out);
 		out.close();
 		#ifdef __WIN32__
@@ -43,7 +63,7 @@ void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &
 		#else
 			out.open(common::inputName(inputFile, " - rawChar"));
 		#endif
-		common::writeLabel("Raw char data", out);
+		common::writeLabel((std::string)"Raw char data", out);
 		writeRawChar(memblock, out);
 		out.close();
 		#ifdef __WIN32__
@@ -51,7 +71,61 @@ void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &
 		#else
 			out.open(common::inputName(inputFile, " - rawHex"));
 		#endif
-		common::writeLabel("Raw hex data", out);
+		common::writeLabel((std::string)"Raw hex data", out);
+		writeRawHex(memblock, out);
+		out.close();
+		#ifdef __WIN32__
+			out.open(common::inputName(inputFile, " - printableChar.txt"));
+		#else
+			out.open(common::inputName(inputFile, " - printableChar"));
+		#endif
+		writePrintableChar(memblock, out);
+		out.close();
+		#ifdef __WIN32__
+			out.open(common::inputName(inputFile, " - printableHex.txt"));
+		#else
+			out.open(common::inputName(inputFile, " - printableHex"));
+		#endif
+		writePrintableHex(memblock, out);
+		out.close();
+		file.close();
+		delete[] memblock;
+	}
+	else
+		std::cout << "Unable to open file" << std::endl;
+}
+void viewer::runView(char * inputFile1, std::ifstream &file, std::ofstream &out){
+	std::string inputFile(inputFile1);
+	unsigned char * memblock;
+	file.open(inputFile.c_str(), std::ios::in|std::ios::binary|std::ios::ate);
+	if(file.is_open()){
+		setSize(file);
+		memblock = readFile(file);
+		#ifdef __WIN32__
+			out.open(common::inputName(inputFile, " - printable.txt"));
+		#else
+			out.open(common::inputName(inputFile, " - printable"));
+		#endif
+		common::writeLabel((std::string)"Char data", out);
+		writePrintableChar(memblock, out);
+		out << std::endl;
+		common::writeLabel((std::string)"Hex data", out);
+		writePrintableHex(memblock, out);
+		out.close();
+		#ifdef __WIN32__
+			out.open(common::inputName(inputFile, " - rawChar.txt"));
+		#else
+			out.open(common::inputName(inputFile, " - rawChar"));
+		#endif
+		common::writeLabel((std::string)"Raw char data", out);
+		writeRawChar(memblock, out);
+		out.close();
+		#ifdef __WIN32__
+			out.open(common::inputName(inputFile, " - rawHex.txt"));
+		#else
+			out.open(common::inputName(inputFile, " - rawHex"));
+		#endif
+		common::writeLabel((std::string)"Raw hex data", out);
 		writeRawHex(memblock, out);
 		out.close();
 		#ifdef __WIN32__

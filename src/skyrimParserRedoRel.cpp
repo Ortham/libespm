@@ -1,3 +1,23 @@
+/*
+ * skyrimParserRedoRel.cpp
+ * This file is part of Parse
+ *
+ * Copyright (C) 2012 - deaths_soul(MCP)
+ *
+ * Parse is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Parse is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Parse. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -41,10 +61,10 @@ int main(int argc, char *argv[]){
 			#else
 				out.open(common::inputName(inputFile, " - printable"));
 			#endif
-			common::writeLabel("Char data", out);
+			common::writeLabel((string)"Char data", out);
 			viewer::writePrintableChar(memblock, out);
 			out << endl;
-			common::writeLabel("Hex data", out);
+			common::writeLabel((string)"Hex data", out);
 			viewer::writePrintableHex(memblock, out);
 			out.close();
 			#ifdef __WIN32__
@@ -52,7 +72,7 @@ int main(int argc, char *argv[]){
 			#else
 				out.open(common::inputName(inputFile, " - rawChar"));
 			#endif
-			common::writeLabel("Raw char data", out);
+			common::writeLabel((string)"Raw char data", out);
 			viewer::writeRawChar(memblock, out);
 			out.close();
 			#ifdef __WIN32__
@@ -60,7 +80,7 @@ int main(int argc, char *argv[]){
 			#else
 				out.open(common::inputName(inputFile, " - rawHex"));
 			#endif
-			common::writeLabel("Raw hex data", out);
+			common::writeLabel((string)"Raw hex data", out);
 			viewer::writeRawHex(memblock, out);
 			out.close();
 			#ifdef __WIN32__
