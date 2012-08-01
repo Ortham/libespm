@@ -32,13 +32,19 @@
 std::ifstream::pos_type viewer::size;
 bool viewer::isPrintable(unsigned int data){
 	return ((PRINT_START <= data) && (PRINT_END >= data));
-}	
+}
 unsigned char * viewer::readFile(std::ifstream &file){
 	unsigned char * data = new unsigned char[getSize()];
 	file.seekg(0, std::ios::beg);
 	for(unsigned int i = 0; i < getSize(); ++i)
 		file >> data[i];
 	//file.read(data, getSize()); //Read function for binary files. Will need to test this against the old algorithm and compare the results.
+	return data;
+}
+unsigned char * viewer::readFile2(std::ifstream &file){
+	unsigned char * data = new unsigned char[getSize()];
+	file.seekg(0, std::ios::beg);
+	file.read(data, getSize());
 	return data;
 }
 void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &out){
@@ -186,5 +192,8 @@ void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
 		out << data[i];
 	//out.write(data, getSize()); //Write function for binary files. Will need to test this against the old algorithm and compare the results.
+}
+void viewer::writeRawChar2(unsigned char data[], std::ofstream &out){
+	out.write(data, getSize());
 }
 /*END OF LINE*/

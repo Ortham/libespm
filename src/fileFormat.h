@@ -28,6 +28,8 @@
  * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to 
  */
 #pragma once
+#include <fstream>
+#include <vector>
 namespace parser{
 	/**
 	 * @namespace fileFormat
@@ -36,6 +38,21 @@ namespace parser{
 	 * this is where the main programs will output a parsed format to in various structs.
 	 */
 	namespace fileFormat{
+		/**
+		 * @var delimiterLength
+		 * The length of the delimiter in bytes.
+		 */
+		extern unsigned int delimiterLength;
+		/**
+		 * @var flagLength
+		 * The length of the flag field in bytes.
+		 */
+		extern unsigned int flagLength;
+		/**
+		 * @var sizeLength
+		 * The length of the size field in bytes.
+		 */
+		extern unsigned int sizeLength;
 		/**
 		 * @struct TES_Format
 		 * @brief The plugin format.
@@ -114,7 +131,7 @@ namespace parser{
 			unsigned int moreStuff5;
 		};
 		struct BASE_FORMAT{
-			unsigned char record[4];
+			unsigned char * record;
 			unsigned short size;
 			unsigned char data[size];
 		};
@@ -124,5 +141,69 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
+		struct file{
+			std::vector<record> records;
+		}file;
+		unsigned char * readFlags(std::ifstream &file);
+		unsigned char * readRecord(std::ifstream &file);
+		unsigned char * readRecordData(std::ifstream &file);
+		unsigned int readSize(std::ifstream &file);
+		/**
+		 * @brief Gets the length of the delimiter.
+		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the delimiter.
+		 */
+		inline unsigned int getDelimiterLength();
+		/**
+		 * @brief Gets the length of the flag field.
+		 * @details Is here to allow for cases where the length of the flag field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the flag field.
+		 */
+		inline unsigned int getFlagLength();
+		/**
+		 * @brief Gets the length of the size field.
+		 * @details Is here to allow for cases where the length of the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the size field.
+		 */
+		inline unsigned int getSizeLength();
+		/**
+		 * @brief Sets the length of the delimiter.
+		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setDelimiterLength(unsigned int length);
+		/**
+		 * @brief Sets the length of the flag field.
+		 * @details Is here to allow for cases where the length of the flag field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setFlagLength(unsigned int length);
+		/**
+		 * @brief Sets the length of the size field.
+		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setSizeLength(unsigned int length);
+		inline unsigned int getDelimiterLength(){
+			return delimiterLength;
+		}
+		inline unsigned int getFlagLength(){
+			return flagLength;
+		}
+		inline unsigned int geSizeLength(){
+			return sizeLength;
+		}
+		inline void setDelimiterLength(unsigned int length){
+			delimiterLength = length;
+		}
+		inline void setFlagLength(unsigned int length){
+			flagLength = length;
+		}
+		inline void setSizeLength(unsigned int length){
+			sizeLength = length;
+		}
 	}
 }

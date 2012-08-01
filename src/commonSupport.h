@@ -35,6 +35,7 @@
  * @details Contains and will contain all functions and variables that are shared between the parser and viewer to reduce clutter and possibly other stuff.
  */
 namespace common{
+	bool isString(unsigned char data[]);
 	/**
 	 * @brief Creates the output file names.
 	 * @details Takes the base file name and prepends it to the appropriate strings to help identify what the files contain.

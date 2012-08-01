@@ -59,6 +59,14 @@ namespace viewer{
 	 */
 	unsigned char * readFile(std::ifstream &file);
 	/**
+	 * @brief Reads the input file.
+	 * @details It reads in all the data from the file and stores it into an array of characters to make messing with the data easier.
+	 * @param &file
+	 * The file to read in.
+	 * @returns A <tt>char</tt> array containing all the data in the file.
+	 */
+	unsigned char * readFile2(std::ifstream &file);
+	/**
 	 * @brief Gets the size of the file we are currently dealing with.
 	 * @details It gives us the file's size so that we can more easily refer to it in various ways.
 	 * @returns The file size.
@@ -136,6 +144,18 @@ namespace viewer{
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
 	void writeRawChar(unsigned char data[], std::ofstream &out);
+	/**
+	 * @brief Writes the character data to a file.
+	 * @details Writes the raw character data to a file. Essentially makes a backup copy of the data we are using.
+	 * In the case of the data array containing all of and only the data from the file, it backs up the file with the exact data contained. 
+	 * This is here to ensure that no OS or other functions change the data and to ensure that we have a clean backup copy just in case.
+	 * However, in order to use the result as backup, one must manually delete the label and the newlines added in if they added a label in.
+	 * @param data[]
+	 * The data contained in the file.
+	 * @param &out
+	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
+	 */
+	void writeRawChar2(unsigned char data[], std::ofstream &out);
 	inline std::ifstream::pos_type getSize(){
 		return size;
 	}

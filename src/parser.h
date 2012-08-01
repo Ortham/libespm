@@ -361,6 +361,7 @@ namespace parser{
 	 * @todo Set things up as an object for each file, possibly, to allow for multiple uses of various functions without causing problems.
 	 */
 	inline std::string getFileName();
+
 	/**
 	 * @brief Erases the junk from the beginning of a line.
 	 * @details It uses the countLeading(string line) function to determine how much to erase.
