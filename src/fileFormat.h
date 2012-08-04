@@ -141,8 +141,25 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
-		struct file{
+		struct record{
+			unsigned char * name;
+			unsigned int size;
+			unsigned char * flags;
+			unsigned char data[size];
+		}record;
+		struct group{
+			unsigned char * groupHeader;
+			unsigned char * groupName;
+			unsigned int groupSize;
+			unsigned char * flags;
 			std::vector<record> records;
+		}group;
+		struct file{
+			unsigned char * header;
+			unsigned char * flags;
+			unsigned char * size;
+			std::vector<record> records;
+			std::vector<group> groups;
 		}file;
 		unsigned char * readFlags(std::ifstream &file);
 		unsigned char * readRecord(std::ifstream &file);
