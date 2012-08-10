@@ -47,11 +47,14 @@ int main(int argc, char *argv[]){
 		cout << "Usage: " << argv[0] << " <filename>\n";
 	else{
 		string inputFile = argv[1];
+		string temp;
 		parser::setFileName(inputFile);
 		ifstream file; 
 		ofstream out;
+		ofstream out2;
 		/*START HEX-VIEWER*/
 		unsigned char * memblock;
+		bool used = false;
 		file.open(inputFile.c_str(), ios::in|ios::binary|ios::ate);
 		if(file.is_open()){
 			viewer::setSize(file);
@@ -154,8 +157,10 @@ int main(int argc, char *argv[]){
 			else if(parser::isSave(file)){
 				#ifdef __WIN32__
 					out.open(common::inputName(inputFile, " - Variables.txt"));
+					out2.open(common::inputName(inputFile, " - varSections.txt"));
 				#else
 					out.open(common::inputName(inputFile, " - Variables"));
+					out2.open(common::inputName(inputFile, " - varSections"));
 				#endif
 				if(parser::getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0)
 					line.erase(13, line.size());
@@ -165,11 +170,21 @@ int main(int argc, char *argv[]){
 					line.erase(4, line.size());
 				out << line << endl;
 				while(file.good()){
+					temp = line;
 					getline(file, line);
-					if(parser::isVar(line))
+					if(parser::isVar(line)){
+						if(!used){
+							out << temp << endl;
+							out2 << temp << endl;
+							used = true;
+						}
 						out << line << endl;
+					}
+					else
+						used = false;
 				}
 				out.close();
+				out2.close();
 				file.close();
 			}
 			else{
