@@ -44,7 +44,7 @@ unsigned char * viewer::readFile(std::ifstream &file){
 unsigned char * viewer::readFile2(std::ifstream &file){
 	unsigned char * data = new unsigned char[getSize()];
 	file.seekg(0, std::ios::beg);
-	file.read(data, getSize());
+	file.read((char *)data, getSize());
 	return data;
 }
 void viewer::runView(std::string inputFile, std::ifstream &file, std::ofstream &out){
@@ -194,6 +194,6 @@ void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 	//out.write(data, getSize()); //Write function for binary files. Will need to test this against the old algorithm and compare the results.
 }
 void viewer::writeRawChar2(unsigned char data[], std::ofstream &out){
-	out.write(data, getSize());
+	out.write((char *)data, getSize());
 }
 /*END OF LINE*/
