@@ -145,6 +145,7 @@ namespace parser{
 			unsigned char * name;
 			unsigned int size;
 			unsigned char * flags;
+			unsigned int ID;
 			unsigned char data[size];
 		}record;
 		struct group{
