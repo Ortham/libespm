@@ -7,15 +7,15 @@ void util::createMast(parser::fileFormat::file fileA, std::vector<parser::fileFo
 	for(unsigned int i = 0; i < fileA.groups.length(); ++i){
 		for(unsigned int j = 0; j < fileA.groups[i].records.length(); ++j){
 			for(unsigned int k = 0; k < masters.groups.length(); ++k){
-				if(!test){
-					for(unsigned int l = 0; l < masters.groups[k].records.length(); ++l){
-						if(fileA.groups[i].records[j].ID == masters.groups[k].records[l].ID){
-							ids += fileA.groups[i].records[j].ID;
-							test = true;
-							break;
-						}
+				for(unsigned int l = 0; l < masters.groups[k].records.length(); ++l){
+					if(fileA.groups[i].records[j].ID == masters.groups[k].records[l].ID){
+						ids += fileA.groups[i].records[j].ID;
+						test = true;
+						break;
 					}
 				}
+				if(test)
+					break;
 			}
 			test = false;
 		}
