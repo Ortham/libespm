@@ -1,7 +1,7 @@
 #include <string>
 #include "fileUtil.h"
 void util::createMast(parser::fileFormat::file fileA, std::vector<parser::fileFormat::file> masters){
-	(unsigned int)fileA.flags = (unsigned int)fileA.flags | 1;
+	(unsigned int)fileA.flags |= 1;
 	std::string ids;
 	bool test = false;
 	for(unsigned int i = 0; i < fileA.groups.length(); ++i){
