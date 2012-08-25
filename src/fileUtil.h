@@ -28,5 +28,8 @@
 #pragma once
 #include "fileFormat.h"
 namespace util{
-	void createMast(parser::fileFormat::file fileA);
+	void createMast(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters);
+	void createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters);
+	void revCreateMast(parser::fileFormat::file &fileA);
+	void revCreateONAM(parser::fileFormat::file &fileA);
 }
