@@ -8,7 +8,7 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 	bool test = false;
 	for(unsigned int i = 0; i < fileA.groups.length(); ++i){
 		for(unsigned int j = 0; j < fileA.groups[i].records.length(); ++j){
-			if(fileA.groups[i].records[j].name == "ACHR" || fileA.groups[i].records[j].name == "LAND" || fileA.groups[i].records[j].name == "NAVM" || fileA.groups[i].records[j].name == "PGRE" || fileA.groups[i].records[j].name == "PHZD" || fileA.groups[i].records[j].name == "REFR"){
+			if(isONAM(fileA.groups[i].records[j].name)){
 				for(unsigned int k = 0; k < masters.length(); ++k){
 					for(unsigned int l = 0; l < masters[k].groups.length(); ++l){
 						for(unsigned int m = 0; m < masters[k].groups[l].records.length(); ++m){
