@@ -26,9 +26,9 @@
  * @details A support library to hold functions that both programs use to help with keeping down clutter.
  */
 #include <cstdlib>
-#include <vector>
 #include "constants.h"
 #include "commonSupport.h"
+std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
 bool common::isString(unsigned char data[]){
 	unsigned int dataSize = sizeof data;
 	if(data[dataSize - 1] != '\0')
@@ -90,6 +90,36 @@ void common::eraseTrailing(std::string &line){
 			if(line.compare(0, 5, "TIF__") != 0)
 				line.erase(3, line.size());
 	}
+}
+void common::readOptions(std::ifstream &file){
+	std::string line, line2, test;
+	std::map<std::string, std::vector<std::string> > map2;
+	std::vector<std::string> data;
+	bool firstRun = true;
+	while(file.good()){
+		std::getline(file, line);
+		data.clear();
+		if(line[0] == '=' && line[1] == '='){
+			if(!firstRun){
+				structVals.insert(std::pair<std::string, std::map<std::string, std::vector<std::string> > >(line2, map2));
+				map2.clear();
+			}
+			line2 = line.substr(2, (line.size() - 4));
+			firstRun = false;
+		}
+		else if(!line.empty()){
+			file >> test;
+			if(test[0] == '{'){
+				file >> test;
+				while(test[0] != '}'){
+					data.push_back(test);
+					file >> test;
+				}
+				map2.insert(std::pair<std::string, std::vector<std::string> >(line, data));
+			}
+		}
+	}
+	structVals.insert(std::pair<std::string, std::map<std::string, std::vector<std::string> > >(line2, map2));
 }
 void common::writeLabel(std::string label, std::ofstream &out){
 	out << label << std::endl;

@@ -29,12 +29,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <map>
+#include <vector>
 /**
  * @namespace common
  * @brief The common stuff to all programs.
  * @details Contains and will contain all functions and variables that are shared between the parser and viewer to reduce clutter and possibly other stuff.
  */
 namespace common{
+	extern std::map<std::string, std::map<std::string, std::vector<std::string> > > structVals;
 	bool isString(unsigned char data[]);
 	/**
 	 * @brief Creates the output file names.
@@ -85,6 +88,7 @@ namespace common{
 	 * @todo Extract the fields from the records as well.
 	 */
 	void eraseTrailing(std::string &line);
+	void readOptions(std::ifstream &file);
 	/**
 	 * @brief Writes a label to the output file.
 	 * @details Writes the label specifying the data type to the output file to make things a bit more clear.
