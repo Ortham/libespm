@@ -107,5 +107,6 @@ namespace common{
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
 	extern "C" void writeLabel(char * label1, std::ofstream &out);
+	void writeXML(std::ofstream &out);
 	/*END OF LINE*/
 }

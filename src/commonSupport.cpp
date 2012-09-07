@@ -26,6 +26,7 @@
  * @details A support library to hold functions that both programs use to help with keeping down clutter.
  */
 #include <cstdlib>
+#include <stack>
 #include "constants.h"
 #include "commonSupport.h"
 std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
@@ -139,5 +140,27 @@ void common::writeLabel(char * label1, std::ofstream &out){
 	out << labelLine << std::endl;
 	out << std::endl;
 	out << std::endl;
+}
+void common::writeXML(std::ofstream &out){
+	std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator it;
+	std::map<std::string, std::vector<std::string> >::iterator it2;
+	std::stack<std::string> stuff;
+	out << "<Games>" << std::endl;
+	for(it = structVals.begin(); it != structVals.end(); ++it){
+		out << "\t<" << (*it).first << ">" << std::endl;
+		stuff.push((*it).first);
+		for(it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2){
+			out << "\t\t<" << (*it2).first << ">" << std::endl;
+			stuff.push((*it2).first);
+			for(int i = 0; i < (*it2).second.size(); ++i){
+				out << "\t\t\t<data>\n\t\t\t\t" << (*it2).second[i] << "\n\t\t\t</data>" << std::endl;
+			}
+			out << "\t\t</" << stuff.top() << ">" << std::endl;
+			stuff.pop();
+		}
+		out << "\t</" << stuff.top() << ">" << std::endl;
+		stuff.pop();
+	}
+	out << "</Games>" << std::endl;
 }
 /*END OF LINE*/
