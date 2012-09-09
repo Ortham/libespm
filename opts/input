@@ -1,0 +1,85 @@
+==Morrowind==
+
+PlugHead
+{ TES3 }
+
+MastExt
+{ .esm }
+
+PlugExt
+{ .esp }
+
+SaveExt
+{ .ess }
+
+BSAHead
+{ BSA }
+
+SaveHead
+{ TES3 }
+
+==Oblivion==
+
+Length
+{ 4 }
+
+SizeLength
+{ 2 }
+
+BSAHead
+{ BSA }
+
+MastExt
+{ .esm }
+
+PlugExt
+{ .esp }
+
+SaveExt
+{ .ess }
+
+Group
+{ GRUP }
+
+PlugHead
+{ TES4 }
+
+SaveHead
+{ TES4SAVEGAME }
+
+==Skyrim==
+
+ONAM
+{ ACHR LAND NAVM PGRE PHZD REFR }
+
+Length
+{ 4 }
+
+SizeLength
+{ 2 }
+
+BSAHead
+{ BSA }
+
+MastExt
+{ .esm }
+
+PlugExt
+{ .esp }
+
+SaveExt
+{ .ess }
+
+Group
+{ GRUP }
+
+PlugHead
+{ TES4 }
+
+SaveHead
+{ TESV_SAVEGAME }
+
+==Future==
+
+Length
+{ n }
