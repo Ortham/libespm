@@ -108,5 +108,15 @@ namespace common{
 	 */
 	extern "C" void writeLabel(char * label1, std::ofstream &out);
 	void writeXML(std::ofstream &out);
+	namespace options{
+		extern std::string game;
+		inline void setGame(std::string gameName){
+			game = gameName;
+		}
+		inline std::string getGame(){
+			return game;
+		}
+		bool contains(std::string opt, std::string val);
+	}
 	/*END OF LINE*/
 }

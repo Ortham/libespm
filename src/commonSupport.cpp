@@ -163,4 +163,10 @@ void common::writeXML(std::ofstream &out){
 	}
 	out << "</Games>" << std::endl;
 }
+bool common::options::contains(std::string opt, std::string val){
+	for(unsigned int i = 0; i < structVals[game][opt].size(); ++i)
+		if(structVals[game][opt][i] == val)
+			return true;
+	return false;
+}
 /*END OF LINE*/
