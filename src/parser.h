@@ -94,6 +94,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "commonSupport.h"
 //#include "fileFormat.h"
 /*
 #ifdef __WIN32__
@@ -160,6 +161,22 @@ namespace parser{
 	extern "C" bool isBSA(char * head1);
 	#endif
 	/**
+	 * @brief Checks whether or not a file is a BSA.
+	 * @details It checks the file's header to see if it matches "BSA", which is the current header for BSAs.
+	 * @param &file
+	 * The file to be checked.
+	 * @returns <tt> \b true </tt> if the file is a BSA, <tt> \b false </tt> otherwise.
+	 */
+	bool isBSA2(std::ifstream &file);
+	/**
+	 * @brief Checks whether or not a file is a BSA.
+	 * @details It checks the file's header to see if it matches "BSA", which is the current header for BSAs.
+	 * @param head
+	 * The header to be checked.
+	 * @returns <tt> \b true </tt> if the header is "BSA", <tt> \b false </tt> otherwise.
+	 */
+	bool isBSA2(std::string head);
+	/**
 	 * @brief Checks whether or not a file has the ESM extension;
 	 * @details It checks the file's extension to see if it matches ".esm"
 	 * @returns <tt> \b true </tt> if the file has the ESM extension, <tt> \b false </tt> otherwise.
@@ -185,6 +202,20 @@ namespace parser{
 	#else
 	extern "C" bool isESM(char * fileName1);
 	#endif
+	/**
+	 * @brief Checks whether or not a file has the ESM extension;
+	 * @details It checks the file's extension to see if it matches ".esm"
+	 * @returns <tt> \b true </tt> if the file has the ESM extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESM2();
+	/**
+	 * @brief Checks whether or not a file has the ESM extension;
+	 * @details It checks the file's extension to see if it matches ".esm"
+	 * @param fileName
+	 * The name of the file to check.
+	 * @returns <tt> \b true </tt> if the file has the ESM extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESM2(std::string fileName);
 	/**
 	 * @brief Checks whether or not a file has the ESP extension;
 	 * @details It checks the file's extension to see if it matches ".esp"
@@ -212,6 +243,20 @@ namespace parser{
 	extern "C" bool isESP(char * fileName1);
 	#endif
 	/**
+	 * @brief Checks whether or not a file has the ESP extension;
+	 * @details It checks the file's extension to see if it matches ".esp"
+	 * @returns <tt> \b true </tt> if the file has the ESP extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESP2();
+	/**
+	 * @brief Checks whether or not a file has the ESP extension;
+	 * @details It checks the file's extension to see if it matches ".esp"
+	 * @param fileName
+	 * The name of the file to check.
+	 * @returns <tt> \b true </tt> if the file has the ESP extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESP2(std::string fileName);
+	/**
 	 * @brief Checks whether or not a file has the ESS extension;
 	 * @details It checks the file's extension to see if it matches ".ess"
 	 * @returns <tt> \b true </tt> if the file has the ESS extension, <tt> \b false </tt> otherwise.
@@ -238,6 +283,20 @@ namespace parser{
 	extern "C" bool isESS(char * fileName1);
 	#endif
 	/**
+	 * @brief Checks whether or not a file has the ESS extension;
+	 * @details It checks the file's extension to see if it matches ".ess"
+	 * @returns <tt> \b true </tt> if the file has the ESS extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESS2();
+	/**
+	 * @brief Checks whether or not a file has the ESS extension;
+	 * @details It checks the file's extension to see if it matches ".ess"
+	 * @param fileName
+	 * The name of the file to check.
+	 * @returns <tt> \b true </tt> if the file has the ESS extension, <tt> \b false </tt> otherwise.
+	 */
+	bool isESS2(std::string fileName);
+	/**
 	 * @brief Checks whether or not a line is a GRUP.
 	 * @details It checks a line to see if it is equal to "GRUP".
 	 * @note Only for mod files (plugins).
@@ -261,6 +320,16 @@ namespace parser{
 	#else
 	extern "C" bool isGRUP(char * data1);
 	#endif
+	/**
+	 * @brief Checks whether or not a line is a GRUP.
+	 * @details It checks a line to see if it is equal to "GRUP".
+	 * @note Only for mod files (plugins).
+	 * @param data
+	 * The line to be checked
+	 * @returns <tt> \b true </tt> if the line is a GRUP, <tt> \b false </tt> otherwise.
+	 * @todo Integrate the rest of the checks from the main program to make this function more complete.
+	 */
+	bool isGRUP2(std::string data);
 	/**
 	 * @brief Checks whether or not a file is a mod (plugin).
 	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files, and then the file extension to see if
@@ -292,6 +361,24 @@ namespace parser{
 	#else
 	extern "C" bool isMod(char * head1);
 	#endif
+	/**
+	 * @brief Checks whether or not a file is a mod (plugin).
+	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files, and then the file extension to see if
+	 * it matches .esm or .esp, which are the current extensions for plugins.
+	 * @param &file
+	 * The file to be checked.
+	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
+	 */
+	bool isMod2(std::ifstream &file);
+	/**
+	 * @brief Checks whether or not a file is a mod (plugin).
+	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files.
+	 * \n\n This one is for use for when the file extension is already verified.
+	 * @param head
+	 * The file header to be checked.
+	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
+	 */
+	bool isMod2(std::string head);
 	/**
 	 * @brief Checks whether or not a line is an operation.
 	 * @details It checks a line to see if it begins with ".?", which denotes an operation.
@@ -369,6 +456,24 @@ namespace parser{
 	#else
 	extern "C" bool isSave(char * head1);
 	#endif
+	/**
+	 * @brief Checks whether or not a file is a saved game.
+	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
+	 * extensionto see if it matches .ess, which is the current file extension for save files.
+	 * @param &file
+	 * The file to be checked.
+	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
+	 */
+	bool isSave2(std::ifstream &file);
+	/**
+	 * @brief Checks whether or not a file is a saved game.
+	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME".
+	 * \n\n This one is for use for when the file extension is already verified.
+	 * @param head
+	 * The file header to be checked.
+	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
+	 */
+	bool isSave2(std::string head);
 	/**
 	 * @brief Checks whether or not a line is a variable in a saved game.
 	 * @details It checks a line to see if it begins with "::", which denotes a variable in a saved game.

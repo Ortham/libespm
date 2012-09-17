@@ -30,6 +30,8 @@
 #pragma once
 #include <fstream>
 #include <vector>
+#include <sstream>
+#include "commonSupport.h"
 namespace parser{
 	/**
 	 * @namespace fileFormat
@@ -239,17 +241,35 @@ namespace parser{
 		 */
 		inline void setDelimiterLength(unsigned int length);
 		/**
+		 * @brief Sets the length of the delimiter.
+		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setDelimiterLength2();
+		/**
 		 * @brief Sets the length of the flag field.
 		 * @details Is here to allow for cases where the length of the flag field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setFlagLength(unsigned int length);
 		/**
+		 * @brief Sets the length of the flag field.
+		 * @details Is here to allow for cases where the length of the flag field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setFlagLength2();
+		/**
 		 * @brief Sets the length of the size field.
 		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setSizeLength(unsigned int length);
+		/**
+		 * @brief Sets the length of the size field.
+		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
+		inline void setSizeLength2();
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}
@@ -262,11 +282,20 @@ namespace parser{
 		inline void setDelimiterLength(unsigned int length){
 			delimiterLength = length;
 		}
+		inline void setDelimiterLength2(){
+			std::stringstream(common::structVals[common::game]["Length"][0]) >> delimiterLength;
+		}
 		inline void setFlagLength(unsigned int length){
 			flagLength = length;
 		}
+		inline void setFlagLength2(){
+			std::sstringstream(common::structVals[common::game]["FlagLength"][0]) >> flagLength;
+		}
 		inline void setSizeLength(unsigned int length){
 			sizeLength = length;
+		}
+		inline void setSizeLength2(){
+			std::stringstream(common::structVals[common::game]["SizeLength"][0]) >> sizeLength;
 		}
 	}
 }

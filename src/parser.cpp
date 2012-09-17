@@ -52,6 +52,12 @@ bool parser::isBSA(char * head1){
 	std::string head(head1);
 	return (head.compare(0, 3, "BSA") == 0);
 }
+bool parser::isBSA2(std::ifstream &file){
+	return (getFileHeader().compare(0, common::structVals[common::game]["BSAHead"][0].length() + 1, common::structVals[common::game]["BSAHead"][0]) == 0);
+}
+bool parser::isBSA2(std::string head){
+	return (head.compare(0, common::structVals[common::game]["BSAHead"][0].length() + 1, common::structVals[common::game]["BSAHead"][0]) == 0);
+}
 bool parser::isESM(){
 	size_t pos;
 	pos = getFileName().find(".esm");
@@ -70,6 +76,20 @@ bool parser::isESM(char * fileName1){
 	std::string fileName(fileName1);
 	size_t pos;
 	pos = fileName.find(".esm");
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
+bool parser::isESM2(){
+	size_t pos;
+	pos = getFileName().find(common::structVals[common::game]["MastExt"][0]);
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
+bool parser::isESM2(std::string fileName){
+	size_t pos;
+	pos = fileName.find(common::structVals[common::game]["MastExt"][0]);
 	if(pos == std::string::npos)
 		return false;
 	return true;
@@ -96,6 +116,20 @@ bool parser::isESP(char * fileName1){
 		return false;
 	return true;
 }
+bool parser::isESP2(){
+	size_t pos;
+	pos = getFileName().find(common::structVals[common::game]["PlugExt"][0]);
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
+bool parser::isESP2(std::string fileName){
+	size_t pos;
+	pos = fileName.find(common::structVals[common::game]["PlugExt"][0]);
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
 bool parser::isESS(){
 	size_t pos;
 	pos = getFileName().find(".ess");
@@ -118,6 +152,20 @@ bool parser::isESS(char * fileName1){
 		return false;
 	return true;
 }
+bool parser::isESS2(){
+	size_t pos;
+	pos = getFileName().find(common::structVals[common::game]["SaveExt"][0]);
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
+bool parser::isESS2(std::string fileName){
+	size_t pos;
+	pos = fileName.find(common::structVals[common::game]["SaveExt"][0]);
+	if(pos == std::string::npos)
+		return false;
+	return true;
+}
 bool parser::isGRUP(std::string data){
 	if(isRecord(data))
 		return ((data[0] == 'G') && (data[1] == 'R') && (data[2] == 'U') && (data[3] == 'P'));
@@ -126,6 +174,10 @@ bool parser::isGRUP(char * data1){
 	std::string data(data1);
 	if(isRecord(data))
 		return ((data[0] == 'G') && (data[1] == 'R') && (data[2] == 'U') && (data[3] == 'P'));
+}
+bool parser::isGRUP2(std::string data){
+	if(isRecord(data))
+		return (data == common::structVals[common::game]["Group"][0]);
 }
 bool parser::isMod(std::ifstream &file){
 	//return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
@@ -137,6 +189,13 @@ bool parser::isMod(std::string head){
 bool parser::isMod(char * head1){
 	std::string head(head1);
 	return (((head.compare(0, 4, "TES4") == 0) || (head.compare(0, 4, "TES3") == 0)) && ((head.compare(0, 13, "TESV_SAVEGAME") != 0) && (head.compare(0, 12, "TES4SAVEGAME") != 0))) ? true : false;
+}
+bool parser::isMod2(std::ifstream &file){
+	//return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
+	return ((getFileHeader().compare(0, common::structVals[common::game]["PlugHead"][0].length() + 1, common::structVals[common::game]["PlugHead"][0]) == 0) && (getFileHeader().compare(0, common::structVals[common::game]["SaveHead"][0].length() + 1, common::structVals[common::game]["SaveHead"][0]) != 0)) ? (isESM2() || isESP2()) : false;
+}
+bool parser::isMod2(std::string head){
+	return ((head.compare(0, common::structVals[common::game]["PlugHead"][0].length() + 1, common::structVals[common::game]["PlugHead"][0]) == 0) && (head.compare(0, common::structVals[common::game]["SaveHead"][0].length() + 1, common::structVals[common::game]["SaveHead"][0]) != 0)) ? true : false;
 }
 bool parser::isOp(std::string data){
 	return (data[0] == '.' && data[1] == '?');
@@ -162,6 +221,13 @@ bool parser::isSave(std::string head){
 bool parser::isSave(char * head1){
 	std::string head(head1);
 	return ((head.compare(0, 13, "TESV_SAVEGAME") == 0) || (head.compare(0, 12, "TES4SAVEGAME") == 0) || (head.compare(0, 4, "TES3") == 0)) ? true : false;
+}
+bool parser::isSave2(std::ifstream &file){
+	//return ((getFileHeader().compare(0, 13, "TESV_SAVEGAME") == 0) || (getFileHeader().compare(0, 12, "TES4SAVEGAME") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? isESS() : false));
+	return (getFileHeader().compare(0, common::structVals[common::game]["SaveHead"][0].length() + 1, common::structVals[common::game]["SaveHead"][0]) == 0) ? isESS2() : false;
+}
+bool parser::isSave2(std::string head){
+	return ((head.compare(0, common::structVals[common::game]["SaveHead"][0].length() + 1, common::structVals[common::game]["SaveHead"][0]) == 0) ? true : false;
 }
 bool parser::isVar(std::string data){
 	return (data[0] == ':' && data[1] == ':');
