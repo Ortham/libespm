@@ -37,7 +37,19 @@
  * @details Contains and will contain all functions and variables that are shared between the parser and viewer to reduce clutter and possibly other stuff.
  */
 namespace common{
+	/**
+	 * @var structVals
+	 * The list of the values that can change due to a format change or being game specific.
+	 */
 	extern std::map<std::string, std::map<std::string, std::vector<std::string> > > structVals;
+	/**
+	 * @brief Checks to see if a chunk of data is a string.
+	 * @details Checks first to see if a chunk of data has a null character at the end, as required for strings, and, if so, checks the rest of the chunk to see if they are
+	 * actual printable characters.
+	 * @param data[]
+	 * The chunk of data to check.
+	 * @returns <tt> \b true </tt> if the chunk of data is a string, <tt> \b false </tt> otherwise.
+	 */
 	bool isString(unsigned char data[]);
 	/**
 	 * @brief Creates the output file names.
@@ -88,6 +100,12 @@ namespace common{
 	 * @todo Extract the fields from the records as well.
 	 */
 	void eraseTrailing(std::string &line);
+	/**
+	 * @brief Reads the list of various values into the map.
+	 * @details Sets up the list of values that can change from an input file.
+	 * @param &file
+	 * The file that contains the list of various values per game per value-type.
+	 */
 	void readOptions(std::ifstream &file);
 	/**
 	 * @brief Writes a label to the output file.
@@ -107,6 +125,12 @@ namespace common{
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
 	extern "C" void writeLabel(char * label1, std::ofstream &out);
+	/**
+	 * @brief Writes out an XML file of the modular values.
+	 * @details Takes the map and writes out the contents to an XML file broken up based on game and by the name of the values.
+	 * @param &out
+	 * The output file to use for the XML generation.
+	 */
 	void writeXML(std::ofstream &out);
 	namespace options{
 		extern std::string game;

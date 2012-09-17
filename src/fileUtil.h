@@ -27,9 +27,41 @@
  */
 #pragma once
 #include "fileFormat.h"
+/**
+ * @namespace util
+ * @brief Contains utility functions.
+ * @details Contains functions to perform various operations on the game files themselves.
+ */
 namespace util{
-	void createMast(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters);
+	/**
+	 * @brief Sets the flag for a plugin file for it to be a 'master'.
+	 * @details Sets the flag for a plugin file for it to be a 'master'.
+	 * @param &fileA
+	 * The <tt> struct </tt> representing the file we want to make a 'master'.
+	 */
+	void createMast(parser::fileFormat::file &fileA);
+	/**
+	 * @brief Creates the ONAM record.
+	 * @details Scans through a list of masters and a file to see if any of the records' ID are identical and also checks to see if the record names are in the ONAM entry
+	 * in the value list and adds the ID to the ONAM entry if they are.
+	 * @param &fileA
+	 * The <tt> struct </tt> representing the file we want to generate ONAM stuff for.
+	 * @param masters
+	 * The list of masters to scan.
+	 */
 	void createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters);
+	/**
+	 * @brief Un-sets the flag for a plugin file for it to be a 'master'.
+	 * @details Un-sets the flag for a plugin file for it to be a 'master'.
+	 * @param &fileA
+	 * The <tt> struct </tt> representing a file we want to convert from a 'master'.
+	 */
 	void revCreateMast(parser::fileFormat::file &fileA);
+	/**
+	 * @brief Removes ONAM stuff.
+	 * @details Scans through the top-level record list in a plugin file and removes the ONAM record.
+	 * @param &fileA
+	 * The <tt> struct </tt> representing the file we want to remove the ONAM stuff for.
+	 */
 	void revCreateONAM(parser::fileFormat::file &fileA);
 }

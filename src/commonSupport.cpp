@@ -35,8 +35,8 @@ bool common::isString(unsigned char data[]){
 	if(data[dataSize - 1] != '\0')
 		return false;
 	for(unsigned int i = 0; i < dataSize; ++i)
-			if(data[i] < PRINT_START || data[i] > PRINT_END)
-				return false;
+		if(data[i] < PRINT_START || data[i] > PRINT_END)
+			return false;
 	return true;
 }
 const char* common::inputName(std::string base, std::string addon){

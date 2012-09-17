@@ -1,6 +1,6 @@
 #include <string>
 #include "fileUtil.h"
-void util::createMast(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){
+void util::createMast(parser::fileFormat::file &fileA){
 	(unsigned int)fileA.flags |= 1;
 }
 void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){

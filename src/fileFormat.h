@@ -141,6 +141,11 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
+		/**
+		 * @struct record
+		 * @brief An individual record.
+		 * @details This contains the data for an individual record.
+		 */
 		struct record{
 			unsigned char * name;
 			unsigned int size;
@@ -148,6 +153,12 @@ namespace parser{
 			unsigned int ID;
 			unsigned char data[size];
 		}record;
+		/**
+		 * @struct group
+		 * @brief A group of records.
+		 * @details This contains the data for a group of records, as each group is composed of a list of records.
+		 * @note May add a group-list as well, as some groups may themselves contain groups. Something I'll think about.
+		 */
 		struct group{
 			unsigned char * groupHeader;
 			unsigned char * groupName;
@@ -155,6 +166,11 @@ namespace parser{
 			unsigned char * flags;
 			std::vector<record> records;
 		}group;
+		/**
+		 * @struct file
+		 * @brief The file itself.
+		 * @details This represents a file (specifically a mod file, the others will come in time), which consists of a lump of data with records and then the list of groups.
+		 */
 		struct file{
 			unsigned char * header;
 			unsigned char * flags;
@@ -162,9 +178,38 @@ namespace parser{
 			std::vector<record> records;
 			std::vector<group> groups;
 		}file;
+		/**
+		 * @brief Reads the flags.
+		 * @details Reads the flags from various sections based on the length of the flag section.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The flags in a C-String, since their format can change and this enables them to be stored for whatever use.
+		 */
 		unsigned char * readFlags(std::ifstream &file);
+		/**
+		 * @brief Reads a record name.
+		 * @details Reads the record name based on the length for the delimiter.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The record name in a C-String, since their format can change and this enables them to be stored for whatever use.
+		 */
 		unsigned char * readRecord(std::ifstream &file);
+		/**
+		 * @brief Reads the data in a record.
+		 * @details Reads the record data based on the size section of the record.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The record data in a C-String, since their format can change and this enables them to be stored for whatever use.
+		 */
 		unsigned char * readRecordData(std::ifstream &file);
+		/**
+		 * @brief Reads the size of a record.
+		 * @details Reads the record size based on the length of the size section.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The record size as an unsigned int.
+		 * @note The type of the size may need tweaking in case it changes to support a value larger than an unsigned int can contain.
+		 */
 		unsigned int readSize(std::ifstream &file);
 		/**
 		 * @brief Gets the length of the delimiter.
