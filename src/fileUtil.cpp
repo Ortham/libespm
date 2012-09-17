@@ -45,3 +45,4 @@ void util::revCreateONAM(parser::fileFormat::file &fileA){
 		++it;
 	fileA.records.erase(it);
 }
+/*END OF LINE*/

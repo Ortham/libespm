@@ -64,4 +64,5 @@ namespace util{
 	 * The <tt> struct </tt> representing the file we want to remove the ONAM stuff for.
 	 */
 	void revCreateONAM(parser::fileFormat::file &fileA);
+	/*END OF LINE*/
 }
