@@ -145,6 +145,7 @@ void common::writeXML(std::ofstream &out){
 	std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator it;
 	std::map<std::string, std::vector<std::string> >::iterator it2;
 	std::stack<std::string> stuff;
+	out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << endl;
 	out << "<Games>" << std::endl;
 	for(it = structVals.begin(); it != structVals.end(); ++it){
 		out << "\t<" << (*it).first << ">" << std::endl;
