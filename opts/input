@@ -79,6 +79,12 @@ PlugHead
 SaveHead
 { TESV_SAVEGAME }
 
+CompFlag
+{ 0x00040000 }
+
+MastFlag
+{ 0x00000001 }
+
 ==Future==
 
 Length

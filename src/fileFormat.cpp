@@ -26,6 +26,11 @@
  * @details Part of the parser namespace, this contains functions relating to the file format specifically.
  */
 #include "fileFormat.h"
+bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
+	if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
+		return true;
+	return false;
+}
 unsigned char * parser::fileFormat::readFlags(std::ifstream &file){
 	unsigned char * data;
 	file.read(data, getFlagLength());

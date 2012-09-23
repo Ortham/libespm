@@ -1,7 +1,7 @@
 #include <string>
 #include "fileUtil.h"
 void util::createMast(parser::fileFormat::file &fileA){
-	(unsigned int)fileA.flags |= 1;
+	(unsigned int)fileA.flags |= 0x00000001;
 }
 void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){
 	std::string ids;
@@ -37,7 +37,7 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 	fileA.records.insert(it, ONAM);
 }
 void util::revCreateMast(parser::fileFormat::file &fileA){
-	(unsigned int)fileA.flags ^= 1;
+	(unsigned int)fileA.flags ^= 0x00000001;
 }
 void util::revCreateONAM(parser::fileFormat::file &fileA){
 	vector<parser::fileFormat::record>::iterator it = fileA.records.begin();

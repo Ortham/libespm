@@ -38,6 +38,7 @@ namespace util{
 	 * @details Sets the flag for a plugin file for it to be a 'master'.
 	 * @param &fileA
 	 * The <tt> struct </tt> representing the file we want to make a 'master'.
+	 * @todo Change it to use the input file to determine what the proper flag is for it to be a 'master'.
 	 */
 	void createMast(parser::fileFormat::file &fileA);
 	/**
@@ -55,6 +56,7 @@ namespace util{
 	 * @details Un-sets the flag for a plugin file for it to be a 'master'.
 	 * @param &fileA
 	 * The <tt> struct </tt> representing a file we want to convert from a 'master'.
+	 * @todo Change it to use the input file to determine what the proper flag is for it to be a 'master'.
 	 */
 	void revCreateMast(parser::fileFormat::file &fileA);
 	/**

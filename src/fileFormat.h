@@ -147,6 +147,8 @@ namespace parser{
 		 * @struct record
 		 * @brief An individual record.
 		 * @details This contains the data for an individual record.
+		 * @note May need to add in the ability for a record to store records themselves in cases where they contain some.
+		 * Though, I'm probably getting myself confused here with the fact that the terminology isn't being used consistently at all and is, quite frankly, crap.
 		 */
 		struct record{
 			unsigned char * name;
@@ -180,6 +182,15 @@ namespace parser{
 			std::vector<record> records;
 			std::vector<group> groups;
 		}file;
+		/**
+		 * @brief Checks to see if a record is compressed.
+		 * @details Checks the flag on the record to see if the compression flag is set.
+		 * @param &recordA
+		 * The record that we want to check.
+		 * @returns <tt> \b true </tt> if the record is compressed, <tt> \b false </tt> otherwise.
+		 * @todo Change it to use the input file to determine what the proper flag is for compression.
+		 */
+		bool isCompressed(record &recordA);
 		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
@@ -289,7 +300,7 @@ namespace parser{
 			flagLength = length;
 		}
 		inline void setFlagLength2(){
-			std::sstringstream(common::structVals[common::game]["FlagLength"][0]) >> flagLength;
+			std::stringstream(common::structVals[common::game]["FlagLength"][0]) >> flagLength;
 		}
 		inline void setSizeLength(unsigned int length){
 			sizeLength = length;
