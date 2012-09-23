@@ -192,6 +192,15 @@ namespace parser{
 		 */
 		bool isCompressed(record &recordA);
 		/**
+		 * @brief Checks to see if a plugin file is a 'master'.
+		 * @details Checks the flag on the plugin file to see if the 'master' flag is set (may be useful, no telling).
+		 * @param &fileA
+		 * The plugin file that we want to check.
+		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
+		 * @todo Change it to use the input file to determine what the proper flag is for it to be a 'master'.
+		 */
+		bool isMaster(file &fileA);
+		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
 		 * @param &file

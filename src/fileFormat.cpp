@@ -31,6 +31,11 @@ bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 		return true;
 	return false;
 }
+bool parser::fileFormat::isMaster(parser::fileFormat::file &fileA){
+	if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
+		return true;
+	return false;
+}
 unsigned char * parser::fileFormat::readFlags(std::ifstream &file){
 	unsigned char * data;
 	file.read(data, getFlagLength());
