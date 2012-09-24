@@ -156,7 +156,7 @@ namespace parser{
 			unsigned char * flags;
 			unsigned int ID;
 			unsigned char data[size];
-		}record;
+		}Record;
 		/**
 		 * @struct group
 		 * @brief A group of records.
@@ -169,7 +169,7 @@ namespace parser{
 			unsigned int groupSize;
 			unsigned char * flags;
 			std::vector<record> records;
-		}group;
+		}Group;
 		/**
 		 * @struct file
 		 * @brief The file itself.
@@ -181,7 +181,7 @@ namespace parser{
 			unsigned char * size;
 			std::vector<record> records;
 			std::vector<group> groups;
-		}file;
+		}File;
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
@@ -207,6 +207,7 @@ namespace parser{
 		 * The file that is open.
 		 * @returns The flags in a C-String, since their format can change and this enables them to be stored for whatever use.
 		 */
+		inline file getFile();
 		unsigned char * readFlags(std::ifstream &file);
 		/**
 		 * @brief Reads a record name.
@@ -290,6 +291,9 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setSizeLength2();
+		inline file getFile(){
+			return File;
+		}
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}
