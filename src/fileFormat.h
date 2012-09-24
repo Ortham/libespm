@@ -60,6 +60,7 @@ namespace parser{
 		 * @brief The plugin format.
 		 * @details This contains the data for the plugin files in a fairly generic format to allow the files for past and
 		 * future games to be easily parsed with little to no changes.
+		 * @note The following three structs are here just for reference purposes and may be removed in the future to clean things up.
 		 */
 		struct TES_Format{
 			/*These two numbers will need to be changed to non-hardcoded numbers in order to accomodate format changes.
