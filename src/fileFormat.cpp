@@ -26,19 +26,22 @@
  * @details Part of the parser namespace, this contains functions relating to the file format specifically.
  */
 #include "fileFormat.h"
+#include <cstdlib>
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
-	if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
+	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
+	if((recordA.flags & strtoul(common::structVals[common::game]["CompFlag"].c_str(), NULL , 0)) == strtoul(common::structVals[common::game]["CompFlag"].c_str(), NULL , 0))
 		return true;
 	return false;
 }
 bool parser::fileFormat::isMaster(parser::fileFormat::file &fileA){
-	if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
+	//if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
+	if((fileA.flags & strtoul(common::structVals[common::game]["MastFlag"].c_str(), NULL , 0)) == strtoul(common::structVals[common::game]["MastFlag"].c_str(), NULL , 0))
 		return true;
 	return false;
 }
-unsigned char * parser::fileFormat::readFlags(std::ifstream &file){
-	unsigned char * data;
-	file.read(data, getFlagLength());
+unsigned int parser::fileFormat::readFlags(std::ifstream &file){
+	unsigned int data;
+	file.read((unsigned char *)&data, getFlagLength());
 	return data;
 }
 unsigned char * parser::fileFormat::readRecord(std::ifstream &file){

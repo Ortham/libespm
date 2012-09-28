@@ -154,7 +154,7 @@ namespace parser{
 		struct record{
 			unsigned char * name;
 			unsigned int size;
-			unsigned char * flags;
+			unsigned int flags;
 			unsigned int ID;
 			unsigned char data[size];
 		}Record;
@@ -168,7 +168,7 @@ namespace parser{
 			unsigned char * groupHeader;
 			unsigned char * groupName;
 			unsigned int groupSize;
-			unsigned char * flags;
+			unsigned int flags;
 			std::vector<record> records;
 		}Group;
 		/**
@@ -178,8 +178,8 @@ namespace parser{
 		 */
 		struct file{
 			unsigned char * header;
-			unsigned char * flags;
-			unsigned char * size;
+			unsigned int flags;
+			unsigned int size;
 			std::vector<record> records;
 			std::vector<group> groups;
 		}File;
@@ -201,6 +201,7 @@ namespace parser{
 		 * @todo Change it to use the input file to determine what the proper flag is for it to be a 'master'.
 		 */
 		bool isMaster(file &fileA);
+		inline file getFile();
 		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
@@ -208,8 +209,7 @@ namespace parser{
 		 * The file that is open.
 		 * @returns The flags in a C-String, since their format can change and this enables them to be stored for whatever use.
 		 */
-		inline file getFile();
-		unsigned char * readFlags(std::ifstream &file);
+		unsigned int readFlags(std::ifstream &file);
 		/**
 		 * @brief Reads a record name.
 		 * @details Reads the record name based on the length for the delimiter.
