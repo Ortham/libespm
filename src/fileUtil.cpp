@@ -21,7 +21,7 @@
 #include <cstdlib>
 #include "fileUtil.h"
 void util::createMast(parser::fileFormat::file &fileA){
-	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL , 0);
+	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
 void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){
 	std::string ids;
@@ -57,7 +57,7 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 	fileA.records.insert(it, ONAM);
 }
 void util::revCreateMast(parser::fileFormat::file &fileA){
-	fileA.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL , 0);
+	fileA.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
 void util::revCreateONAM(parser::fileFormat::file &fileA){
 	std::vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
