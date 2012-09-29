@@ -189,7 +189,6 @@ namespace parser{
 		 * @param &recordA
 		 * The record that we want to check.
 		 * @returns <tt> \b true </tt> if the record is compressed, <tt> \b false </tt> otherwise.
-		 * @todo Change it to use the input file to determine what the proper flag is for compression.
 		 */
 		bool isCompressed(record &recordA);
 		/**
@@ -198,7 +197,6 @@ namespace parser{
 		 * @param &fileA
 		 * The plugin file that we want to check.
 		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
-		 * @todo Change it to use the input file to determine what the proper flag is for it to be a 'master'.
 		 */
 		bool isMaster(file &fileA);
 		inline file getFile();
