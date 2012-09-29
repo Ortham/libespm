@@ -28,8 +28,6 @@
  * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to 
  */
 #pragma once
-#include <fstream>
-#include <vector>
 #include <sstream>
 #include "commonSupport.h"
 namespace parser{
@@ -122,10 +120,10 @@ namespace parser{
 			unsigned int moreStuff;
 			unsigned char CNAM[4];
 			unsigned short CNAM_size;
-			string author;
+			std::string author;
 			unsigned char MAST[4];
 			unsigned short MAST_size;
-			string masterFile;
+			std::string masterFile;
 			unsigned char DATA[4];
 			unsigned short DATA_size;
 			unsigned int moreStuff4;
@@ -152,7 +150,8 @@ namespace parser{
 		 * Though, I'm probably getting myself confused here with the fact that the terminology isn't being used consistently at all and is, quite frankly, crap.
 		 */
 		struct record{
-			unsigned char * name;
+			//unsigned char * name;
+			std::string name;
 			unsigned int size;
 			unsigned int flags;
 			unsigned int ID;
@@ -299,26 +298,26 @@ namespace parser{
 		inline unsigned int getFlagLength(){
 			return flagLength;
 		}
-		inline unsigned int geSizeLength(){
+		inline unsigned int getSizeLength(){
 			return sizeLength;
 		}
 		inline void setDelimiterLength(unsigned int length){
 			delimiterLength = length;
 		}
 		inline void setDelimiterLength2(){
-			std::stringstream(common::structVals[common::game]["Length"][0]) >> delimiterLength;
+			std::stringstream(common::structVals[common::options::game]["Length"][0]) >> delimiterLength;
 		}
 		inline void setFlagLength(unsigned int length){
 			flagLength = length;
 		}
 		inline void setFlagLength2(){
-			std::stringstream(common::structVals[common::game]["FlagLength"][0]) >> flagLength;
+			std::stringstream(common::structVals[common::options::game]["FlagLength"][0]) >> flagLength;
 		}
 		inline void setSizeLength(unsigned int length){
 			sizeLength = length;
 		}
 		inline void setSizeLength2(){
-			std::stringstream(common::structVals[common::game]["SizeLength"][0]) >> sizeLength;
+			std::stringstream(common::structVals[common::options::game]["SizeLength"][0]) >> sizeLength;
 		}
 	}
 }

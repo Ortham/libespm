@@ -18,21 +18,20 @@
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string>
 #include <cstdlib>
 #include "fileUtil.h"
 void util::createMast(parser::fileFormat::file &fileA){
-	fileA.flags |= strtoul(common::structVals[common::game]["MastFlag"].c_str(), NULL , 0);
+	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL , 0);
 }
 void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){
 	std::string ids;
 	bool test = false;
-	for(unsigned int i = 0; i < fileA.groups.length(); ++i){
-		for(unsigned int j = 0; j < fileA.groups[i].records.length(); ++j){
+	for(unsigned int i = 0; i < fileA.groups.size(); ++i){
+		for(unsigned int j = 0; j < fileA.groups[i].records.size(); ++j){
 			if(common::options::contains("ONAM", fileA.groups[i].records[j].name)){
-				for(unsigned int k = 0; k < masters.length(); ++k){
-					for(unsigned int l = 0; l < masters[k].groups.length(); ++l){
-						for(unsigned int m = 0; m < masters[k].groups[l].records.length(); ++m){
+				for(unsigned int k = 0; k < masters.size(); ++k){
+					for(unsigned int l = 0; l < masters[k].groups.size(); ++l){
+						for(unsigned int m = 0; m < masters[k].groups[l].records.size(); ++m){
 							if(fileA.groups[i].records[j].ID == masters[k].groups[l].records[m].ID){
 								ids += fileA.groups[i].records[j].ID;
 								test = true;
@@ -48,8 +47,8 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 		}
 	}
 	ids += "00";
-	vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
-	while(*it.name != "INTV" || *it.name != "INCC" || it != fileA.records.end())
+	std::vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
+	while((*it).name != "INTV" || (*it).name != "INCC" || it != fileA.records.end())
 		++it;
 	parser::fileFormat::record ONAM;
 	ONAM.name = "ONAM";
@@ -58,11 +57,11 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 	fileA.records.insert(it, ONAM);
 }
 void util::revCreateMast(parser::fileFormat::file &fileA){
-	fileA.flags ^= strtoul(common::structVals[common::game]["MastFlag"].c_str(), NULL , 0);
+	fileA.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL , 0);
 }
 void util::revCreateONAM(parser::fileFormat::file &fileA){
-	vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
-	while(*it.name != "ONAM" || it != fileA.records.end())
+	std::vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
+	while((*it).name != "ONAM" || it != fileA.records.end())
 		++it;
 	fileA.records.erase(it);
 }

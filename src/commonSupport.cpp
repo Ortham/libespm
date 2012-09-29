@@ -30,6 +30,7 @@
 #include "constants.h"
 #include "commonSupport.h"
 std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
+std::string common::options::game;
 bool common::isString(unsigned char data[]){
 	unsigned int dataSize = sizeof data;
 	if(data[dataSize - 1] != '\0')
@@ -145,7 +146,7 @@ void common::writeXML(std::ofstream &out){
 	std::map<std::string, std::map<std::string, std::vector<std::string> > >::iterator it;
 	std::map<std::string, std::vector<std::string> >::iterator it2;
 	std::stack<std::string> stuff;
-	out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << endl;
+	out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" << std::endl;
 	out << "<Games>" << std::endl;
 	for(it = structVals.begin(); it != structVals.end(); ++it){
 		out << "\t<" << (*it).first << ">" << std::endl;
