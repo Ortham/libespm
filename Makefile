@@ -5,7 +5,7 @@ Parse :																				$(OBJECTS) init
 																					g++ -o Parse $(OBJECTS)
 																					mv $(OBJECTS) Objects
 Parse.exe :																			src/skyrimParserRedoRel.cpp $(OBJECTS) init
-																					i686-pc-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
+																					i686-w64-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
 init :
 																					mkdir -p Objects
 src/skyrimParserRedoRel.o src/commonSupport.o src/parser.o src/viewer.o :			src/constants.h
