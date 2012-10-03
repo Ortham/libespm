@@ -143,7 +143,7 @@ namespace common{
 	 * The output file to use for the XML generation.
 	 */
 	void writeXML(std::ofstream &out);
-	types getType(std::string var);
+	type getType(std::string var);
 	namespace options{
 		extern std::string game;
 		inline void setGame(std::string gameName){

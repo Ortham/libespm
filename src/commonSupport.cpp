@@ -165,7 +165,7 @@ void common::writeXML(std::ofstream &out){
 	}
 	out << "</Games>" << std::endl;
 }
-types common::getType(std::string var){
+common::type common::getType(std::string var){
 	if(var == "String")
 		return STRING;
 	else if(var == "UnsignedInt")
