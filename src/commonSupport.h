@@ -37,6 +37,17 @@
  * @details Contains and will contain all functions and variables that are shared between the parser and viewer to reduce clutter and possibly other stuff.
  */
 namespace common{
+	enum type{
+		STRING,
+		UNSIGNED_INT,
+		SIGNED_INT,
+		UNSIGNED_LONG,
+		SIGNED_LONG,
+		UNSIGNED_SHORT,
+		SIGNED_SHORT,
+		FLOAT,
+		DOUBLE
+	}types;
 	/**
 	 * @var structVals
 	 * The list of the values that can change due to a format change or being game specific.
@@ -132,6 +143,7 @@ namespace common{
 	 * The output file to use for the XML generation.
 	 */
 	void writeXML(std::ofstream &out);
+	types getType(std::string var);
 	namespace options{
 		extern std::string game;
 		inline void setGame(std::string gameName){

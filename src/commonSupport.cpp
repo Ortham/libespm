@@ -165,6 +165,26 @@ void common::writeXML(std::ofstream &out){
 	}
 	out << "</Games>" << std::endl;
 }
+types common::getType(std::string var){
+	if(var == "String")
+		return STRING;
+	else if(var == "UnsignedInt")
+		return UNSIGNED_INT;
+	else if(var == "SignedInt")
+		return SIGNED_INT;
+	else if(var == "UnsignedLong")
+		return UNSIGNED_LONG;
+	else if(var == "SignedLong")
+		return SIGNED_LONG;
+	else if(var == "UnsignedShort")
+		return UNSIGNED_SHORT;
+	else if(var == "SignedShort")
+		return SIGNED_SHORT;
+	else if(var == "Float")
+		return FLOAT;
+	else if(var == "Double")
+		return DOUBLE;
+}
 bool common::options::contains(std::string opt, std::string val){
 	for(unsigned int i = 0; i < structVals[game][opt].size(); ++i)
 		if(structVals[game][opt][i] == val)
