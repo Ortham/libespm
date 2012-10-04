@@ -19,12 +19,15 @@ Update the documentation.
 A lot of stuff. XD
 
 
-Somewhere on the timeline:
+Somewhere on the time-line:
 
 Another overhaul of the organization of the code.
+--One possibility for this is to break out each namespace into a separate repository, project, or something and then use the submodules feature of git to link them all together.
+--Another possibility is to have a single umbrella project, repository, or whatever and set up each portion as a separate directory or something.
+--Either way, the includes and stuff would need to be changed to reflect the new structure.
 
 
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 10/02/2012
+On: 10/04/2012
