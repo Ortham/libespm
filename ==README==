@@ -1,6 +1,6 @@
 Author: deaths_soul (AKA MCP)
 
-This is a general API of sorts and collection of code to perform various operations on the files uesd by Beth for their games. Currently, it can parse through ESP/ESMs and extract the records; EXEs and extract their various commands; and ESS files. To use the API of sorts portion, HTML and LaTex documentation is included along with a PDF file containing the documentation as well.
+This is a general API of sorts and collection of code to perform various operations on the files used by Beth for their games. Currently, it can parse through ESP/ESMs and extract the records; EXEs and extract their various commands; and ESS files. To use the API of sorts portion, HTML and LaTex documentation will be included along with a PDF file containing the documentation as well sometime in the future. It's been removed from the repository itself due to bloating it up.
 
 Please see the file TODO for a list of stuff that's coming. ^^
 
@@ -11,4 +11,4 @@ For reference, all dates in these documents are in the format MM/DD/YYYY.
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 10/02/2012
+On: 10/04/2012

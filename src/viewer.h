@@ -44,7 +44,7 @@ namespace viewer{
 	extern std::ifstream::pos_type size;
 	/**
 	 * @brief Checks whether or not a piece of data is printable.
-	 * @details It checks the hexidecimal value of a piece of data and determines whether or not it is a printable character.
+	 * @details It checks the hexadecimal value of a piece of data and determines whether or not it is a printable character.
 	 * @param data
 	 * The piece of data to check.
 	 * @returns <tt> \b true </tt> if the piece is a printable character, <tt> \b false </tt> otherwise.
@@ -106,8 +106,8 @@ namespace viewer{
 	 */
 	extern "C" void runView(char * inputFile1, std::ifstream &file, std::ofstream &out);
 	/**
-	 * @brief Writes the hexidecimal data to a file.
-	 * @details Writes the printable hexidecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.
+	 * @brief Writes the hexadecimal data to a file.
+	 * @details Writes the printable hexadecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.
 	 * @param data[]
 	 * The data contained in the file.
 	 * @param &out
@@ -124,8 +124,8 @@ namespace viewer{
 	 */
 	void writePrintableChar(unsigned char data[], std::ofstream &out);
 	/**
-	 * @brief Writes the hexidecimal data to a file.
-	 * @details Writes the raw hexidecimal data to a file to allow for analysis later on.
+	 * @brief Writes the hexadecimal data to a file.
+	 * @details Writes the raw hexadecimal data to a file to allow for analysis later on.
 	 * @param data[]
 	 * The data contained in the file.
 	 * @param &out

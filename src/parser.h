@@ -425,7 +425,7 @@ namespace parser{
 	/**
 	 * @brief Checks whether or not a file is a saved game.
 	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
-	 * extensionto see if it matches .ess, which is the current file extension for save files.
+	 * extension to see if it matches .ess, which is the current file extension for save files.
 	 * @param &file
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
@@ -456,7 +456,7 @@ namespace parser{
 	/**
 	 * @brief Checks whether or not a file is a saved game.
 	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
-	 * extensionto see if it matches .ess, which is the current file extension for save files.
+	 * extension to see if it matches .ess, which is the current file extension for save files.
 	 * @param &file
 	 * The file to be checked.
 	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
@@ -539,7 +539,7 @@ namespace parser{
 	 * @brief Erases the junk from the end of a record..
 	 * @details It uses the fact that all 4 allowable character have to be an uppercase character to determine if it's a record or a field.
 	 * A field is either going to be longer than 4 characters or will not be entirely uppercase characters.
-	 * It also accounts for the TIF fields by speficially checking for them, although this can be extended for any format or string in the future.
+	 * It also accounts for the TIF fields by specifically checking for them, although this can be extended for any format or string in the future.
 	 * @param &line
 	 * The line to erase the junk from
 	 * @todo Extract the fields from the records as well.

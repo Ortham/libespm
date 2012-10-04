@@ -61,7 +61,7 @@ namespace parser{
 		 * @note The following three structs are here just for reference purposes and may be removed in the future to clean things up.
 		 */
 		struct TES_Format{
-			/*These two numbers will need to be changed to non-hardcoded numbers in order to accomodate format changes.
+			/*These two numbers will need to be changed to non-hard-coded numbers in order to accommodate format changes.
 			 *Assuming HEDR remains constant, which there is a good chance of, this is fairly trivial.
 			 *<obj_name>.read(<var>, <size>) will read in the data to the variables after the initial parse of the main file to determine the individual values.
 			 *The family of ato<desired>(<have>) is used to convert it to the proper format.
