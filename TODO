@@ -5,11 +5,12 @@ Extraction of record content from ESP/ESMs.
 Extraction of the useful data from ESS files.
 --Variables are now supported, 05/31/2012
 Code to generate the struct representing the file format for any all games (including future ones) using the ESP/ESM format. This is possible since they use a similar basic structure. One can use this structure to create a skeleton of the file format and then parse through using the predefined format of lengths and sizes of fields to create the actual file struct that will be used per game. The records are gained by using the format the is consistent across all 5 games at the moment.
---Basic code is getting there. 10/02/2012
+--Basic code is just about done. 10/09/2012
 Handling the compression for ESP/ESMs to allow for the reading of all of the data.
 -->Add the rest of the variables to the structs. (Will take place after the compression handling)
 -->Write up the functions to open the file and all that jazz. (Will take place after the compression handling)
 ---->Determine what else needs to be done for the basic handling. (Will take place after the above up to the compression handling)
+------The logic is now fully down in a test file. Just need to combine it with the generic handling that is being used and run the tests and then basic reading of the files will be done. 10/09/2012
 
 
 Not coming soon but planned:
@@ -30,4 +31,4 @@ Another overhaul of the organization of the code.
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 10/04/2012
+On: 10/09/2012
