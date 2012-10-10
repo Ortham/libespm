@@ -29,6 +29,7 @@
  */
 #pragma once
 #include <sstream>
+#include <iostream>
 #include "commonSupport.h"
 namespace parser{
 	/**
@@ -134,7 +135,7 @@ namespace parser{
 		struct BASE_FORMAT{
 			unsigned char * record;
 			unsigned short size;
-			unsigned char data[size];
+			//unsigned char data[size];
 		};
 		struct BASE_HEADER_FORMAT{
 			unsigned char header[4];
@@ -156,7 +157,7 @@ namespace parser{
 			unsigned int flags;
 			unsigned int ID;
 			unsigned char * data;
-		}Record;
+		};
 		/**
 		 * @struct group
 		 * @brief A group of records.
@@ -169,19 +170,21 @@ namespace parser{
 			unsigned int groupSize;
 			unsigned int flags;
 			std::vector<record> records;
-		}Group;
+		};
 		/**
 		 * @struct file
 		 * @brief The file itself.
 		 * @details This represents a file (specifically a mod file, the others will come in time), which consists of a lump of data with records and then the list of groups.
 		 */
 		struct file{
-			unsigned char * header;
-			unsigned int flags;
+			char * header;
 			unsigned int size;
+			unsigned int flags;
 			std::vector<record> records;
 			std::vector<group> groups;
-		}File;
+		};
+		//temporary file read function, will most likely change in the future
+		void readFile(std::ifstream &input, file &File1);
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
@@ -198,7 +201,7 @@ namespace parser{
 		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
 		 */
 		bool isMaster(file &fileA);
-		inline file getFile();
+		/*inline*/struct file getFile();
 		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
@@ -289,9 +292,9 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setSizeLength2();
-		inline file getFile(){
-			return File;
-		}
+//		inline file getFile(){
+//			return File;
+//		}
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}

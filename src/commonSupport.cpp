@@ -30,6 +30,7 @@
 #include "constants.h"
 #include "commonSupport.h"
 std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
+enum common::type types;
 std::string common::options::game;
 bool common::isString(unsigned char data[]){
 	unsigned int dataSize = sizeof data;

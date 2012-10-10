@@ -58,6 +58,9 @@ Length
 SizeLength
 { 2 }
 
+FlagLength
+{ 4 }
+
 BSAHead
 { BSA }
 

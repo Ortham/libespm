@@ -47,7 +47,7 @@ namespace common{
 		SIGNED_SHORT,
 		FLOAT,
 		DOUBLE
-	}types;
+	};
 	/**
 	 * @var structVals
 	 * The list of the values that can change due to a format change or being game specific.

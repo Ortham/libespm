@@ -27,6 +27,22 @@
  */
 #include "fileFormat.h"
 #include <cstdlib>
+struct parser::fileFormat::record Record;
+struct parser::fileFormat::group Group;
+struct parser::fileFormat::file File;
+unsigned int parser::fileFormat::delimiterLength;
+unsigned int parser::fileFormat::flagLength;
+unsigned int parser::fileFormat::sizeLength;
+void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
+	setDelimiterLength2();
+	setFlagLength2();
+	File1.header = new char[getDelimiterLength()];
+	File1.size = 0;
+	File1.flags = 0;
+	input.read(File1.header, getDelimiterLength());
+	input.read((char *)&(File1.size), getDelimiterLength());
+	input.read((char *)&(File1.flags), getFlagLength());
+}
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
 	if((recordA.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
@@ -51,7 +67,7 @@ unsigned char * parser::fileFormat::readRecord(std::ifstream &file){
 }
 unsigned char * parser::fileFormat::readRecordData(std::ifstream &file){
 	unsigned char * data;
-	file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
+	//file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
 	return data;
 }
 unsigned int parser::fileFormat::readSize(std::ifstream &file){
@@ -60,3 +76,7 @@ unsigned int parser::fileFormat::readSize(std::ifstream &file){
 		size += file.get();
 	return size;
 } 
+//struct parser::fileFormat::file getFile(){
+//	struct file File1;
+//	return File1;
+//}
