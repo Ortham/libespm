@@ -145,7 +145,7 @@ namespace common{
 	void writeXML(std::ofstream &out);
 	type getType(std::string var);
 	namespace options{
-		extern std::string game;
+		extern std::string game = "Default";
 		inline void setGame(std::string gameName){
 			game = gameName;
 		}

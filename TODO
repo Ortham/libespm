@@ -16,6 +16,7 @@ Handling the compression for ESP/ESMs to allow for the reading of all of the dat
 Not coming soon but planned:
 
 Update the documentation.
+Add in the ability to return the 'masters' for an ESP/ESM.
 
 A lot of stuff. XD
 
@@ -31,4 +32,4 @@ Another overhaul of the organization of the code.
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 10/09/2012
+On: 10/17/2012
