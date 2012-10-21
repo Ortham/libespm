@@ -27,21 +27,38 @@
  */
 #include "fileFormat.h"
 #include <cstdlib>
+struct parser::fileFormat::field Field;
 struct parser::fileFormat::record Record;
 struct parser::fileFormat::group Group;
 struct parser::fileFormat::file File;
 unsigned int parser::fileFormat::delimiterLength;
 unsigned int parser::fileFormat::flagLength;
+unsigned int parser::fileFormat::IDLength;
+unsigned int parser::fileFormat::revLength;
 unsigned int parser::fileFormat::sizeLength;
+unsigned int parser::fileFormat::stuffzLength;
+unsigned int parser::fileFormat::verLength;
 void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
 	setDelimiterLength2();
 	setFlagLength2();
+	setIDLength();
 	File1.header = new char[getDelimiterLength()];
 	File1.size = 0;
 	File1.flags = 0;
+	File1.ID = new char[getIDLength()];
+	File1.revision = new char[getRevLength()];
+	File1.version = new char[getVerLength()];
+	File1.stuffz = new char[getStuffzLength()];
 	input.read(File1.header, getDelimiterLength());
 	input.read((char *)&(File1.size), getDelimiterLength());
 	input.read((char *)&(File1.flags), getFlagLength());
+	input.read(File1.ID, getIDLength());
+	input.read(File1.revision, getRevLength());
+	input.read(File1.version, getVerLength());
+	input.read(File1.stuffz, getStuffzLength());
+	unsigned int count = 0;
+	//while(count != File1.size)
+	//Reading in the stuff before the Groups will go here once I re-figure out the pattern I saw regarding the size for this spot...
 }
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)

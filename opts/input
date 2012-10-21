@@ -93,6 +93,18 @@ Length
 SizeLength
 { 2 }
 
+IDLength
+{ 4 }
+
+RevLength
+{ 4 }
+
+VerLength
+{ 2 }
+
+StuffzLength
+{ 2 }
+
 FlagLength
 { 4 }
 

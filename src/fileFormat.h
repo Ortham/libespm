@@ -49,11 +49,15 @@ namespace parser{
 		 * The length of the flag field in bytes.
 		 */
 		extern unsigned int flagLength;
+		extern unsigned int IDLength;
+		extern unsigned int revLength;
 		/**
 		 * @var sizeLength
 		 * The length of the size field in bytes.
 		 */
 		extern unsigned int sizeLength;
+		extern unsigned int stuffzLength;
+		extern unsigned int verLength;
 		/**
 		 * @struct TES_Format
 		 * @brief The plugin format.
@@ -143,6 +147,11 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
+		struct field{
+			char * name;
+			unsigned int size;
+			char * data;
+		};
 		/**
 		 * @struct record
 		 * @brief An individual record.
@@ -156,7 +165,8 @@ namespace parser{
 			unsigned int size;
 			unsigned int flags;
 			unsigned int ID;
-			unsigned char * data;
+			/*unsigned*/ char * data;
+			std::vector<field> fields;
 		};
 		/**
 		 * @struct group
@@ -180,7 +190,12 @@ namespace parser{
 			char * header;
 			unsigned int size;
 			unsigned int flags;
+			char * ID;
+			char * revision;
+			char * version;
+			char * stuffz;
 			std::vector<record> records;
+			std::vector<field> fields;
 			std::vector<group> groups;
 		};
 		//temporary file read function, will most likely change in the future
@@ -249,6 +264,8 @@ namespace parser{
 		 * @returns The length of the flag field.
 		 */
 		inline unsigned int getFlagLength();
+		inline unsigned int getIDLength();
+		inline unsigned int getRevLength();
 		/**
 		 * @brief Gets the length of the size field.
 		 * @details Is here to allow for cases where the length of the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -256,6 +273,8 @@ namespace parser{
 		 * @returns The length of the size field.
 		 */
 		inline unsigned int getSizeLength();
+		inline unsigned int getStuffzLength();
+		inline unsigned int getVerLength();
 		/**
 		 * @brief Sets the length of the delimiter.
 		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
@@ -280,6 +299,8 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setFlagLength2();
+		inline void setIDLength();
+		inline void setRevLength();
 		/**
 		 * @brief Sets the length of the size field.
 		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -292,6 +313,8 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setSizeLength2();
+		inline void setStuffzLength();
+		inline void setVerLength();
 //		inline file getFile(){
 //			return File;
 //		}
@@ -301,8 +324,20 @@ namespace parser{
 		inline unsigned int getFlagLength(){
 			return flagLength;
 		}
+		inline unsigned int getIDLength(){
+			return IDLength;
+		}
+		inline unsigned int getRevLength(){
+			return revLength;
+		}
 		inline unsigned int getSizeLength(){
 			return sizeLength;
+		}
+		inline unsigned int getStuffzLength(){
+			return stuffzLength;
+		}
+		inline unsigned int getVerLength(){
+			return verLength;
 		}
 		inline void setDelimiterLength(unsigned int length){
 			delimiterLength = length;
@@ -316,11 +351,23 @@ namespace parser{
 		inline void setFlagLength2(){
 			std::stringstream(common::structVals[common::options::game]["FlagLength"][0]) >> flagLength;
 		}
+		inline void setIDLength(){
+			std::stringstream(common::structVals[common::options::game]["IDLength"][0]) >> IDLength;
+		}
+		inline void setRevLength(){
+			std::stringstream(common::structVals[common::options::game]["RevLength"][0]) >> revLength;
+		}
 		inline void setSizeLength(unsigned int length){
 			sizeLength = length;
 		}
 		inline void setSizeLength2(){
 			std::stringstream(common::structVals[common::options::game]["SizeLength"][0]) >> sizeLength;
+		}
+		inline void setStuffzLength(){
+			std::stringstream(common::structVals[common::options::game]["StuffzLength"][0]) >> stuffzLength;
+		}
+		inline void setVerLength(){
+			std::stringstream(common::structVals[common::options::game]["VerLength"][0]) >> verLength;
 		}
 	}
 }
