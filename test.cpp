@@ -20,6 +20,8 @@
 
 #include "src/fileFormat.h"
 #include <iostream>
+#include <vector>
+#include <cstring>
 using namespace std;
 int main(int argc, char *argv[]){
 	common::options::setGame("Skyrim");
@@ -34,5 +36,23 @@ int main(int argc, char *argv[]){
 	else
 		cout << "false" << endl;
 	input.close();
+	cout << File.header << endl;
+	cout << File.size << endl;
+	cout << hex << File.flags << endl << dec;
+	cout << (unsigned int&)*(File.ID) << endl;
+	cout << (unsigned int&)*(File.revision) << endl;
+	cout << (unsigned short&)*(File.version) << endl;
+	cout << (unsigned short&)*(File.stuffz) << endl;
+	for(int i = 0; i < File.fields.size(); ++i){
+		cout << File.fields[i].name << endl;
+		cout << File.fields[i].size << endl;
+		if(strncmp("MAST", File.fields[i].name, 4) == 0)
+			cout << "Master: ";
+		cout << File.fields[i].data << endl;
+	}
+	vector<char *> masters;
+	masters = parser::fileFormat::getMasters(File);
+	for(int i = 0; i < masters.size(); ++i)
+		cout << "Master " << i << ": " << masters[i] << endl;
 	return 0;
 }

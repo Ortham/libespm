@@ -250,6 +250,7 @@ namespace parser{
 		 * @note The type of the size may need tweaking in case it changes to support a value larger than an unsigned int can contain.
 		 */
 		unsigned int readSize(std::ifstream &file);
+		std::vector<char *> getMasters(file &File1);
 		/**
 		 * @brief Gets the length of the delimiter.
 		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to

@@ -27,6 +27,7 @@
  */
 #include "fileFormat.h"
 #include <cstdlib>
+#include <cstring>
 struct parser::fileFormat::field Field;
 struct parser::fileFormat::record Record;
 struct parser::fileFormat::group Group;
@@ -39,9 +40,14 @@ unsigned int parser::fileFormat::sizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
 void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
+	unsigned int count = 0;
 	setDelimiterLength2();
 	setFlagLength2();
 	setIDLength();
+	setSizeLength2();
+	setVerLength();
+	setRevLength();
+	setStuffzLength();
 	File1.header = new char[getDelimiterLength()];
 	File1.size = 0;
 	File1.flags = 0;
@@ -51,14 +57,28 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	File1.stuffz = new char[getStuffzLength()];
 	input.read(File1.header, getDelimiterLength());
 	input.read((char *)&(File1.size), getDelimiterLength());
+	count += input.gcount();
 	input.read((char *)&(File1.flags), getFlagLength());
+	count += input.gcount();
 	input.read(File1.ID, getIDLength());
+	count += input.gcount();
 	input.read(File1.revision, getRevLength());
+	count += input.gcount();
 	input.read(File1.version, getVerLength());
+	count += input.gcount();
 	input.read(File1.stuffz, getStuffzLength());
-	unsigned int count = 0;
-	//while(count != File1.size)
-	//Reading in the stuff before the Groups will go here once I re-figure out the pattern I saw regarding the size for this spot...
+	count += input.gcount();
+	while(count < File1.size){
+		Field.name = new char[getDelimiterLength()];
+		Field.size = 0;
+		input.read(Field.name, getDelimiterLength());
+		input.read((char*)&(Field.size), getSizeLength());
+		count += input.gcount();
+		Field.data = new char[Field.size];
+		input.read(Field.data, Field.size);
+		count += input.gcount();
+		File1.fields.push_back(Field);
+	}
 }
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
@@ -97,3 +117,10 @@ unsigned int parser::fileFormat::readSize(std::ifstream &file){
 //	struct file File1;
 //	return File1;
 //}
+std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &File1){
+	std::vector<char *> masters;
+	for(int i = 0; i < File1.fields.size(); ++i)
+		if(strncmp("MAST", File1.fields[i].name, 4) == 0)
+			masters.push_back(File1.fields[i].data);
+	return masters;
+}
