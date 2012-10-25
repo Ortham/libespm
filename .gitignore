@@ -3,3 +3,15 @@
 gitignore
 *.diff
 Objects/
+*.exe
+*.7z
+*.tar
+*.zip
+*.so
+*.a
+*.lib
+*.dll
+*.rar
+*.gz
+*.bzip
+*.bz2
