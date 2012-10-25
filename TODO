@@ -23,13 +23,16 @@ A lot of stuff. XD
 
 Somewhere on the time-line:
 
-Another overhaul of the organization of the code.
---One possibility for this is to break out each namespace into a separate repository, project, or something and then use the submodules feature of git to link them all together.
---Another possibility is to have a single umbrella project, repository, or whatever and set up each portion as a separate directory or something.
---Either way, the includes and stuff would need to be changed to reflect the new structure.
+Another overhaul of the organization of the code:
+**One possibility for this is to break out each namespace into a separate repository, project, or something and then use the submodules feature of git to link them all together.
+**Another possibility is to have a single umbrella project, repository, or whatever and set up each portion as a separate directory or something.
+**Either way, the includes and stuff would need to be changed to reflect the new structure.
+*Look into replacing the #pragma once usage with the more standard include-guards for compiler portability.
+*Look into converting some functions into template functions for more sanity.
+*Do a general cleanup of the code for readability and to make it easier to go through and stuff.
 
 
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 10/23/2012
+On: 10/25/2012
