@@ -6,15 +6,13 @@ all :																				Parse Parse.exe
 Parse :																				$(OBJECTS) init
 																					g++ -o Parse $(OBJECTS)
 																					mv $(OBJECTS) Objects
-Parse.exe :																			src/skyrimParserRedoRel.cpp $(OBJECTS) init
+Parse.exe :																			src/skyrimParserRedoRel.cpp init
 																					i686-w64-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
-																					mv $(OBJECTS) Objects
 Test :																				$(TESTOBJ) init
 																					g++ -o Test $(TESTOBJ)
 																					mv $(TESTOBJ) Objects
-Test.exe :																			test.cpp $(TESTOBJ) init
+Test.exe :																			test.cpp init
 																					i686-w64-mingw32-g++ -o Test.exe test.cpp $(TESTOBJ2) -static
-																					mv $(TESTOBJ) Objects
 init :
 																					mkdir -p Objects
 src/skyrimParserRedoRel.o src/commonSupport.o src/parser.o src/viewer.o :			src/constants.h
