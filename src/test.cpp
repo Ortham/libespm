@@ -18,14 +18,14 @@
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "src/fileFormat.h"
+#include "fileFormat.h"
 #include <iostream>
 #include <vector>
 #include <cstring>
 using namespace std;
 int main(int argc, char *argv[]){
 	common::options::setGame("Skyrim");
-	ifstream input("opts/input");
+	ifstream input("../opts/input");
 	common::readOptions(input);
 	input.close();
 	input.open(argv[1], ios::binary);
