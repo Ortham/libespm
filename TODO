@@ -31,6 +31,8 @@ Another overhaul of the organization of the code:
 *Look into converting some functions into template functions for more sanity.
 *Do a general cleanup of the code for readability and to make it easier to go through and stuff.
 
+Finish up the handling of the table to assign value types to things via an external file to enable on the fly analysis of most data. The complex data stuff will need some interesting trickery to handle without making things game dependent, however. I've got an idea in mind for that, but won't think on it too much until I get to this part.
+
 
 Last modified:
 
