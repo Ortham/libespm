@@ -162,9 +162,15 @@ namespace parser{
 		struct record{
 			//unsigned char * name;
 			std::string name;
+			char * recName; //will replace std::string name once I rewrite the functions that use std::string name to work with the char type instead
 			unsigned int size;
 			unsigned int flags;
 			unsigned int ID;
+			char * recID; //will replace unsigned int ID once I rewrite the functions that use unsigned int ID to work with the char type instead (this may require that the type table thing gets further along)
+			char * revision;
+			char * version;
+			char * stuffz;
+			unsigned int decompSize;
 			/*unsigned*/ char * data;
 			std::vector<field> fields;
 		};
@@ -175,10 +181,15 @@ namespace parser{
 		 * @note May add a group-list as well, as some groups may themselves contain groups. Something I'll think about.
 		 */
 		struct group{
-			unsigned char * groupHeader;
-			unsigned char * groupName;
+			char * groupHeader;
 			unsigned int groupSize;
-			unsigned int flags;
+			char * groupName;
+			char * type;
+			char * stamp;
+			char * stuffz1;
+			char * version;
+			char * stuffz2;
+			std::vector<group> groups;
 			std::vector<record> records;
 		};
 		/**
