@@ -28,6 +28,7 @@
 #include "fileFormat.h"
 #include <cstdlib>
 #include <cstring>
+#include <zlib.h>
 struct parser::fileFormat::field Field;
 struct parser::fileFormat::record Record;
 struct parser::fileFormat::group Group;
@@ -79,6 +80,47 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 		count += input.gcount();
 		File1.fields.push_back(Field);
 	}
+}
+//This function needs work, but it'll basically be for reading the record. The return type may or may not stay, I haven't decided yet. I'll worry about that once I
+//have the group stuff figured out. Next step is to figure out the compressed size.
+struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
+	unsigned int count = 0;
+	Record1.recName = new char[getDelimiterLength()];
+	Record1.size = 0;
+	Record1.flags = 0;
+	Record1.recID = new char[getIDLength()];
+	Record1.revision = new char[getRevLength()];
+	Record1.version = new char[getVerLength()];
+	Record1.stuffz = new char[getStuffzLength()];
+	Record1.decompSize = 0;
+	input.read(Record1.recName, getDelimiterLength());
+	input.read((char *)&(Record1.size), getDelimiterLength());
+	count += input.gcount();
+	input.read((char *)&(Record1.flags), getFlagLength());
+	count += input.gcount();
+	input.read(Record1.recID, getIDLength());
+	count += input.gcount();
+	input.read(Record1.revision, getRevLength());
+	count += input.gcount();
+	input.read(Record1.version, getVerLength());
+	count += input.gcount();
+	input.read(Record1.stuffz, getStuffzLength());
+	count += input.gcount();
+	if(isCompressed(Record1)){
+		//read in compressed data and uncompress
+	}
+	while(count < Record1.size){
+		Field.name = new char[getDelimiterLength()];
+		Field.size = 0;
+		input.read(Field.name, getDelimiterLength());
+		input.read((char*)&(Field.size), getSizeLength());
+		count += input.gcount();
+		Field.data = new char[Field.size];
+		input.read(Field.data, Field.size);
+		count += input.gcount();
+		Record1.fields.push_back(Field);
+	}
+	return Record1;
 }
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
