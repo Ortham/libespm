@@ -211,6 +211,8 @@ namespace parser{
 		};
 		//temporary file read function, will most likely change in the future
 		void readFile(std::ifstream &input, file &File1);
+		//very much temporary
+		struct record readRecord(std::ifstream &input, record &Record1);
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
