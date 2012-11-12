@@ -58,17 +58,11 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	File1.stuffz = new char[getStuffzLength()];
 	input.read(File1.header, getDelimiterLength());
 	input.read((char *)&(File1.size), getDelimiterLength());
-	//count += input.gcount();
 	input.read((char *)&(File1.flags), getFlagLength());
-	//count += input.gcount();
 	input.read(File1.ID, getIDLength());
-	//count += input.gcount();
 	input.read(File1.revision, getRevLength());
-	//count += input.gcount();
 	input.read(File1.version, getVerLength());
-	//count += input.gcount();
 	input.read(File1.stuffz, getStuffzLength());
-	//count += input.gcount();
 	while(count < File1.size){
 		Field.name = new char[getDelimiterLength()];
 		Field.size = 0;
@@ -96,17 +90,11 @@ struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &
 	Record1.decompSize = 0;
 	input.read(Record1.recName, getDelimiterLength());
 	input.read((char *)&(Record1.size), getDelimiterLength());
-	//count += input.gcount();
 	input.read((char *)&(Record1.flags), getFlagLength());
-	//count += input.gcount();
 	input.read(Record1.recID, getIDLength());
-	//count += input.gcount();
 	input.read(Record1.revision, getRevLength());
-	//count += input.gcount();
 	input.read(Record1.version, getVerLength());
-	//count += input.gcount();
 	input.read(Record1.stuffz, getStuffzLength());
-	//count += input.gcount();
 	if(isCompressed(Record1)){
 		//read in compressed data and uncompress
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
