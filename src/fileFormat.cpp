@@ -97,24 +97,28 @@ struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &
 	Record1.decompSize = 0;
 	input.read(Record1.recName, getDelimiterLength());
 	input.read((char *)&(Record1.size), getDelimiterLength());
-	count += input.gcount();
+	//count += input.gcount();
 	input.read((char *)&(Record1.flags), getFlagLength());
-	count += input.gcount();
+	//count += input.gcount();
 	input.read(Record1.recID, getIDLength());
-	count += input.gcount();
+	//count += input.gcount();
 	input.read(Record1.revision, getRevLength());
-	count += input.gcount();
+	//count += input.gcount();
 	input.read(Record1.version, getVerLength());
-	count += input.gcount();
+	//count += input.gcount();
 	input.read(Record1.stuffz, getStuffzLength());
-	count += input.gcount();
+	//count += input.gcount();
 	if(isCompressed(Record1)){
 		//read in compressed data and uncompress
+		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
+		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
+		 *That's the uncompressed size of the data.*/
 	}
 	while(count < Record1.size){
 		Field.name = new char[getDelimiterLength()];
 		Field.size = 0;
 		input.read(Field.name, getDelimiterLength());
+		count += input.gcount();
 		input.read((char*)&(Field.size), getSizeLength());
 		count += input.gcount();
 		Field.data = new char[Field.size];
