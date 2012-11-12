@@ -77,7 +77,6 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 		input.read((char*)&(Field.size), getSizeLength());
 		count += input.gcount();
 		Field.data = new char[Field.size];
-		count += input.gcount();
 		input.read(Field.data, Field.size);
 		count += input.gcount();
 		File1.fields.push_back(Field);
