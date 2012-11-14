@@ -143,12 +143,31 @@ namespace common{
 	 * The output file to use for the XML generation.
 	 */
 	void writeXML(std::ofstream &out);
+	/**
+	 * @brief Associates a string with a value type.
+	 * @details Takes a string of a value type and returns the correct enum value for it. This is here for the future table of values so that we can use a saner system instead
+	 * of checking each string over and over again.
+	 * @param var
+	 * The string we want to associate with a value type.
+	 * @returns The value type that the string corresponds to.
+	 */
 	type getType(std::string var);
 	namespace options{
 		extern std::string game;// = "Default";
+		/**
+		 * @brief Sets the game name.
+		 * @details Sets the game name that we want to use for the configuration file.
+		 * @param gameName
+		 * The name of the game whose values in the configuration file are going to be used.
+		 */
 		inline void setGame(std::string gameName){
 			game = gameName;
 		}
+		/**
+		 * @brief Gets the game name.
+		 * @details Gets the current game name that is being used.
+		 * @returns The game name.
+		 */
 		inline std::string getGame(){
 			return game;
 		}
