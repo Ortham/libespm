@@ -49,14 +49,30 @@ namespace parser{
 		 * The length of the flag field in bytes.
 		 */
 		extern unsigned int flagLength;
+		/**
+		 * @var IDLength
+		 * The length of the ID field in bytes.
+		 */
 		extern unsigned int IDLength;
+		/**
+		 * @var revLength
+		 * The length of the revision (?) field in bytes.
+		 */
 		extern unsigned int revLength;
 		/**
 		 * @var sizeLength
 		 * The length of the size field in bytes.
 		 */
 		extern unsigned int sizeLength;
+		/**
+		 * @var stuffzLength
+		 * The length of some unknown field in bytes.
+		 */
 		extern unsigned int stuffzLength;
+		/**
+		 * @var verLength
+		 * The length of the version (?) field in bytes
+		 */
 		extern unsigned int verLength;
 		/**
 		 * @struct TES_Format
@@ -147,6 +163,11 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
+		/**
+		 * @struct field
+		 * @brief A field.
+		 * @details Contains the data for a field for which a record contains.
+		 */
 		struct field{
 			char * name;
 			unsigned int size;
@@ -263,6 +284,14 @@ namespace parser{
 		 * @note The type of the size may need tweaking in case it changes to support a value larger than an unsigned int can contain.
 		 */
 		unsigned int readSize(std::ifstream &file);
+		/**
+		 * @brief Gets the 'masters' of a plugin.
+		 * @details Gets a list of all of the 'masters' of a file.
+		 * @param &File1
+		 * The file, respresented as a struct, that we want to get the 'masters' of. This can currently only be called after we read in the data from a file.
+		 * However, after the planned refactoring, this will hopefully be much saner to use. I hope...
+		 * @returns A list of the 'masters' of a file.
+		 */
 		std::vector<char *> getMasters(file &File1);
 		/**
 		 * @brief Gets the length of the delimiter.
@@ -278,7 +307,19 @@ namespace parser{
 		 * @returns The length of the flag field.
 		 */
 		inline unsigned int getFlagLength();
+		/**
+		 * @brief Gets the length of the ID field.
+		 * @details Is here to allow for cases where the length of the ID field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the ID field.
+		 */
 		inline unsigned int getIDLength();
+		/**
+		 * @brief Gets the length of the revision field.
+		 * @details Is here to allow for cases where the length of the revision field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the revision field.
+		 */
 		inline unsigned int getRevLength();
 		/**
 		 * @brief Gets the length of the size field.
@@ -287,7 +328,19 @@ namespace parser{
 		 * @returns The length of the size field.
 		 */
 		inline unsigned int getSizeLength();
+		/**
+		 * @brief Gets the length of the unknown field.
+		 * @details Is here to allow for cases where the length of the unknown field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the unknown field.
+		 */
 		inline unsigned int getStuffzLength();
+		/**
+		 * @brief Gets the length of the version field.
+		 * @details Is here to allow for cases where the length of the version field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 * @returns The length of the version field.
+		 */
 		inline unsigned int getVerLength();
 		/**
 		 * @brief Sets the length of the delimiter.
@@ -313,7 +366,17 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setFlagLength2();
+		/**
+		 * @brief Sets the length of the ID field.
+		 * @details Is here to allow for cases where the length of the ID field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
 		inline void setIDLength();
+		/**
+		 * @brief Sets the length of the revision field.
+		 * @details Is here to allow for cases where the length of the revision field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
 		inline void setRevLength();
 		/**
 		 * @brief Sets the length of the size field.
@@ -327,7 +390,17 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setSizeLength2();
+		/**
+		 * @brief Sets the length of the stuffz field.
+		 * @details Is here to allow for cases where the length of the stuffz field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
 		inline void setStuffzLength();
+		/**
+		 * @brief Sets the length of the version field.
+		 * @details Is here to allow for cases where the length of the version field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
+		 * pass on the new length to properly read the files.
+		 */
 		inline void setVerLength();
 //		inline file getFile(){
 //			return File;
