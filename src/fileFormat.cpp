@@ -41,6 +41,12 @@ unsigned int parser::fileFormat::sizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
 void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
+	///@todo Split this stuff out in a separate function.
+	//The readFile function should really only contain the routines to call the functions that will read in the
+	//actual data. It is not practical to assume that the whole file is desired to be read in to memory every single time.
+	//So, we'll have a function to read in the header thing and then a loop to read in groups until the file is completely in memory.
+	//The function to read the groups will read in records along with sub-groups. If the start corresponds to another group, then we repeat the operation until we hit
+	//record.
 	unsigned int count = 0;
 	setDelimiterLength2();
 	setFlagLength2();
@@ -79,6 +85,9 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 //This function needs work, but it'll basically be for reading the record. The return type may or may not stay, I haven't decided yet. I'll worry about that once I
 //have the group stuff figured out. Next step is to figure out the compressed size.
 struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
+	///@todo finish up the compression handling and have two methods of reading it in until some efficiency analysis is done. One method for the compressed record
+	///and one for the non-compressed record. For the latter, we could just read in the data straight from the file. For the former, we'll need to do some work before we assign
+	///the uncompressed data.
 	unsigned int count = 0;
 	Record1.recName = new char[getDelimiterLength()];
 	Record1.size = 0;
@@ -127,6 +136,7 @@ bool parser::fileFormat::isMaster(parser::fileFormat::file &fileA){
 		return true;
 	return false;
 }
+///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
 unsigned int parser::fileFormat::readFlags(std::ifstream &file){
 	unsigned int data;
 	file.read((char *)&data, getFlagLength());
