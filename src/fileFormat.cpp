@@ -180,7 +180,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	char * temp;
 	temp = new char[4];
 	while(count < Group1.groupSize){
-		file.read(temp, getDelimiterLength);
+		input.read(temp, getDelimiterLength);
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
 			struct group groupNew; //or something;
 			count += readGroup(input, groupNew);
