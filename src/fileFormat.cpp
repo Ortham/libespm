@@ -124,6 +124,76 @@ struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &
 	}
 	return Record1;
 }
+unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
+	///@todo finish up the compression handling and have two methods of reading it in until some efficiency analysis is done. One method for the compressed record
+	///and one for the non-compressed record. For the latter, we could just read in the data straight from the file. For the former, we'll need to do some work before we assign
+	///the uncompressed data.
+	unsigned int count = 0;
+	unsigned int totalCount = 0;
+	Record1.recName = new char[getDelimiterLength()];
+	Record1.size = 0;
+	Record1.flags = 0;
+	Record1.recID = new char[getIDLength()];
+	Record1.revision = new char[getRevLength()];
+	Record1.version = new char[getVerLength()];
+	Record1.stuffz = new char[getStuffzLength()];
+	Record1.decompSize = 0;
+	input.read(Record1.recName, getDelimiterLength());
+	totalCount += input.gcount();
+	input.read((char *)&(Record1.size), getDelimiterLength());
+	totalCount += input.gcount();
+	input.read((char *)&(Record1.flags), getFlagLength());
+	totalCount += input.gcount();
+	input.read(Record1.recID, getIDLength());
+	totalCount += input.gcount();
+	input.read(Record1.revision, getRevLength());
+	totalCount += input.gcount();
+	input.read(Record1.version, getVerLength());
+	totalCount += input.gcount();
+	input.read(Record1.stuffz, getStuffzLength());
+	totalCount += input.gcount();
+	if(isCompressed(Record1)){
+		//read in compressed data and uncompress
+		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
+		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
+		 *That's the uncompressed size of the data.*/
+	}
+	while(count < Record1.size){
+		Field.name = new char[getDelimiterLength()];
+		Field.size = 0;
+		input.read(Field.name, getDelimiterLength());
+		count += input.gcount();
+		input.read((char*)&(Field.size), getSizeLength());
+		count += input.gcount();
+		Field.data = new char[Field.size];
+		input.read(Field.data, Field.size);
+		count += input.gcount();
+		Record1.fields.push_back(Field);
+	}
+	totalCount += count;
+	return totalCount;
+}
+unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
+	unsigned int count = 0;
+	//read in pre-meat stuffz
+	count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
+	char * temp;
+	temp = new char[4];
+	while(count < Group1.groupSize){
+		file.read(temp, getDelimiterLength);
+		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
+			struct group groupNew; //or something;
+			count += readGroup(input, groupNew);
+			Group1.groups.push_back(groupNew);
+		}
+		else{
+			struct record recordNew;
+			count += readRecord(input, recordNew); //or something
+			Group1.records.push_back(recordNew);
+		}
+	}
+	return count;
+}
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
 	if((recordA.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
