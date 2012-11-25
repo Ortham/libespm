@@ -234,7 +234,7 @@ namespace parser{
 		void readFile(std::ifstream &input, file &File1);
 		//very much temporary
 		struct record readRecord(std::ifstream &input, record &Record1);
-		unsigned int readRecord(std::ifstream &input, record &Record1);
+		unsigned int readRecord2(std::ifstream &input, record &Record1);
 		unsigned int readGroup(std::ifstream &input, group &Group1);
 		/**
 		 * @brief Checks to see if a record is compressed.

@@ -125,7 +125,7 @@ struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &
 	}
 	return Record1;
 }
-unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
+unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileFormat::record &Record1){
 	///@todo finish up the compression handling and have two methods of reading it in until some efficiency analysis is done. One method for the compressed record
 	///and one for the non-compressed record. For the latter, we could just read in the data straight from the file. For the former, we'll need to do some work before we assign
 	///the uncompressed data.
@@ -167,9 +167,31 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		data = new char[Record1.size];
 		unsigned int compSize = Record1.size - getDelimiterLength();
 		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
+		totalCount += input.gcount();
 		//uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
-		uncompress(decData, (uLongf*)&Record1.decompSize, data, compSize);
+		uncompress((Bytef*)decData, (uLongf*)&Record1.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
+		while(count < Record1.decompSize){
+			Field.name = new char[getDelimiterLength()];
+			Field.size = 0;
+			//input.read(Field.name, getDelimiterLength());
+			memcpy(Field.name, decData, getDelimiterLength());
+			count += getDelimiterLength();
+			for(int i = 0; i < getDelimiterLength(); ++i)
+				decData++;
+			//input.read((char*)&(Field.size), getSizeLength());
+			memcpy((char *)&Field.size, decData, getSizeLength());
+			count += getSizeLength();
+			for(int i = 0; i < getSizeLength(); ++i)
+				decData++;
+			Field.data = new char[Field.size];
+			//input.read(Field.data, Field.size);
+			memcpy(Field.data, decData, Field.size);
+			count += Field.size;
+			for(int i = 0; i < Field.size; ++i)
+				decData++;
+			Record1.fields.push_back(Field);
+		}
 	}
 	else{
 		while(count < Record1.size){
@@ -184,8 +206,8 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 			count += input.gcount();
 			Record1.fields.push_back(Field);
 		}
+		totalCount += count;
 	}
-	totalCount += count;
 	return totalCount;
 }
 unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
@@ -236,7 +258,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 			input.unget();
 			input.unget();
 			struct record recordNew;
-			count += readRecord(input, recordNew); //or something
+			count += readRecord2(input, recordNew); //or something
 			Group1.records.push_back(recordNew);
 		}
 	}
