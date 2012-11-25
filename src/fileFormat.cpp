@@ -167,7 +167,8 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		data = new char[Record1.size];
 		unsigned int compSize = Record1.size - getDelimiterLength();
 		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
-		uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
+		//uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
+		uncompress(decData, (uLongf*)&Record1.decompSize, data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
 	}
 	else{
