@@ -13,11 +13,13 @@ OBJECTS2 =							src/commonSupport.cpp \
 																						
 TESTOBJ =							Objects/commonSupport.o \
 									Objects/fileFormat.o \
+									Objects/parser.o \
 									Objects/test.o
 																					
 																					
 TESTOBJ2 =							src/commonSupport.cpp \
-									src/fileFormat.cpp
+									src/fileFormat.cpp \
+									src/parser.cpp
 
 
 all :								Parse Parse.exe
@@ -44,6 +46,7 @@ Objects/commonSupport.o \
 Objects/viewer.o \
 Objects/test.o \
 Objects/fileFormat.o :				src/commonSupport.h
+Objects/fileFormat.o \
 Objects/parser.o \
 Objects/parserClasses.o :			src/parser.h
 Objects/parserClasses.o :			src/parserClasses.h

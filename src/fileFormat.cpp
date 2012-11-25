@@ -26,6 +26,7 @@
  * @details Part of the parser namespace, this contains functions relating to the file format specifically.
  */
 #include "fileFormat.h"
+#include "parser.h"
 #include <cstdlib>
 #include <cstring>
 #include <zlib.h>
@@ -175,18 +176,51 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 }
 unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
 	unsigned int count = 0;
+	Group1.groupHeader = new char[getDelimiterLength()];
+	Group1.groupSize = 0;
+	Group1.groupName = new char[getDelimiterLength()];
+	Group1.type = new char[getDelimiterLength()];
+	Group1.stamp = new char[2];
+	Group1.stuffz1 = new char[2];
+	Group1.version = new char[getVerLength()];
+	Group1.stuffz2 = new char[2];
+	//TODO replace the above with appropriate functions and change the use of DelmiterLength for just delimiters
+	input.read(Group1.groupHeader, getDelimiterLength());
+	count += input.gcount();
+	input.read((char*)&Group1.groupSize, getDelimiterLength());
+	count += input.gcount();
+	input.read(Group1.groupName, getDelimiterLength());
+	count += input.gcount();
+	input.read(Group1.type, getDelimiterLength());
+	count += input.gcount();
+	input.read(Group1.stamp, 2);
+	count += input.gcount();
+	input.read(Group1.stuffz1, 2);
+	count += input.gcount();
+	input.read(Group1.version, getVerLength());
+	count += input.gcount();
+	input.read(Group1.stuffz2, 2);
+	count += input.gcount();
 	//read in pre-meat stuffz
-	count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
+	//count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
 	char * temp;
 	temp = new char[4];
 	while(count < Group1.groupSize){
-		input.read(temp, getDelimiterLength);
+		input.read(temp, getDelimiterLength());
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
+			input.unget();
+			input.unget();
+			input.unget();
+			input.unget();
 			struct group groupNew; //or something;
 			count += readGroup(input, groupNew);
 			Group1.groups.push_back(groupNew);
 		}
 		else{
+			input.unget();
+			input.unget();
+			input.unget();
+			input.unget();
 			struct record recordNew;
 			count += readRecord(input, recordNew); //or something
 			Group1.records.push_back(recordNew);
