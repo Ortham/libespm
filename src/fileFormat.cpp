@@ -158,18 +158,30 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
 		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
 		 *That's the uncompressed size of the data.*/
+		input.read((char*)&Record1.decompSize, getDelimiterLength());
+		totalCount += input.gcount();
+		char * decData;
+		decData = new char[Record1.decompSize]; //may change the size to Record1.decompSize * 2; though, the zlib documentation isn't clear if it shrinks the memory block down
+		//Record1.data = new char[Record1.size];
+		char * data;
+		data = new char[Record1.size];
+		unsigned int compSize = Record1.size - getDelimiterLength();
+		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
+		uncompress(decData, Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
 	}
-	while(count < Record1.size){
-		Field.name = new char[getDelimiterLength()];
-		Field.size = 0;
-		input.read(Field.name, getDelimiterLength());
-		count += input.gcount();
-		input.read((char*)&(Field.size), getSizeLength());
-		count += input.gcount();
-		Field.data = new char[Field.size];
-		input.read(Field.data, Field.size);
-		count += input.gcount();
-		Record1.fields.push_back(Field);
+	else{
+		while(count < Record1.size){
+			Field.name = new char[getDelimiterLength()];
+			Field.size = 0;
+			input.read(Field.name, getDelimiterLength());
+			count += input.gcount();
+			input.read((char*)&(Field.size), getSizeLength());
+			count += input.gcount();
+			Field.data = new char[Field.size];
+			input.read(Field.data, Field.size);
+			count += input.gcount();
+			Record1.fields.push_back(Field);
+		}
 	}
 	totalCount += count;
 	return totalCount;
