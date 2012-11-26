@@ -82,6 +82,10 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 		count += input.gcount();
 		File1.fields.push_back(Field);
 	}
+	while(input.good()){
+		readGroup(input, Group);
+		File1.groups.push_back(Group);
+	}
 }
 //This function needs work, but it'll basically be for reading the record. The return type may or may not stay, I haven't decided yet. I'll worry about that once I
 //have the group stuff figured out. Next step is to figure out the compressed size.
