@@ -28,7 +28,7 @@ Parse :								init $(OBJECTS)
 Parse.exe :							src/skyrimParserRedoRel.cpp
 									i686-w64-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
 Test :								init $(TESTOBJ)
-									g++ -o Test $(TESTOBJ)
+									g++ -lz -o Test $(TESTOBJ)
 Test.exe :							src/test.cpp
 									i686-w64-mingw32-g++ -o Test.exe src/test.cpp $(TESTOBJ2) -static
 init :
