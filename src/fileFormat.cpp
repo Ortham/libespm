@@ -83,6 +83,8 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 		File1.fields.push_back(Field);
 	}
 	while(input.good()){
+		Group.records.clear();
+		Group.groups.clear();
 		readGroup(input, Group);
 		File1.groups.push_back(Group);
 	}

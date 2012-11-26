@@ -52,11 +52,12 @@ int main(int argc, char *argv[]){
 	}
 	for(int i = 0; i < File.groups.size(); ++i){
 		cout << File.groups[i].groupHeader << endl;
+		cout << "----------------" << endl;
 		cout << File.groups[i].groupName << endl;
 		for(int j = 0; j < File.groups[i].records.size(); ++j){
-			cout << File.groups[i].records[j].recName << endl;
+			cout << "\t" << File.groups[i].records[j].recName << endl;
 			for(int k = 0; k < File.groups[i].records[j].fields.size(); ++k)
-				cout << File.groups[i].records[j].fields[k].name << endl;
+				cout << "\t\t" << File.groups[i].records[j].fields[k].name << endl;
 		}
 	}
 	vector<char *> masters;
