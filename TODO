@@ -1,17 +1,11 @@
 Coming soon:
 
 Extraction of record content from ESP/ESMs.
---Getting there. Still needs to be integrated with everything else and have compression being handled before this can be called 'done'. 10/02/2012
 ----The header thing is now done. At least for Oblivion and above. Haven't a clue on Morrowind, however. Probably needs some sort of tweaking to work with Morrowind. 10/23/2012
 Extraction of the useful data from ESS files.
 --Variables are now supported, 05/31/2012
 Code to generate the struct representing the file format for any all games (including future ones) using the ESP/ESM format. This is possible since they use a similar basic structure. One can use this structure to create a skeleton of the file format and then parse through using the predefined format of lengths and sizes of fields to create the actual file struct that will be used per game. The records are gained by using the format the is consistent across all 5 games at the moment.
 --Basic code is just about done. 10/09/2012
-Handling the compression for ESP/ESMs to allow for the reading of all of the data.
--->Add the rest of the variables to the structs. (Will take place after the compression handling)
--->Write up the functions to open the file and all that jazz. (Will take place after the compression handling)
----->Determine what else needs to be done for the basic handling. (Will take place after the above up to the compression handling)
-------The logic is now fully down in a test file. Just need to combine it with the generic handling that is being used and run the tests and then basic reading of the files will be done. 10/09/2012
 
 
 Not coming soon but planned:
@@ -32,7 +26,7 @@ Another overhaul of the organization of the code:
 *Look into replacing the #pragma once usage with the more standard include-guards for compiler portability.
 *Look into converting some functions into template functions for more sanity.
 *Do a general cleanup of the code for readability and to make it easier to go through and stuff.
-*Replace the use of gcount with the variables. We're already passing the values in, so this adds extra overhead that isn't needed.
+*Replace the use of gcount() with the variables. We're already passing the values in, so this adds extra overhead that isn't needed.
 
 Finish up the handling of the table to assign value types to things via an external file to enable on the fly analysis of most data. The complex data stuff will need some interesting trickery to handle without making things game dependent, however. I've got an idea in mind for that, but won't think on it too much until I get to this part.
 
@@ -40,4 +34,4 @@ Finish up the handling of the table to assign value types to things via an exter
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 11/25/2012
+On: 11/27/2012
