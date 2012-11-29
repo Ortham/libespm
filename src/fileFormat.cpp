@@ -180,18 +180,15 @@ unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileF
 		while(count < Record1.decompSize){
 			Field.name = new char[getDelimiterLength()];
 			Field.size = 0;
-			//input.read(Field.name, getDelimiterLength());
 			memcpy(Field.name, decData, getDelimiterLength());
 			count += getDelimiterLength();
 			for(int i = 0; i < getDelimiterLength(); ++i)
 				decData++;
-			//input.read((char*)&(Field.size), getSizeLength());
 			memcpy((char *)&Field.size, decData, getSizeLength());
 			count += getSizeLength();
 			for(int i = 0; i < getSizeLength(); ++i)
 				decData++;
 			Field.data = new char[Field.size];
-			//input.read(Field.data, Field.size);
 			memcpy(Field.data, decData, Field.size);
 			count += Field.size;
 			for(int i = 0; i < Field.size; ++i)
@@ -250,19 +247,15 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	while(count < Group1.groupSize){
 		input.read(temp, getDelimiterLength());
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
-			input.unget();
-			input.unget();
-			input.unget();
-			input.unget();
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
+				input.unget();
 			struct group groupNew; //or something;
 			count += readGroup(input, groupNew);
 			Group1.groups.push_back(groupNew);
 		}
 		else{
-			input.unget();
-			input.unget();
-			input.unget();
-			input.unget();
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
+				input.unget();
 			struct record recordNew;
 			count += readRecord2(input, recordNew); //or something
 			Group1.records.push_back(recordNew);
