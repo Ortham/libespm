@@ -247,14 +247,14 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	while(count < Group1.groupSize){
 		input.read(temp, getDelimiterLength());
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
-			for(int i = 0; i < getDelimiterLength(); ++i)
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct group groupNew; //or something;
 			count += readGroup(input, groupNew);
 			Group1.groups.push_back(groupNew);
 		}
 		else{
-			for(int i = 0; i < getDelimiterLength(); ++i)
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct record recordNew;
 			count += readRecord2(input, recordNew); //or something
