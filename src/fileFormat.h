@@ -74,6 +74,9 @@ namespace parser{
 		 * The length of the version (?) field in bytes
 		 */
 		extern unsigned int verLength;
+		
+		/***BEGIN SLATED_FOR_POSSIBLE_REMOVAL***/
+		
 		/**
 		 * @struct TES_Format
 		 * @brief The plugin format.
@@ -163,6 +166,9 @@ namespace parser{
 			unsigned char stuff[18];
 			BASE_FORMAT base;
 		};
+		
+		/***END SLATED_FOR_POSSIBLE_REMOVAL***/
+		
 		/**
 		 * @struct field
 		 * @brief A field.
