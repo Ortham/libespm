@@ -232,6 +232,7 @@ namespace parser{
 		};
 		//temporary file read function, will most likely change in the future
 		void readFile(std::ifstream &input, file &File1);
+		void readHeaderThing(std::ifstream &input, file &File1);
 		//very much temporary
 		struct record readRecord(std::ifstream &input, record &Record1);
 		unsigned int readRecord2(std::ifstream &input, record &Record1);

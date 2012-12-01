@@ -25,11 +25,11 @@
  * @brief Contains functions relating to the file format
  * @details Part of the parser namespace, this contains functions relating to the file format specifically.
  */
-#include "fileFormat.h"
-#include "parser.h"
 #include <cstdlib>
 #include <cstring>
 #include <zlib.h>
+#include "fileFormat.h"
+#include "parser.h"
 struct parser::fileFormat::field Field;
 struct parser::fileFormat::record Record;
 struct parser::fileFormat::group Group;
@@ -56,6 +56,42 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	setVerLength();
 	setRevLength();
 	setStuffzLength();
+	/*File1.header = new char[getDelimiterLength()];
+	File1.size = 0;
+	File1.flags = 0;
+	File1.ID = new char[getIDLength()];
+	File1.revision = new char[getRevLength()];
+	File1.version = new char[getVerLength()];
+	File1.stuffz = new char[getStuffzLength()];
+	input.read(File1.header, getDelimiterLength());
+	input.read((char *)&(File1.size), getDelimiterLength());
+	input.read((char *)&(File1.flags), getFlagLength());
+	input.read(File1.ID, getIDLength());
+	input.read(File1.revision, getRevLength());
+	input.read(File1.version, getVerLength());
+	input.read(File1.stuffz, getStuffzLength());
+	while(count < File1.size){
+		Field.name = new char[getDelimiterLength()];
+		Field.size = 0;
+		input.read(Field.name, getDelimiterLength());
+		count += input.gcount();
+		input.read((char*)&(Field.size), getSizeLength());
+		count += input.gcount();
+		Field.data = new char[Field.size];
+		input.read(Field.data, Field.size);
+		count += input.gcount();
+		File1.fields.push_back(Field);
+	}*/
+	readHeaderThing(input, File1);
+	while(input.good()){
+		Group.records.clear();
+		Group.groups.clear();
+		readGroup(input, Group);
+		File1.groups.push_back(Group);
+	}
+}
+void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileFormat::file &File1){
+	unsigned int count = 0;
 	File1.header = new char[getDelimiterLength()];
 	File1.size = 0;
 	File1.flags = 0;
@@ -81,12 +117,6 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 		input.read(Field.data, Field.size);
 		count += input.gcount();
 		File1.fields.push_back(Field);
-	}
-	while(input.good()){
-		Group.records.clear();
-		Group.groups.clear();
-		readGroup(input, Group);
-		File1.groups.push_back(Group);
 	}
 }
 //This function needs work, but it'll basically be for reading the record. The return type may or may not stay, I haven't decided yet. I'll worry about that once I
