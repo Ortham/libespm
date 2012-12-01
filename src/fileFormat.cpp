@@ -48,7 +48,6 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	//So, we'll have a function to read in the header thing and then a loop to read in groups until the file is completely in memory.
 	//The function to read the groups will read in records along with sub-groups. If the start corresponds to another group, then we repeat the operation until we hit
 	//record.
-	unsigned int count = 0;
 	setDelimiterLength2();
 	setFlagLength2();
 	setIDLength();
