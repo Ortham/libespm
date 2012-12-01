@@ -460,4 +460,5 @@ namespace parser{
 			std::stringstream(common::structVals[common::options::game]["VerLength"][0]) >> verLength;
 		}
 	}
+	/*END OF LINE*/
 }

@@ -305,3 +305,4 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 			masters.push_back(File1.fields[i].data);
 	return masters;
 }
+/*END OF LINE*/
