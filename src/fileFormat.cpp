@@ -42,12 +42,6 @@ unsigned int parser::fileFormat::sizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
 void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
-	///@todo Split this stuff out in a separate function.
-	//The readFile function should really only contain the routines to call the functions that will read in the
-	//actual data. It is not practical to assume that the whole file is desired to be read in to memory every single time.
-	//So, we'll have a function to read in the header thing and then a loop to read in groups until the file is completely in memory.
-	//The function to read the groups will read in records along with sub-groups. If the start corresponds to another group, then we repeat the operation until we hit
-	//record.
 	setDelimiterLength2();
 	setFlagLength2();
 	setIDLength();
@@ -311,3 +305,4 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 			masters.push_back(File1.fields[i].data);
 	return masters;
 }
+/*END OF LINE*/
