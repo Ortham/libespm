@@ -56,32 +56,6 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	setVerLength();
 	setRevLength();
 	setStuffzLength();
-	/*File1.header = new char[getDelimiterLength()];
-	File1.size = 0;
-	File1.flags = 0;
-	File1.ID = new char[getIDLength()];
-	File1.revision = new char[getRevLength()];
-	File1.version = new char[getVerLength()];
-	File1.stuffz = new char[getStuffzLength()];
-	input.read(File1.header, getDelimiterLength());
-	input.read((char *)&(File1.size), getDelimiterLength());
-	input.read((char *)&(File1.flags), getFlagLength());
-	input.read(File1.ID, getIDLength());
-	input.read(File1.revision, getRevLength());
-	input.read(File1.version, getVerLength());
-	input.read(File1.stuffz, getStuffzLength());
-	while(count < File1.size){
-		Field.name = new char[getDelimiterLength()];
-		Field.size = 0;
-		input.read(Field.name, getDelimiterLength());
-		count += input.gcount();
-		input.read((char*)&(Field.size), getSizeLength());
-		count += input.gcount();
-		Field.data = new char[Field.size];
-		input.read(Field.data, Field.size);
-		count += input.gcount();
-		File1.fields.push_back(Field);
-	}*/
 	readHeaderThing(input, File1);
 	while(input.good()){
 		Group.records.clear();
