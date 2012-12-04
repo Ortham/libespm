@@ -169,15 +169,18 @@ bool parser::isESS2(std::string fileName){
 bool parser::isGRUP(std::string data){
 	if(isRecord(data))
 		return ((data[0] == 'G') && (data[1] == 'R') && (data[2] == 'U') && (data[3] == 'P'));
+	return false;
 }
 bool parser::isGRUP(char * data1){
 	std::string data(data1);
 	if(isRecord(data))
 		return ((data[0] == 'G') && (data[1] == 'R') && (data[2] == 'U') && (data[3] == 'P'));
+	return false;
 }
 bool parser::isGRUP2(std::string data){
 	if(isRecord(data))
 		return (data == common::structVals[common::options::game]["Group"][0]);
+	return false;
 }
 bool parser::isMod(std::ifstream &file){
 	//return ((getFileHeader().compare(0, 4, "TES4") == 0) || ((getFileHeader().compare(0, 4, "TES3") == 0) ? (isESM() || isESP()) : false));
