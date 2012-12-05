@@ -3,7 +3,7 @@
 Length
 { 4 }
 
-SizeLength
+FieldSizeLength
 { 2 }
 
 FlagLength
@@ -58,7 +58,7 @@ SaveHead
 Length
 { 4 }
 
-SizeLength
+FieldSizeLength
 { 2 }
 
 BSAHead
@@ -90,7 +90,7 @@ ONAM
 Length
 { 4 }
 
-SizeLength
+FieldSizeLength
 { 2 }
 
 IDLength
@@ -134,6 +134,24 @@ CompFlag
 
 MastFlag
 { 0x00000001 }
+
+HeadSizeLength
+{ 4 }
+
+RecSizeLength
+{ 4 }
+
+DecompSizeLength
+{ 4 }
+
+GroupTypeLength
+{ 4 }
+
+GroupStampLength
+{ 2 }
+
+GroupSizeLength
+{ 4 }
 
 ==Future==
 

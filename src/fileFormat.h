@@ -49,6 +49,8 @@ namespace parser{
 		 * The length of the flag field in bytes.
 		 */
 		extern unsigned int flagLength;
+		extern unsigned int groupStampLength;
+		extern unsigned int groupTypeLength;
 		/**
 		 * @var IDLength
 		 * The length of the ID field in bytes.
@@ -63,7 +65,11 @@ namespace parser{
 		 * @var sizeLength
 		 * The length of the size field in bytes.
 		 */
-		extern unsigned int sizeLength;
+		extern unsigned int fieldSizeLength;
+		extern unsigned int headSizeLength;
+		extern unsigned int groupSizeLength;
+		extern unsigned int recSizeLength;
+		extern unsigned int decompSizeLength;
 		/**
 		 * @var stuffzLength
 		 * The length of some unknown field in bytes.
@@ -316,6 +322,8 @@ namespace parser{
 		 * @returns The length of the flag field.
 		 */
 		inline unsigned int getFlagLength();
+		inline unsigned int getGroupStampLength();
+		inline unsigned int getGroupTypeLength();
 		/**
 		 * @brief Gets the length of the ID field.
 		 * @details Is here to allow for cases where the length of the ID field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -336,7 +344,11 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 * @returns The length of the size field.
 		 */
-		inline unsigned int getSizeLength();
+		inline unsigned int getFieldSizeLength();
+		inline unsigned int getHeadSizeLength();
+		inline unsigned int getGroupSizeLength();
+		inline unsigned int getRecSizeLength();
+		inline unsigned int getDecompSizeLength();
 		/**
 		 * @brief Gets the length of the unknown field.
 		 * @details Is here to allow for cases where the length of the unknown field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -375,6 +387,8 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setFlagLength2();
+		inline void setGroupStampLength();
+		inline void setGroupTypeLength();
 		/**
 		 * @brief Sets the length of the ID field.
 		 * @details Is here to allow for cases where the length of the ID field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -398,7 +412,11 @@ namespace parser{
 		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
 		 * pass on the new length to properly read the files.
 		 */
-		inline void setSizeLength2();
+		inline void setFieldSizeLength2();
+		inline void setHeadSizeLength();
+		inline void setGroupSizeLength();
+		inline void setRecSizeLength();
+		inline void setDecompSizeLength();
 		/**
 		 * @brief Sets the length of the stuffz field.
 		 * @details Is here to allow for cases where the length of the stuffz field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -420,14 +438,32 @@ namespace parser{
 		inline unsigned int getFlagLength(){
 			return flagLength;
 		}
+		inline unsigned int getGroupStampLength(){
+			return groupStampLength;
+		}
+		inline unsigned int getGroupTypeLength(){
+			return groupTypeLength;
+		}
 		inline unsigned int getIDLength(){
 			return IDLength;
 		}
 		inline unsigned int getRevLength(){
 			return revLength;
 		}
-		inline unsigned int getSizeLength(){
-			return sizeLength;
+		inline unsigned int getFieldSizeLength(){
+			return fieldSizeLength;
+		}
+		inline unsigned int getHeadSizeLength(){
+			return headSizeLength;
+		}
+		inline unsigned int getGroupSizeLength(){
+			return groupSizeLength;
+		}
+		inline unsigned int getRecSizeLength(){
+			return recSizeLength;
+		}
+		inline unsigned int getDecompSizeLength(){
+			return decompSizeLength;
 		}
 		inline unsigned int getStuffzLength(){
 			return stuffzLength;
@@ -447,6 +483,12 @@ namespace parser{
 		inline void setFlagLength2(){
 			std::stringstream(common::structVals[common::options::game]["FlagLength"][0]) >> flagLength;
 		}
+		inline void setGroupStampLength(){
+			std::stringstream(common::structVals[common::options::game]["GroupStampLength"][0]) >> groupStampLength;
+		}
+		inline void setGroupTypeLength(){
+			std::stringstream(common::structVals[common::options::game]["GroupTypeLength"][0]) >> groupTypeLength;
+		}
 		inline void setIDLength(){
 			std::stringstream(common::structVals[common::options::game]["IDLength"][0]) >> IDLength;
 		}
@@ -454,10 +496,22 @@ namespace parser{
 			std::stringstream(common::structVals[common::options::game]["RevLength"][0]) >> revLength;
 		}
 		inline void setSizeLength(unsigned int length){
-			sizeLength = length;
+			fieldSizeLength = length;
 		}
-		inline void setSizeLength2(){
-			std::stringstream(common::structVals[common::options::game]["SizeLength"][0]) >> sizeLength;
+		inline void setFieldSizeLength2(){
+			std::stringstream(common::structVals[common::options::game]["FieldSizeLength"][0]) >> fieldSizeLength;
+		}
+		inline void setHeadSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["HeadSizeLength"][0]) >> headSizeLength;
+		}
+		inline void setGroupSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["GroupSizeLength"][0]) >> groupSizeLength;
+		}
+		inline void setRecSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["RecSizeLength"][0]) >> recSizeLength;
+		}
+		inline void setDecompSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["DecompSizeLength"][0]) >> decompSizeLength;
 		}
 		inline void setStuffzLength(){
 			std::stringstream(common::structVals[common::options::game]["StuffzLength"][0]) >> stuffzLength;
