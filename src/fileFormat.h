@@ -249,6 +249,7 @@ namespace parser{
 		struct record readRecord(std::ifstream &input, record &Record1);
 		unsigned int readRecord2(std::ifstream &input, record &Record1);
 		unsigned int readGroup(std::ifstream &input, group &Group1);
+		unsigned int readField(std::ifstream &input, field &Field1);
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.

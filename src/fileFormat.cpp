@@ -86,7 +86,7 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 	input.read(File1.version, getVerLength());
 	input.read(File1.stuffz, getStuffzLength());
 	while(count < File1.size){
-		Field.name = new char[getDelimiterLength()];
+		/*Field.name = new char[getDelimiterLength()];
 		Field.size = 0;
 		input.read(Field.name, getDelimiterLength());
 		count += input.gcount();
@@ -94,7 +94,8 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 		count += input.gcount();
 		Field.data = new char[Field.size];
 		input.read(Field.data, Field.size);
-		count += input.gcount();
+		count += input.gcount();*/
+		count += readField(input, Field);
 		File1.fields.push_back(Field);
 	}
 }
@@ -207,7 +208,7 @@ unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileF
 	}
 	else{
 		while(count < Record1.size){
-			Field.name = new char[getDelimiterLength()];
+			/*Field.name = new char[getDelimiterLength()];
 			Field.size = 0;
 			input.read(Field.name, getDelimiterLength());
 			count += input.gcount();
@@ -215,7 +216,8 @@ unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileF
 			count += input.gcount();
 			Field.data = new char[Field.size];
 			input.read(Field.data, Field.size);
-			count += input.gcount();
+			count += input.gcount();*/
+			count += readField(input, Field);
 			Record1.fields.push_back(Field);
 		}
 		totalCount += count;
@@ -269,6 +271,19 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 			Group1.records.push_back(recordNew);
 		}
 	}
+	return count;
+}
+unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
+	Field1.name = new char[getDelimiterLength()];
+	Field1.size = 0;
+	unsigned int count = 0;
+	input.read(Field1.name, getDelimiterLength());
+	count += input.gcount();
+	input.read((char*)&(Field1.size), getFieldSizeLength());
+	count += input.gcount();
+	Field1.data = new char[Field1.size];
+	input.read(Field1.data, Field1.size);
+	count += input.gcount();
 	return count;
 }
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
