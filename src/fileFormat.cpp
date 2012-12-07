@@ -86,15 +86,6 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 	input.read(File1.version, getVerLength());
 	input.read(File1.stuffz, getStuffzLength());
 	while(count < File1.size){
-		/*Field.name = new char[getDelimiterLength()];
-		Field.size = 0;
-		input.read(Field.name, getDelimiterLength());
-		count += input.gcount();
-		input.read((char*)&(Field.size), getFieldSizeLength());
-		count += input.gcount();
-		Field.data = new char[Field.size];
-		input.read(Field.data, Field.size);
-		count += input.gcount();*/
 		count += readField(input, Field);
 		File1.fields.push_back(Field);
 	}
@@ -142,9 +133,6 @@ struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &
 	return Record1;
 }
 unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileFormat::record &Record1){
-	///@todo finish up the compression handling and have two methods of reading it in until some efficiency analysis is done. One method for the compressed record
-	///and one for the non-compressed record. For the latter, we could just read in the data straight from the file. For the former, we'll need to do some work before we assign
-	///the uncompressed data.
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
 	Record1.recName = new char[getDelimiterLength()];
@@ -208,15 +196,6 @@ unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileF
 	}
 	else{
 		while(count < Record1.size){
-			/*Field.name = new char[getDelimiterLength()];
-			Field.size = 0;
-			input.read(Field.name, getDelimiterLength());
-			count += input.gcount();
-			input.read((char*)&(Field.size), getFieldSizeLength());
-			count += input.gcount();
-			Field.data = new char[Field.size];
-			input.read(Field.data, Field.size);
-			count += input.gcount();*/
 			count += readField(input, Field);
 			Record1.fields.push_back(Field);
 		}
@@ -259,7 +238,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
-			struct group groupNew; //or something;
+			struct group groupNew;
 			count += readGroup(input, groupNew);
 			Group1.groups.push_back(groupNew);
 		}
@@ -267,7 +246,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct record recordNew;
-			count += readRecord2(input, recordNew); //or something
+			count += readRecord2(input, recordNew);
 			Group1.records.push_back(recordNew);
 		}
 	}
