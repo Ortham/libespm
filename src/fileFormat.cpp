@@ -47,7 +47,7 @@ unsigned int parser::fileFormat::recSizeLength;
 unsigned int parser::fileFormat::decompSizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
-void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
+void parser::fileFormat::init(){
 	setDelimiterLength2();
 	setFlagLength2();
 	setGroupStampLength();
@@ -61,6 +61,9 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 	setVerLength();
 	setRevLength();
 	setStuffzLength();
+}
+void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
+	init();
 	readHeaderThing(input, File1);
 	while(input.good()){
 		Group.records.clear();
@@ -90,49 +93,7 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 		File1.fields.push_back(Field);
 	}
 }
-//This function needs work, but it'll basically be for reading the record. The return type may or may not stay, I haven't decided yet. I'll worry about that once I
-//have the group stuff figured out. Next step is to figure out the compressed size.
-struct parser::fileFormat::record parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
-	///@todo finish up the compression handling and have two methods of reading it in until some efficiency analysis is done. One method for the compressed record
-	///and one for the non-compressed record. For the latter, we could just read in the data straight from the file. For the former, we'll need to do some work before we assign
-	///the uncompressed data.
-	unsigned int count = 0;
-	Record1.recName = new char[getDelimiterLength()];
-	Record1.size = 0;
-	Record1.flags = 0;
-	Record1.recID = new char[getIDLength()];
-	Record1.revision = new char[getRevLength()];
-	Record1.version = new char[getVerLength()];
-	Record1.stuffz = new char[getStuffzLength()];
-	Record1.decompSize = 0;
-	input.read(Record1.recName, getDelimiterLength());
-	input.read((char *)&(Record1.size), getRecSizeLength());
-	input.read((char *)&(Record1.flags), getFlagLength());
-	input.read(Record1.recID, getIDLength());
-	input.read(Record1.revision, getRevLength());
-	input.read(Record1.version, getVerLength());
-	input.read(Record1.stuffz, getStuffzLength());
-	if(isCompressed(Record1)){
-		//read in compressed data and uncompress
-		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
-		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
-		 *That's the uncompressed size of the data.*/
-	}
-	while(count < Record1.size){
-		Field.name = new char[getDelimiterLength()];
-		Field.size = 0;
-		input.read(Field.name, getDelimiterLength());
-		count += input.gcount();
-		input.read((char*)&(Field.size), getFieldSizeLength());
-		count += input.gcount();
-		Field.data = new char[Field.size];
-		input.read(Field.data, Field.size);
-		count += input.gcount();
-		Record1.fields.push_back(Field);
-	}
-	return Record1;
-}
-unsigned int parser::fileFormat::readRecord2(std::ifstream &input, parser::fileFormat::record &Record1){
+unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
 	Record1.recName = new char[getDelimiterLength()];
@@ -246,7 +207,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct record recordNew;
-			count += readRecord2(input, recordNew);
+			count += readRecord(input, recordNew);
 			Group1.records.push_back(recordNew);
 		}
 	}
