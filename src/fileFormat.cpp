@@ -40,11 +40,11 @@ unsigned int parser::fileFormat::groupStampLength;
 unsigned int parser::fileFormat::groupTypeLength;
 unsigned int parser::fileFormat::IDLength;
 unsigned int parser::fileFormat::revLength;
+unsigned int parser::fileFormat::decompSizeLength;
 unsigned int parser::fileFormat::fieldSizeLength;
 unsigned int parser::fileFormat::groupSizeLength;
 unsigned int parser::fileFormat::headSizeLength;
 unsigned int parser::fileFormat::recSizeLength;
-unsigned int parser::fileFormat::decompSizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
 void parser::fileFormat::init(){
@@ -260,10 +260,6 @@ unsigned int parser::fileFormat::readSize(std::ifstream &file){
 		size += file.get();
 	return size;
 } 
-//struct parser::fileFormat::file getFile(){
-//	struct file File1;
-//	return File1;
-//}
 std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &File1){
 	std::vector<char *> masters;
 	for(int i = 0; i < File1.fields.size(); ++i)

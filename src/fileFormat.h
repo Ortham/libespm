@@ -65,11 +65,11 @@ namespace parser{
 		 * @var sizeLength
 		 * The length of the size field in bytes.
 		 */
+		extern unsigned int decompSizeLength;
 		extern unsigned int fieldSizeLength;
 		extern unsigned int headSizeLength;
 		extern unsigned int groupSizeLength;
 		extern unsigned int recSizeLength;
-		extern unsigned int decompSizeLength;
 		/**
 		 * @var stuffzLength
 		 * The length of some unknown field in bytes.
@@ -80,101 +80,6 @@ namespace parser{
 		 * The length of the version (?) field in bytes
 		 */
 		extern unsigned int verLength;
-		
-		/***BEGIN SLATED_FOR_POSSIBLE_REMOVAL***/
-		
-		/**
-		 * @struct TES_Format
-		 * @brief The plugin format.
-		 * @details This contains the data for the plugin files in a fairly generic format to allow the files for past and
-		 * future games to be easily parsed with little to no changes.
-		 * @note The following three structs are here just for reference purposes and may be removed in the future to clean things up.
-		 */
-		struct TES_Format{
-			/*These two numbers will need to be changed to non-hard-coded numbers in order to accommodate format changes.
-			 *Assuming HEDR remains constant, which there is a good chance of, this is fairly trivial.
-			 *<obj_name>.read(<var>, <size>) will read in the data to the variables after the initial parse of the main file to determine the individual values.
-			 *The family of ato<desired>(<have>) is used to convert it to the proper format.
-			 *For the initial parse, we go through and run a count between some predefined constants and use the count as the amount of data to read in.
-			 *The predefined constants will probably correspond somewhat to the initial parse of the main file that we use to get just the record listings.
-			 *After we have the listings, we could go through and have the system automatically create the corresponding variables for them and then import the
-			 *generated code into the main program.
-			 *...
-			 *This may actually work to parse through all their past and future titles autonomously.
-			 *
-			 *However, this won't take the data-types into account. That's a different problem. The big question is, can it take the data-types into account on its own?
-			 *For Skyrim, CNAM and MAST are followed by 2 hex bits that denote the size of the data including the null character.
-			 *However, this may be different for past and future games so this is something that shouldn't be relied upon.
-			 *The only thing that can be relied upon is that the records themselves will most likely have the same format (3 or 4 capital letters) across all games.
-			 *
-			 *
-			 *The problem with figuring out data-types has been solved, kind of. Check every bit of data and see if it's a printable character and check the
-			 *last one as denoted by the record size to make sure it's null.
-			 */
-			/*
-			 * .? is the delimiter in the files used to denote a new entry, from the looks of it.
-			 * I can use that to extract only that data. Though, I need to check on the records
-			 * This is only for the executables, though
-			 * Read in file, string = getline(), if string[0] == '.' && string[1] == '?' write to another file, else skip line
-			 * Boom, there's the parser code
-			 * Er, erase string[0] and string[1] first and then write. That way, we have just the entries and not the delimiters :p
-			 * Records are not delimited at all, unfortunately
-			 * However, they are at least three capital letters on the same line.
-			 * string = getline(), if length < 3 then not a record, if length >= 3 then check all to make sure they're either a capital letter or a number
-			 * Capital letters have a specific ASCII value range
-			 * 65 - 90 in base 10
-			 * 41 - 5A in hex
-			 * Output to 2 different files. 1 for operations and 1 for records.
-			 * Ops
-			 * Records
-			 * If there's at least 4 capital letters in the entry, write it to the file. The whole line as there are some entries with qualifiers
-			 * 2-
-			 * 20
-			 * 11 + 16 + 16 + 16 + 16 + 16 + 2 = 13 + 5 * 16 = 80 + 13 = 93 - 20 = 74
-			 * Er 73
-			 * Bingo
-			 * HEADER
-			 * LENGTH (TOTAL_LENGTH - NUM_SUBHEADERS)
-			 * DATA
-			 * What's before the data is beyond me...
-			 * Ok, that's the basic format for all their games. And there is no reason to assume it'll change. 
-			 * If it does, a simple change to the code is all that's necessary I think
-			 * I need to sit down with a pad of paper and a pen and think this through. I've got everything I need, for the most part.
-			 * I just need to sit down and work it out. After that, I can worry about the unknowns.
-			*/
-			unsigned char headerString[4];
-			unsigned short recordSize;
-			unsigned int stuff;
-			unsigned char HEDR[4];
-			unsigned short HEDRSize;
-			unsigned int moreStuff;
-			unsigned char CNAM[4];
-			unsigned short CNAM_size;
-			std::string author;
-			unsigned char MAST[4];
-			unsigned short MAST_size;
-			std::string masterFile;
-			unsigned char DATA[4];
-			unsigned short DATA_size;
-			unsigned int moreStuff4;
-			unsigned char INTV[4];
-			unsigned short INTV_size;
-			unsigned int moreStuff5;
-		};
-		struct BASE_FORMAT{
-			unsigned char * record;
-			unsigned short size;
-			//unsigned char data[size];
-		};
-		struct BASE_HEADER_FORMAT{
-			unsigned char header[4];
-			unsigned short size;
-			unsigned char stuff[18];
-			BASE_FORMAT base;
-		};
-		
-		/***END SLATED_FOR_POSSIBLE_REMOVAL***/
-		
 		/**
 		 * @struct field
 		 * @brief A field.
@@ -193,18 +98,16 @@ namespace parser{
 		 * Though, I'm probably getting myself confused here with the fact that the terminology isn't being used consistently at all and is, quite frankly, crap.
 		 */
 		struct record{
-			//unsigned char * name;
-			std::string name;
-			char * recName; //will replace std::string name once I rewrite the functions that use std::string name to work with the char type instead
+			char * recName;
 			unsigned int size;
 			unsigned int flags;
 			unsigned int ID;
-			char * recID; //will replace unsigned int ID once I rewrite the functions that use unsigned int ID to work with the char type instead (this may require that the type table thing gets further along)
+			char * recID;
 			char * revision;
 			char * version;
 			char * stuffz;
 			unsigned int decompSize;
-			/*unsigned*/ char * data;
+			char * data;
 			std::vector<field> fields;
 		};
 		/**
@@ -243,10 +146,8 @@ namespace parser{
 			std::vector<group> groups;
 		};
 		void init();
-		//temporary file read function, will most likely change in the future
 		void readFile(std::ifstream &input, file &File1);
 		void readHeaderThing(std::ifstream &input, file &File1);
-		//very much temporary
 		unsigned int readRecord(std::ifstream &input, record &Record1);
 		unsigned int readGroup(std::ifstream &input, group &Group1);
 		unsigned int readField(std::ifstream &input, field &Field1);
@@ -266,7 +167,6 @@ namespace parser{
 		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
 		 */
 		bool isMaster(file &fileA);
-		/*inline*/struct file getFile();
 		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
@@ -345,11 +245,11 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 * @returns The length of the size field.
 		 */
-		inline unsigned int getFieldSizeLength();
-		inline unsigned int getHeadSizeLength();
-		inline unsigned int getGroupSizeLength();
-		inline unsigned int getRecSizeLength();
 		inline unsigned int getDecompSizeLength();
+		inline unsigned int getFieldSizeLength();
+		inline unsigned int getGroupSizeLength();
+		inline unsigned int getHeadSizeLength();
+		inline unsigned int getRecSizeLength();
 		/**
 		 * @brief Gets the length of the unknown field.
 		 * @details Is here to allow for cases where the length of the unknown field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -413,11 +313,11 @@ namespace parser{
 		 * @details Is here to allow for cases where the size field isn't the 2-byte standard that we have now. In case it changes, all that will need to be done is to
 		 * pass on the new length to properly read the files.
 		 */
-		inline void setFieldSizeLength2();
-		inline void setHeadSizeLength();
-		inline void setGroupSizeLength();
-		inline void setRecSizeLength();
 		inline void setDecompSizeLength();
+		inline void setFieldSizeLength2();
+		inline void setGroupSizeLength();
+		inline void setHeadSizeLength();
+		inline void setRecSizeLength();
 		/**
 		 * @brief Sets the length of the stuffz field.
 		 * @details Is here to allow for cases where the length of the stuffz field isn't the n-byte standard that we have now. In case it changes, all that will need to be done is to
@@ -430,9 +330,6 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setVerLength();
-//		inline file getFile(){
-//			return File;
-//		}
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}
@@ -451,20 +348,20 @@ namespace parser{
 		inline unsigned int getRevLength(){
 			return revLength;
 		}
+		inline unsigned int getDecompSizeLength(){
+			return decompSizeLength;
+		}
 		inline unsigned int getFieldSizeLength(){
 			return fieldSizeLength;
-		}
-		inline unsigned int getHeadSizeLength(){
-			return headSizeLength;
 		}
 		inline unsigned int getGroupSizeLength(){
 			return groupSizeLength;
 		}
+		inline unsigned int getHeadSizeLength(){
+			return headSizeLength;
+		}
 		inline unsigned int getRecSizeLength(){
 			return recSizeLength;
-		}
-		inline unsigned int getDecompSizeLength(){
-			return decompSizeLength;
 		}
 		inline unsigned int getStuffzLength(){
 			return stuffzLength;
@@ -499,20 +396,20 @@ namespace parser{
 		inline void setSizeLength(unsigned int length){
 			fieldSizeLength = length;
 		}
+		inline void setDecompSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["DecompSizeLength"][0]) >> decompSizeLength;
+		}
 		inline void setFieldSizeLength2(){
 			std::stringstream(common::structVals[common::options::game]["FieldSizeLength"][0]) >> fieldSizeLength;
-		}
-		inline void setHeadSizeLength(){
-			std::stringstream(common::structVals[common::options::game]["HeadSizeLength"][0]) >> headSizeLength;
 		}
 		inline void setGroupSizeLength(){
 			std::stringstream(common::structVals[common::options::game]["GroupSizeLength"][0]) >> groupSizeLength;
 		}
+		inline void setHeadSizeLength(){
+			std::stringstream(common::structVals[common::options::game]["HeadSizeLength"][0]) >> headSizeLength;
+		}
 		inline void setRecSizeLength(){
 			std::stringstream(common::structVals[common::options::game]["RecSizeLength"][0]) >> recSizeLength;
-		}
-		inline void setDecompSizeLength(){
-			std::stringstream(common::structVals[common::options::game]["DecompSizeLength"][0]) >> decompSizeLength;
 		}
 		inline void setStuffzLength(){
 			std::stringstream(common::structVals[common::options::game]["StuffzLength"][0]) >> stuffzLength;
