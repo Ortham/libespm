@@ -93,6 +93,68 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 		File1.fields.push_back(Field);
 	}
 }
+unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
+	Field1.name = new char[getDelimiterLength()];
+	Field1.size = 0;
+	unsigned int count = 0;
+	input.read(Field1.name, getDelimiterLength());
+	count += input.gcount();
+	input.read((char*)&(Field1.size), getFieldSizeLength());
+	count += input.gcount();
+	Field1.data = new char[Field1.size];
+	input.read(Field1.data, Field1.size);
+	count += input.gcount();
+	return count;
+}
+unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
+	unsigned int count = 0;
+	Group1.groupHeader = new char[getDelimiterLength()];
+	Group1.groupSize = 0;
+	Group1.groupName = new char[getDelimiterLength()];
+	Group1.type = new char[getGroupTypeLength()];
+	Group1.stamp = new char[getGroupStampLength()];
+	Group1.stuffz1 = new char[getStuffzLength()];
+	Group1.version = new char[getVerLength()];
+	Group1.stuffz2 = new char[getStuffzLength()];
+	input.read(Group1.groupHeader, getDelimiterLength());
+	count += input.gcount();
+	input.read((char*)&Group1.groupSize, getGroupSizeLength());
+	count += input.gcount();
+	input.read(Group1.groupName, getDelimiterLength());
+	count += input.gcount();
+	input.read(Group1.type, getGroupTypeLength());
+	count += input.gcount();
+	input.read(Group1.stamp, getGroupStampLength());
+	count += input.gcount();
+	input.read(Group1.stuffz1, getStuffzLength());
+	count += input.gcount();
+	input.read(Group1.version, getVerLength());
+	count += input.gcount();
+	input.read(Group1.stuffz2, getStuffzLength());
+	count += input.gcount();
+	//read in pre-meat stuffz
+	//count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
+	char * temp;
+	temp = new char[4];
+	while(count < Group1.groupSize){
+		input.read(temp, getDelimiterLength());
+		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
+				input.unget();
+			struct group groupNew;
+			count += readGroup(input, groupNew);
+			Group1.groups.push_back(groupNew);
+		}
+		else{
+			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
+				input.unget();
+			struct record recordNew;
+			count += readRecord(input, recordNew);
+			Group1.records.push_back(recordNew);
+		}
+	}
+	return count;
+}
 unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
@@ -163,68 +225,6 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		totalCount += count;
 	}
 	return totalCount;
-}
-unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
-	unsigned int count = 0;
-	Group1.groupHeader = new char[getDelimiterLength()];
-	Group1.groupSize = 0;
-	Group1.groupName = new char[getDelimiterLength()];
-	Group1.type = new char[getGroupTypeLength()];
-	Group1.stamp = new char[getGroupStampLength()];
-	Group1.stuffz1 = new char[getStuffzLength()];
-	Group1.version = new char[getVerLength()];
-	Group1.stuffz2 = new char[getStuffzLength()];
-	input.read(Group1.groupHeader, getDelimiterLength());
-	count += input.gcount();
-	input.read((char*)&Group1.groupSize, getGroupSizeLength());
-	count += input.gcount();
-	input.read(Group1.groupName, getDelimiterLength());
-	count += input.gcount();
-	input.read(Group1.type, getGroupTypeLength());
-	count += input.gcount();
-	input.read(Group1.stamp, getGroupStampLength());
-	count += input.gcount();
-	input.read(Group1.stuffz1, getStuffzLength());
-	count += input.gcount();
-	input.read(Group1.version, getVerLength());
-	count += input.gcount();
-	input.read(Group1.stuffz2, getStuffzLength());
-	count += input.gcount();
-	//read in pre-meat stuffz
-	//count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
-	char * temp;
-	temp = new char[4];
-	while(count < Group1.groupSize){
-		input.read(temp, getDelimiterLength());
-		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
-			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
-				input.unget();
-			struct group groupNew;
-			count += readGroup(input, groupNew);
-			Group1.groups.push_back(groupNew);
-		}
-		else{
-			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
-				input.unget();
-			struct record recordNew;
-			count += readRecord(input, recordNew);
-			Group1.records.push_back(recordNew);
-		}
-	}
-	return count;
-}
-unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
-	Field1.name = new char[getDelimiterLength()];
-	Field1.size = 0;
-	unsigned int count = 0;
-	input.read(Field1.name, getDelimiterLength());
-	count += input.gcount();
-	input.read((char*)&(Field1.size), getFieldSizeLength());
-	count += input.gcount();
-	Field1.data = new char[Field1.size];
-	input.read(Field1.data, Field1.size);
-	count += input.gcount();
-	return count;
 }
 bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
