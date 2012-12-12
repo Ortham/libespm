@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
 	else
 		cout << "false" << endl;
 	input.close();
-	//cout << File.header << endl;
 	cout.write(File.header, 4) << endl;
 	cout << File.size << endl;
 	cout << hex << File.flags << endl << dec;
@@ -45,26 +44,20 @@ int main(int argc, char *argv[]){
 	cout << (unsigned short&)*(File.version) << endl;
 	cout << (unsigned short&)*(File.stuffz) << endl;
 	for(int i = 0; i < File.fields.size(); ++i){
-		//cout << File.fields[i].name << endl;
 		cout.write(File.fields[i].name, 4) << endl;
 		cout << File.fields[i].size << endl;
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			cout << "Master: ";
 		cout << File.fields[i].data << endl;
-		//cout.write(File.fields[i].data, File.fields[i].size) << endl;
 	}
 	for(int i = 0; i < File.groups.size() - 1; ++i){
-		//cout << File.groups[i].groupHeader << endl;
 		cout.write(File.groups[i].groupHeader, 4) << endl;
 		cout << "----------------" << endl;
-		//cout << File.groups[i].groupName << endl;
 		cout.write(File.groups[i].groupName, 4) << endl;
 		for(int j = 0; j < File.groups[i].records.size(); ++j){
-			//cout << "\t" << File.groups[i].records[j].recName << endl;
 			cout << "\t";
 			cout.write(File.groups[i].records[j].recName, 4) << endl;
 			for(int k = 0; k < File.groups[i].records[j].fields.size(); ++k){
-				//cout << "\t\t" << File.groups[i].records[j].fields[k].name << endl;
 				cout << "\t\t";
 				cout.write(File.groups[i].records[j].fields[k].name, 4) << endl;
 			}
