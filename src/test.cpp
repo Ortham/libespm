@@ -18,10 +18,10 @@
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "fileFormat.h"
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include "fileFormat.h"
 using namespace std;
 int main(int argc, char *argv[]){
 	common::options::setGame("Skyrim");
