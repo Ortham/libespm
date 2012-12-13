@@ -26,8 +26,8 @@
  * @details All the parsing of the records is managed here and passes arguments to functions and the 
  * hex-viewer in order to extract all the record information from the EXE and ESMs/ESPs.
  */
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 #include "constants.h"
 #include "commonSupport.h"

@@ -27,8 +27,8 @@
  * @note Still a work in progress and currently not very useful.
  */
 #include "constants.h"
-#include "viewer.h"
 #include "commonSupport.h"
+#include "viewer.h"
 std::ifstream::pos_type viewer::size;
 bool viewer::isPrintable(unsigned int data){
 	return ((PRINT_START <= data) && (PRINT_END >= data));

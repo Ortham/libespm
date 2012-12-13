@@ -27,8 +27,8 @@
  * @note Still a work in progress and currently not very useful.
  */
 #pragma once
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 /**
  * @namespace viewer
