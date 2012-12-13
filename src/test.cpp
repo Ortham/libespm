@@ -18,9 +18,9 @@
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstring>
 #include <iostream>
 #include <vector>
-#include <cstring>
 #include "fileFormat.h"
 using namespace std;
 int main(int argc, char *argv[]){

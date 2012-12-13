@@ -28,8 +28,8 @@
  * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to 
  */
 #pragma once
-#include <sstream>
 #include <iostream>
+#include <sstream>
 #include "commonSupport.h"
 namespace parser{
 	/**
