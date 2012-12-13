@@ -94,11 +94,7 @@ extern "C"{
 			 * The header to be checked.
 			 * @returns <tt> \b true </tt> if the header matches "TES4" or "TES3", <tt> \b false </tt> otherwise.
 			 */
-			#ifdef __WIN32__
-			__declspec(dllexport) bool isMod(char * head1);
-			#else
 			bool isMod(char * head1);
-			#endif
 			/**
 			 * @brief Checks whether or not a file is a saved game.
 			 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files.
@@ -122,11 +118,7 @@ extern "C"{
 			 * The header to be checked.
 			 * @returns <tt> \b true </tt> if the header matches "TESV_SAVEGAME" or "TES4SAVEGAME", <tt> \b false </tt> otherwise.
 			 */
-			#ifdef __WIN32__
-			__declspec(dllexport) bool isSave(char * head1);
-			#else
 			bool isSave(char * head1);
-			#endif
 			/**
 			 * @brief Gets the file header.
 			 * @details Is here to allow for future compartmentalization.

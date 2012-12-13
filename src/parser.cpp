@@ -27,7 +27,6 @@
  */
 #include "constants.h"
 #include "parser.h"
-//#include "fileFormat.h"
 std::string parser::fileName;
 std::string parser::header;
 bool parser::hasValidHeader(char * fileName){

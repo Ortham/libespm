@@ -26,10 +26,10 @@
  * @details A support library to hold functions that both programs use to help with keeping down clutter.
  */
 #pragma once
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <map>
+#include <string>
 #include <vector>
 /**
  * @namespace common

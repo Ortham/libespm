@@ -18,70 +18,6 @@
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*                                                                                ¶¶¶¶¶¶¶
-                                                                        ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                                                                  ¶¶¶¶¶¶¶¶«««««««««««¶¶¶
-                                                              ¶¶¶¶¶¶¶««««««««««««««¶¶¶¶¶
-                                                           ¶¶¶¶¶¶«««««««««««««««««¶¶¶¶¶¶¶
-                                                        ¶¶¶¶¶««««««««««««««««««««««««««¶¶
-                                                      ¶¶¶¶«««««««««««««««««««««««««««¶¶¶                  ¶¶¶¶¶¶
-                                                   ¶¶¶¶««««««««««««««««««««««««««««¶¶¶¶¶          ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                                                 ¶¶¶¶«««««««««««««««««««««««««««««««««¶¶¶¶   ¶¶¶¶¶¶¶¶¶««««««««««««««¶¶¶
-                                               ¶¶¶¶«««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶«««««««««««««««««¶¶¶¶¶¶
-                                             ¶¶¶¶««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶«««««««««««««««««««¶¶¶¶¶¶¶
-                                            ¶¶¶«««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶«««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                                          ¶¶¶¶««««««««««««««««««««««««««¶¶¶¶¶¶¶¶««««««««««««««««««¶¶¶¶¶¶¶¶¶¶«««««««¶¶¶
-                                         ¶¶¶¶««««««««««««««««««««««««¶¶¶¶¶¶¶««««««««««««««««««¶¶¶¶¶¶¶¶¶««««««««««¶¶¶¶¶
-                                         ¶¶¶««««««««««««««««««««««¶¶¶¶¶¶««««««««««««««««««¶¶¶¶¶¶¶¶«««««««««««¶¶¶¶¶¶¶
-                                        ¶¶¶«««««««««««««««««««««¶¶¶¶¶««««««««««««««««««¶¶¶¶¶¶¶««««««««««¶¶¶¶¶¶¶¶¶
-                                        ¶¶¶«««««««««««««««««««¶¶¶¶«««««««««««««««««¶¶¶¶¶¶¶«««««««««««¶¶¶¶¶¶¶¶¶¶¶¶
-                                         ¶¶«««««««««««««««««¶¶¶¶«««««««««««««««««¶¶¶¶¶¶««««««««««««««¶¶¶««««««¶¶¶¶
-                                         ¶¶¶««««««««««««««¶¶¶¶««««««««««««««««¶¶¶¶¶«««««««««««««««««««««««««¶¶¶¶
-                                         ¶¶¶«««««««««««««¶¶¶¶«««««««««««««««¶¶¶¶¶«««««««««««««««««««««««¶¶¶¶¶
-                                          ¶¶¶«««««««««««¶¶¶¶«««««««««««««««¶¶¶¶««««««««««««««««««««¶¶¶¶¶¶¶¶
-                                            ¶¶«««««««««¶¶¶¶««««««««««««««¶¶¶««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶
-                                             ¶¶¶¶«««««¶¶¶¶««««««««««««««¶¶¶«««««««««««««««««««««««««««««¶¶¶
-                                                ¶¶¶¶¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶
-                                                 ¶¶¶¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶
-                                             ¶¶¶¶¶¶«««¶¶¶««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                        ¶¶¶¶¶¶¶      ¶¶¶¶¶¶¶¶¶¶«««««««¶¶¶««««««««««««««««««««««««««««««««««¶¶¶¶¶¶«««««««««««¶¶¶¶¶
-                 ¶¶      ¶¶¶«¶¶¶¶¶¶¶¶¶¶¶¶««««««««««««««¶¶¶««««««««««««««««««««««««««««««««««««¶¶¶¶«««««««««««««¶¶¶¶
-                 ¶¶¶¶¶    ¶¶««««¶¶¶««««««««««««««««««««¶¶««««««««««««««««««««««««««««««««««««¶¶¶¶¶«««««««««««««««¶¶¶¶
-                 ¶¶¶¶¶¶¶  ¶¶¶««««¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶««««««««««««««««««¶¶¶
-                  ¶¶««¶¶¶¶¶¶¶¶««««¶¶¶¶«««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶«««««««««««««««««««««««««¶¶
-                  ¶¶¶¶¶¶¶««¶¶¶¶««««¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶«««««««««««««««««««««««««««««¶
-                   ¶¶¶««««««¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶«««««««««««««««««««««««««««««
-                   ¶¶««««««««¶««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶«««««««««««««««««««««««««««««
-                  ¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-                 ¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-                ¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-               ¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-             ¶¶¶¶««««¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-           ¶¶¶«««««««¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-     ¶¶¶¶¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
- ¶¶¶¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-¶¶¶«««¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-¶¶¶¶¶¶«¶¶¶«««««««««««««««¶¶¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-¶¶¶¶¶¶««¶¶««««««««««««««««¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-  ¶¶¶««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-   ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««
-       ¶¶¶¶¶¶¶¶¶¶¶¶¶««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶««««««««««««««««««««
-             ¶¶¶¶¶¶«««««««««««¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶«««««««««««««««««««««««««««««««««««««««««««««««««««¶¶¶¶¶¶««««««««««««««««
-                ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶««««¶¶¶¶««««««««««««««««¶¶««««««««««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                                ¶¶¶««««««««««««««««¶¶¶¶¶««««««««««««««««¶¶¶«««««««««««««««««««««««¶¶¶¶¶¶      ¶¶¶¶¶¶¶¶¶
-                                ¶¶¶¶¶¶««««««««««¶¶¶¶¶¶««««««««««««««««¶¶¶¶«««««««««««««««««««¶¶¶¶¶¶¶¶
-                            ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶««««««««««««««««¶¶¶¶¶¶««««««««««««««««¶¶¶¶¶¶¶¶
-                         ¶¶¶¶¶«««««««««¶¶¶¶¶¶¶¶¶««««««««««««««««¶¶¶¶¶¶¶««««««««««««¶¶¶¶¶¶¶¶¶
-                       ¶¶¶¶««««««««««««¶¶¶¶¶«««««««««««««««««¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶
-                    ¶¶¶¶¶«««««««««««¶¶¶¶¶«««««««««««««««¶¶¶¶¶¶¶¶¶¶             ¶¶¶¶
-                   ¶¶¶¶¶«««««««««¶¶¶¶¶¶««««««««««««¶¶¶¶¶¶¶¶¶
-                  ¶¶¶¶¶««««««¶¶¶¶¶¶¶¶««««««««¶¶¶¶¶¶¶¶¶¶
-                ¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶¶«««««««¶¶¶¶
-                ¶¶¶¶¶¶¶¶      ¶¶¶¶¶¶«««¶¶¶¶¶
-                             ¶¶¶¶¶¶¶¶¶¶¶¶¶
-                             ¶¶¶¶¶¶¶¶¶¶
-*/
-
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -92,15 +28,6 @@
  */
 #pragma once
 #include "commonSupport.h"
-//#include "fileFormat.h"
-/*
-#ifdef __WIN32__
-#include <windows.h>
-BOOL __stdcall DllMain(HINSTANCE hInst, DWORD dwReason, LPVOID lpReserved) {
-	return TRUE;
-}
-#endif
-*/
 /**
  * @namespace parser
  * @brief Contains the parser specific functions.
@@ -124,11 +51,7 @@ namespace parser{
 	 * The name of the file that is to be checked.
 	 * @returns <tt> \b true </tt> if the file has a valid header and file extension, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool hasValidHeader(char * fileName);
-	#else
 	extern "C" bool hasValidHeader(char * fileName);
-	#endif
 	/**
 	 * @brief Checks whether or not a file is a BSA.
 	 * @details It checks the file's header to see if it matches "BSA", which is the current header for BSAs.
@@ -152,11 +75,7 @@ namespace parser{
 	 * The header to be checked.
 	 * @returns <tt> \b true </tt> if the header is "BSA", <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isBSA(char * head1);
-	#else
 	extern "C" bool isBSA(char * head1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file is a BSA.
 	 * @details It checks the file's header to see if it matches "BSA", which is the current header for BSAs.
@@ -194,11 +113,7 @@ namespace parser{
 	 * The name of the file to check.
 	 * @returns <tt> \b true </tt> if the file has the ESM extension, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isESM(char * fileName1);
-	#else
 	extern "C" bool isESM(char * fileName1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file has the ESM extension;
 	 * @details It checks the file's extension to see if it matches ".esm"
@@ -234,11 +149,7 @@ namespace parser{
 	 * The name of the file to check.
 	 * @returns <tt> \b true </tt> if the file has the ESP extension, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isESP(char * fileName1);
-	#else
 	extern "C" bool isESP(char * fileName1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file has the ESP extension;
 	 * @details It checks the file's extension to see if it matches ".esp"
@@ -274,11 +185,7 @@ namespace parser{
 	 * The name of the file to check.
 	 * @returns <tt> \b true </tt> if the file has the ESS extension, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isESS(char * fileName1);
-	#else
 	extern "C" bool isESS(char * fileName1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file has the ESS extension;
 	 * @details It checks the file's extension to see if it matches ".ess"
@@ -312,11 +219,7 @@ namespace parser{
 	 * @returns <tt> \b true </tt> if the line is a GRUP, <tt> \b false </tt> otherwise.
 	 * @todo Integrate the rest of the checks from the main program to make this function more complete.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isGRUP(char * data1);
-	#else
 	extern "C" bool isGRUP(char * data1);
-	#endif
 	/**
 	 * @brief Checks whether or not a line is a GRUP.
 	 * @details It checks a line to see if it is equal to "GRUP".
@@ -353,11 +256,7 @@ namespace parser{
 	 * The file header to be checked.
 	 * @returns <tt> \b true </tt> if the file is a mod, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isMod(char * head1);
-	#else
 	extern "C" bool isMod(char * head1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file is a mod (plugin).
 	 * @details It checks the file's header to see if it matches "TES4" or "TES3", which are the current headers for mod files, and then the file extension to see if
@@ -393,11 +292,7 @@ namespace parser{
 	 * The line to be checked
 	 * @returns <tt> \b true </tt> if the line is an operation, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isOp(char * data1);
-	#else
 	extern "C" bool isOp(char * data1);
-	#endif
 	/**
 	 * @brief Checks whether or not a line is a record.
 	 * @details It checks a line to see if it consists of 3 capital letters in the first 3 positions.
@@ -417,11 +312,7 @@ namespace parser{
 	 * @returns <tt> \b true </tt> if the line is a record, <tt> \b false </tt> otherwise.
 	 * @todo Integrate the rest of the checks from the main program to make this function more complete.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isRecord(char * data1);
-	#else
 	extern "C" bool isRecord(char * data1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file is a saved game.
 	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
@@ -448,11 +339,7 @@ namespace parser{
 	 * The file header to be checked.
 	 * @returns <tt> \b true </tt> if the file is a saved game, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isSave(char * head1);
-	#else
 	extern "C" bool isSave(char * head1);
-	#endif
 	/**
 	 * @brief Checks whether or not a file is a saved game.
 	 * @details It checks the file's header to see if it matches "TESV_SAVEGAME" or "TES4SAVEGAME", which are the current headers for saved game files, and then the file
@@ -488,11 +375,7 @@ namespace parser{
 	 * The line to be checked
 	 * @returns <tt> \b true </tt> if the line is a variable, <tt> \b false </tt> otherwise.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) bool isVar(char * data1);
-	#else
 	extern "C" bool isVar(char * data1);
-	#endif
 	/**
 	 * @brief Counts up the amount of junk in front of the lines.
 	 * @details This is to account for excess characters being added to the front of the desired values, and is used to determine how much stuff to delete.
@@ -508,11 +391,7 @@ namespace parser{
 	 * The line that is desired to have its leading junk counted up and possibly removed.
 	 * @returns The number of characters that are junk at the beginning of the line.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) int countLeading(char * line1);
-	#else
 	extern "C" int countLeading(char * line1);
-	#endif
 	/**
 	 * @brief Gets the file header.
 	 * @details Is here to allow for future compartmentalization.
@@ -565,11 +444,7 @@ namespace parser{
 	 * @param *name1
 	 * The name of the file to store.
 	 */
-	#ifdef __WIN32__
-	extern "C" __declspec(dllexport) inline void setFileName(char * name1);
-	#else
 	extern "C" inline void setFileName(char * name1);
-	#endif
 	inline std::string getFileHeader(){
 		return header;
 	}
