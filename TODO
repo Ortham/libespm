@@ -33,8 +33,10 @@ Another overhaul of the organization of the code:
 
 Finish up the handling of the table to assign value types to things via an external file to enable on the fly analysis of most data. The complex data stuff will need some interesting trickery to handle without making things game dependent, however. I've got an idea in mind for that, but won't think on it too much until I get to this part.
 
+Overhaul the storage and stuff that is used for the handling of plugin files (may be extended to more down the line as more files are supported). At the moment, new variables need to be added into the code itself when they are needed but that can and should be changed to allow for more flexibility and separation of the processes from the actual structure of the files. This will come after the current code is finished being changed, as it's a fairly large change.
+
 
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 12/11/2012
+On: 12/16/2012
