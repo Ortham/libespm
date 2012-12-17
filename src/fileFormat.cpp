@@ -320,4 +320,31 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 			masters.push_back(File1.fields[i].data);
 	return masters;
 }
+void parser::fileFormat::iterate(parser::fileFormat::group &Group1){
+			if(Group1.groups.size() == 0)
+				return;
+			for(unsigned int i = 0; i < Group1.groups.size(); ++i){
+				std::cout << "Nested ";
+				std::cout.write(Group1.groups[i].groupHeader, 4) << std::endl;
+				std::cout << "----------------" << std::endl;
+				std::cout << "Nested ";
+				std::cout.write(Group1.groups[i].groupName, 4) << std::endl;
+				for(unsigned int j = 0; j < Group1.groups[i].records.size(); ++j){
+					std::cout << "Nested Rec";
+					std::cout << std::endl;
+					std::cout << "-----------";
+					std::cout << std::endl;
+					std::cout.write(Group1.groups[i].records[j].recName, 4) << std::endl;
+					for(unsigned int k = 0; k < Group1.groups[i].records[j].fields.size(); ++k){
+						std::cout << "\t\t";
+						std::cout.write(Group1.groups[i].records[j].fields[k].name, 4) << std::endl;
+						//if(strncmp("EDID", Group1.groups[i].records[j].fields[k].name, 4) == 0)
+							std::cout << "\t\t\t" << Group1.groups[i].records[j].fields[k].data << std::endl;
+//						std::cout << "\t\t\t";
+//						std::cout.write(Group1.groups[i].records[j].fields[k].data, Group1.groups[i].records[j].fields[k].size) << std::endl;
+					}
+				}
+				iterate(Group1.groups[i]);
+			}
+		}
 /*END OF LINE*/
