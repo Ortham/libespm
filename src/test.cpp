@@ -24,11 +24,12 @@
 #include "fileFormat.h"
 using namespace std;
 int main(int argc, char *argv[]){
-	common::options::setGame("Skyrim");
+	string game = argv[1];
+	common::options::setGame(game);
 	ifstream input("opts/input");
 	common::readOptions(input);
 	input.close();
-	input.open(argv[1], ios::binary);
+	input.open(argv[2], ios::binary);
 	struct parser::fileFormat::file File;
 	parser::fileFormat::readFile(input, File);
 	if(parser::fileFormat::isMaster(File))
