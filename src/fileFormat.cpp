@@ -64,33 +64,63 @@ void parser::fileFormat::init(){
 }
 void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File1){
 	init();
+//	std::cerr << "Reading Header" << std::endl;
 	readHeaderThing(input, File1);
 	while(input.good()){
+//		std::cerr << "Clearing Records" << std::endl;
 		Group.records.clear();
+//		std::cerr << "Clearing Groups" << std::endl;
 		Group.groups.clear();
+//		std::cerr << "Reading Group" << std::endl;
 		readGroup(input, Group);
+//		std::cerr << "Adding Group to File" << std::endl;
 		File1.groups.push_back(Group);
+//		delete Group.groupHeader;
+//		delete Group.groupName;
+//		delete Group.type;
+//		delete Group.stamp;
+//		delete Group.stuffz1;
+//		delete Group.version;
+//		delete Group.stuffz2;
 	}
 }
 void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileFormat::file &File1){
+//	std::cerr << "Intitializing Header Counter" << std::endl;
 	unsigned int count = 0;
+//	std::cerr << "Intitializing Header Header" << std::endl;
 	File1.header = new char[getDelimiterLength()];
+//	std::cerr << "Intitializing Header Size" << std::endl;
 	File1.size = 0;
+//	std::cerr << "Intitializing Header Flags" << std::endl;
 	File1.flags = 0;
+//	std::cerr << "Intitializing Header ID" << std::endl;
 	File1.ID = new char[getIDLength()];
+//	std::cerr << "Intitializing Header Rev" << std::endl;
 	File1.revision = new char[getRevLength()];
+//	std::cerr << "Intitializing Header Ver" << std::endl;
 	File1.version = new char[getVerLength()];
+//	std::cerr << "Intitializing Header Stuffz" << std::endl;
 	File1.stuffz = new char[getStuffzLength()];
+//	std::cerr << "Reading Header" << std::endl;
 	input.read(File1.header, getDelimiterLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read((char *)&(File1.size), getHeadSizeLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read((char *)&(File1.flags), getFlagLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read(File1.ID, getIDLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read(File1.revision, getRevLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read(File1.version, getVerLength());
+//	std::cerr << "Reading Header" << std::endl;
 	input.read(File1.stuffz, getStuffzLength());
 	while(count < File1.size){
+//		std::cerr << "Reading Header Field" << std::endl;
 		count += readField(input, Field);
 		File1.fields.push_back(Field);
+//		delete Field.name;
+//		delete Field.data;
 	}
 }
 unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
@@ -142,15 +172,29 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct group groupNew;
+//			std::cerr << "Reading Nested Group" << std::endl;
 			count += readGroup(input, groupNew);
 			Group1.groups.push_back(groupNew);
+//			delete groupNew.groupHeader;
+//			delete groupNew.groupName;
+//			delete groupNew.type;
+//			delete groupNew.stamp;
+//			delete groupNew.stuffz1;
+//			delete groupNew.version;
+//			delete groupNew.stuffz2;
 		}
 		else{
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct record recordNew;
+//			std::cerr << "Reading Record" << std::endl;
 			count += readRecord(input, recordNew);
 			Group1.records.push_back(recordNew);
+//			delete recordNew.recName;
+//			delete recordNew.recID;
+//			delete recordNew.revision;
+//			delete recordNew.version;
+//			delete recordNew.stuffz;
 		}
 	}
 	return count;
@@ -181,6 +225,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	input.read(Record1.stuffz, getStuffzLength());
 	totalCount += input.gcount();
 	if(isCompressed(Record1)){
+//		std::cerr << "Reading Compressed Record" << std::endl;
 		//read in compressed data and uncompress
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
 		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
@@ -199,6 +244,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		uncompress((Bytef*)decData, (uLongf*)&Record1.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
 		while(count < Record1.decompSize){
+//			std::cerr << "Reading Compressed Field" << std::endl;
 			Field.name = new char[getDelimiterLength()];
 			Field.size = 0;
 			memcpy(Field.name, decData, getDelimiterLength());
@@ -215,12 +261,19 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 			for(int i = 0; i < Field.size; ++i)
 				decData++;
 			Record1.fields.push_back(Field);
+//			delete Field.name;
+//			delete Field.data;
 		}
+//		delete decData;
+//		delete data;
 	}
 	else{
 		while(count < Record1.size){
+//			std::cerr << "Reading Uncompressed Field" << std::endl;
 			count += readField(input, Field);
 			Record1.fields.push_back(Field);
+//			delete Field.name;
+//			delete Field.data;
 		}
 		totalCount += count;
 	}

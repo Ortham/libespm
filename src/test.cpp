@@ -51,10 +51,11 @@ int main(int argc, char *argv[]){
 			cout << "Master: ";
 		cout << File.fields[i].data << endl;
 	}
-	for(int i = 0; i < File.groups.size() - 1; ++i){
+	for(unsigned int i = 0; i < File.groups.size() - 1; ++i){
 		cout.write(File.groups[i].groupHeader, 4) << endl;
 		cout << "----------------" << endl;
 		cout.write(File.groups[i].groupName, 4) << endl;
+		parser::fileFormat::iterate(File.groups[i]);
 		for(int j = 0; j < File.groups[i].records.size(); ++j){
 			cout << "\t";
 			cout.write(File.groups[i].records[j].recName, 4) << endl;
@@ -64,6 +65,8 @@ int main(int argc, char *argv[]){
 			}
 		}
 	}
+//	for(unsigned int i = 0; i < File.groups.size() - 1; ++i)
+//		parser::fileFormat::iterate(File.groups[i]);
 	vector<char *> masters;
 	masters = parser::fileFormat::getMasters(File);
 	for(int i = 0; i < masters.size(); ++i)

@@ -29,6 +29,7 @@
  */
 #pragma once
 #include <iostream>
+#include <cstring>
 #include <sstream>
 #include "commonSupport.h"
 namespace parser{
@@ -416,6 +417,28 @@ namespace parser{
 		}
 		inline void setVerLength(){
 			std::stringstream(common::structVals[common::options::game]["VerLength"][0]) >> verLength;
+		}
+		void iterate(group &Group1){
+			if(Group1.groups.size() == 0)
+				return;
+			for(unsigned int i = 0; i < Group1.groups.size(); ++i){
+				for(unsigned int j = 0; j < Group1.groups[i].records.size(); ++j){
+					std::cout << "Nested Rec";
+					std::cout << std::endl;
+					std::cout << "-----------";
+					std::cout << std::endl;
+					std::cout.write(Group1.groups[i].records[j].recName, 4) << std::endl;
+					for(unsigned int k = 0; k < Group1.groups[i].records[j].fields.size(); ++k){
+						std::cout << "\t\t";
+						std::cout.write(Group1.groups[i].records[j].fields[k].name, 4) << std::endl;
+						//if(strncmp("EDID", Group1.groups[i].records[j].fields[k].name, 4) == 0)
+							std::cout << "\t\t\t" << Group1.groups[i].records[j].fields[k].data << std::endl;
+//						std::cout << "\t\t\t";
+//						std::cout.write(Group1.groups[i].records[j].fields[k].data, Group1.groups[i].records[j].fields[k].size) << std::endl;
+					}
+				}
+				iterate(Group1.groups[i]);
+			}
 		}
 	}
 	/*END OF LINE*/
