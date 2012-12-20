@@ -31,8 +31,8 @@
 #include "fileFormat.h"
 #include "parser.h"
 struct parser::fileFormat::field Field;
-struct parser::fileFormat::record Record;
-struct parser::fileFormat::group Group;
+//struct parser::fileFormat::record Record;
+//struct parser::fileFormat::group Group;
 struct parser::fileFormat::file File;
 unsigned int parser::fileFormat::delimiterLength;
 unsigned int parser::fileFormat::flagLength;
@@ -67,14 +67,16 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 //	std::cerr << "Reading Header" << std::endl;
 	readHeaderThing(input, File1);
 	while(input.good()){
-//		std::cerr << "Clearing Records" << std::endl;
-		Group.records.clear();
-//		std::cerr << "Clearing Groups" << std::endl;
-		Group.groups.clear();
-//		std::cerr << "Reading Group" << std::endl;
-		readGroup(input, Group);
+////		std::cerr << "Clearing Records" << std::endl;
+//		Group.records.clear();
+////		std::cerr << "Clearing Groups" << std::endl;
+//		Group.groups.clear();
+////		std::cerr << "Reading Group" << std::endl;
+		struct item Item;
+		//Group.items.clear();
+		readGroup(input, Item);
 //		std::cerr << "Adding Group to File" << std::endl;
-		File1.groups.push_back(Group);
+		File1.items.push_back(Item);
 //		delete Group.groupHeader;
 //		delete Group.groupName;
 //		delete Group.type;
@@ -136,45 +138,54 @@ unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFor
 	count += input.gcount();
 	return count;
 }
-unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::group &Group1){
+unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::item &Group1){
 	unsigned int count = 0;
-	Group1.groupHeader = new char[getDelimiterLength()];
-	Group1.groupSize = 0;
-	Group1.groupName = new char[getDelimiterLength()];
-	Group1.type = new char[getGroupTypeLength()];
-	Group1.stamp = new char[getGroupStampLength()];
-	Group1.stuffz1 = new char[getStuffzLength()];
-	Group1.version = new char[getVerLength()];
-	Group1.stuffz2 = new char[getStuffzLength()];
-	input.read(Group1.groupHeader, getDelimiterLength());
+	//struct item itemA;
+//	Group1.isGroup = true;
+	Group1.type = GROUP;
+	Group1.group.groupHeader = new char[getDelimiterLength()];
+	Group1.group.groupSize = 0;
+	Group1.group.groupName = new char[getDelimiterLength()];
+	Group1.group.type = new char[getGroupTypeLength()];
+	Group1.group.stamp = new char[getGroupStampLength()];
+	Group1.group.stuffz1 = new char[getStuffzLength()];
+	Group1.group.version = new char[getVerLength()];
+	Group1.group.stuffz2 = new char[getStuffzLength()];
+	input.read(Group1.group.groupHeader, getDelimiterLength());
 	count += input.gcount();
-	input.read((char*)&Group1.groupSize, getGroupSizeLength());
+	input.read((char*)&Group1.group.groupSize, getGroupSizeLength());
 	count += input.gcount();
-	input.read(Group1.groupName, getDelimiterLength());
+	input.read(Group1.group.groupName, getDelimiterLength());
 	count += input.gcount();
-	input.read(Group1.type, getGroupTypeLength());
+	input.read(Group1.group.type, getGroupTypeLength());
 	count += input.gcount();
-	input.read(Group1.stamp, getGroupStampLength());
+	input.read(Group1.group.stamp, getGroupStampLength());
 	count += input.gcount();
-	input.read(Group1.stuffz1, getStuffzLength());
+	input.read(Group1.group.stuffz1, getStuffzLength());
 	count += input.gcount();
-	input.read(Group1.version, getVerLength());
+	input.read(Group1.group.version, getVerLength());
 	count += input.gcount();
-	input.read(Group1.stuffz2, getStuffzLength());
+	input.read(Group1.group.stuffz2, getStuffzLength());
 	count += input.gcount();
 	//read in pre-meat stuffz
 	//count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
 	char * temp;
 	temp = new char[4];
-	while(count < Group1.groupSize){
+	while(count < Group1.group.groupSize){
 		input.read(temp, getDelimiterLength());
 		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
-			struct group groupNew;
+			struct item groupNew;
 //			std::cerr << "Reading Nested Group" << std::endl;
+//			groupNew.isGroup = true;
+			groupNew.type = GROUP;
+			//itemA.stuff.groupA = 0;
+			//count += readGroup(input, groupNew);
 			count += readGroup(input, groupNew);
-			Group1.groups.push_back(groupNew);
+			
+//			Group1.stuff.group = groupNew;
+			Group1.group.items.push_back(groupNew);
 //			delete groupNew.groupHeader;
 //			delete groupNew.groupName;
 //			delete groupNew.type;
@@ -186,10 +197,15 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 		else{
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
-			struct record recordNew;
+			struct item recordNew;
 //			std::cerr << "Reading Record" << std::endl;
+//			recordNew.isGroup = false;
+			recordNew.type = RECORD;
+			//itemA.stuff.recordA = 0;
+			//count += readRecord(input, recordNew);
 			count += readRecord(input, recordNew);
-			Group1.records.push_back(recordNew);
+			//itemA.stuff.recordA = recordNew;
+			Group1.group.items.push_back(recordNew);
 //			delete recordNew.recName;
 //			delete recordNew.recID;
 //			delete recordNew.revision;
@@ -199,30 +215,32 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	}
 	return count;
 }
-unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::record &Record1){
+unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::item &Record1){
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
-	Record1.recName = new char[getDelimiterLength()];
-	Record1.size = 0;
-	Record1.flags = 0;
-	Record1.recID = new char[getIDLength()];
-	Record1.revision = new char[getRevLength()];
-	Record1.version = new char[getVerLength()];
-	Record1.stuffz = new char[getStuffzLength()];
-	Record1.decompSize = 0;
-	input.read(Record1.recName, getDelimiterLength());
+//	Record1.isGroup = false;
+	Record1.type = RECORD;
+	Record1.record.recName = new char[getDelimiterLength()];
+	Record1.record.size = 0;
+	Record1.record.flags = 0;
+	Record1.record.recID = new char[getIDLength()];
+	Record1.record.revision = new char[getRevLength()];
+	Record1.record.version = new char[getVerLength()];
+	Record1.record.stuffz = new char[getStuffzLength()];
+	Record1.record.decompSize = 0;
+	input.read(Record1.record.recName, getDelimiterLength());
 	totalCount += input.gcount();
-	input.read((char *)&(Record1.size), getRecSizeLength());
+	input.read((char *)&(Record1.record.size), getRecSizeLength());
 	totalCount += input.gcount();
-	input.read((char *)&(Record1.flags), getFlagLength());
+	input.read((char *)&(Record1.record.flags), getFlagLength());
 	totalCount += input.gcount();
-	input.read(Record1.recID, getIDLength());
+	input.read(Record1.record.recID, getIDLength());
 	totalCount += input.gcount();
-	input.read(Record1.revision, getRevLength());
+	input.read(Record1.record.revision, getRevLength());
 	totalCount += input.gcount();
-	input.read(Record1.version, getVerLength());
+	input.read(Record1.record.version, getVerLength());
 	totalCount += input.gcount();
-	input.read(Record1.stuffz, getStuffzLength());
+	input.read(Record1.record.stuffz, getStuffzLength());
 	totalCount += input.gcount();
 	if(isCompressed(Record1)){
 //		std::cerr << "Reading Compressed Record" << std::endl;
@@ -230,20 +248,20 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
 		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff. 
 		 *That's the uncompressed size of the data.*/
-		input.read((char*)&Record1.decompSize, getDecompSizeLength());
+		input.read((char*)&Record1.record.decompSize, getDecompSizeLength());
 		totalCount += input.gcount();
 		char * decData;
-		decData = new char[Record1.decompSize]; //may change the size to Record1.decompSize * 2; though, the zlib documentation isn't clear if it shrinks the memory block down
+		decData = new char[Record1.record.decompSize]; //may change the size to Record1.decompSize * 2; though, the zlib documentation isn't clear if it shrinks the memory block down
 		//Record1.data = new char[Record1.size];
 		char * data;
-		data = new char[Record1.size];
-		unsigned int compSize = Record1.size - getDecompSizeLength();
+		data = new char[Record1.record.size];
+		unsigned int compSize = Record1.record.size - getDecompSizeLength();
 		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
 		totalCount += input.gcount();
 		//uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
-		uncompress((Bytef*)decData, (uLongf*)&Record1.decompSize, (Bytef*)data, compSize);
+		uncompress((Bytef*)decData, (uLongf*)&Record1.record.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
-		while(count < Record1.decompSize){
+		while(count < Record1.record.decompSize){
 //			std::cerr << "Reading Compressed Field" << std::endl;
 			Field.name = new char[getDelimiterLength()];
 			Field.size = 0;
@@ -260,7 +278,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 			count += Field.size;
 			for(int i = 0; i < Field.size; ++i)
 				decData++;
-			Record1.fields.push_back(Field);
+			Record1.record.fields.push_back(Field);
 //			delete Field.name;
 //			delete Field.data;
 		}
@@ -268,10 +286,10 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 //		delete data;
 	}
 	else{
-		while(count < Record1.size){
+		while(count < Record1.record.size){
 //			std::cerr << "Reading Uncompressed Field" << std::endl;
 			count += readField(input, Field);
-			Record1.fields.push_back(Field);
+			Record1.record.fields.push_back(Field);
 //			delete Field.name;
 //			delete Field.data;
 		}
@@ -279,9 +297,9 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	}
 	return totalCount;
 }
-bool parser::fileFormat::isCompressed(parser::fileFormat::record &recordA){
+bool parser::fileFormat::isCompressed(parser::fileFormat::item &recordA){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
-	if((recordA.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
+	if((recordA.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
 		return true;
 	return false;
 }
@@ -320,31 +338,37 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 			masters.push_back(File1.fields[i].data);
 	return masters;
 }
-void parser::fileFormat::iterate(parser::fileFormat::group &Group1){
+void parser::fileFormat::iterate(parser::fileFormat::item &Group1){
 //			if(Group1.groups.size() == 0)
 //				return;
-			for(unsigned int i = 0; i < Group1.groups.size(); ++i){
+			for(unsigned int i = 0; i < Group1.group.items.size(); ++i){
 				std::cout << "Nested ";
-				std::cout.write(Group1.groups[i].groupHeader, 4) << std::endl;
-				std::cout << "----------------" << std::endl;
-				std::cout << "Nested ";
-				std::cout.write(Group1.groups[i].groupName, 4) << std::endl;
-				for(unsigned int j = 0; j < Group1.groups[i].records.size(); ++j){
-					std::cout << "Nested Rec";
-					std::cout << std::endl;
-					std::cout << "-----------";
-					std::cout << std::endl;
-					std::cout.write(Group1.groups[i].records[j].recName, 4) << std::endl;
-					for(unsigned int k = 0; k < Group1.groups[i].records[j].fields.size(); ++k){
-						std::cout << "\t\t";
-						std::cout.write(Group1.groups[i].records[j].fields[k].name, 4) << std::endl;
-						//if(strncmp("EDID", Group1.groups[i].records[j].fields[k].name, 4) == 0)
-							std::cout << "\t\t\t" << Group1.groups[i].records[j].fields[k].data << std::endl;
-//						std::cout << "\t\t\t";
-//						std::cout.write(Group1.groups[i].records[j].fields[k].data, Group1.groups[i].records[j].fields[k].size) << std::endl;
-					}
+				//if(Group1.stuff.group.items[i].isGroup){
+				if(Group1.group.items[i].type == GROUP){
+					std::cout.write(Group1.group.items[i].group.groupHeader, 4) << std::endl;
+					std::cout << "----------------" << std::endl;
+					std::cout << "Nested ";
+					std::cout.write(Group1.group.items[i].group.groupName, 4) << std::endl;
+					
 				}
-				iterate(Group1.groups[i]);
+				else{
+					//for(unsigned int j = 0; j < Group1.items[i].records.size(); ++j){
+						std::cout << "Nested Rec";
+						std::cout << std::endl;
+						std::cout << "-----------";
+						std::cout << std::endl;
+						std::cout.write(Group1.group.items[i].record.recName, 4) << std::endl;
+						for(unsigned int k = 0; k < Group1.group.items[i].record.fields.size(); ++k){
+							std::cout << "\t\t";
+							std::cout.write(Group1.group.items[i].record.fields[k].name, 4) << std::endl;
+							//if(strncmp("EDID", Group1.groups[i].records[j].fields[k].name, 4) == 0)
+								std::cout << "\t\t\t" << Group1.group.items[i].record.fields[k].data << std::endl;
+//							std::cout << "\t\t\t";
+//							std::cout.write(Group1.groups[i].records[j].fields[k].data, Group1.groups[i].records[j].fields[k].size) << std::endl;
+						}
+					//}
+				}
+				iterate(Group1.group.items[i]);
 			}
 		}
 /*END OF LINE*/

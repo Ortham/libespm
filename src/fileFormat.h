@@ -81,6 +81,10 @@ namespace parser{
 		 * The length of the version (?) field in bytes
 		 */
 		extern unsigned int verLength;
+//		struct group;
+//		struct record;
+		
+				
 		/**
 		 * @struct field
 		 * @brief A field.
@@ -98,36 +102,73 @@ namespace parser{
 		 * @note May need to add in the ability for a record to store records themselves in cases where they contain some.
 		 * Though, I'm probably getting myself confused here with the fact that the terminology isn't being used consistently at all and is, quite frankly, crap.
 		 */
-		struct record{
-			char * recName;
-			unsigned int size;
-			unsigned int flags;
-			unsigned int ID;
-			char * recID;
-			char * revision;
-			char * version;
-			char * stuffz;
-			unsigned int decompSize;
-			char * data;
-			std::vector<field> fields;
-		};
+//		struct record{
+//			char * recName;
+//			unsigned int size;
+//			unsigned int flags;
+//			unsigned int ID;
+//			char * recID;
+//			char * revision;
+//			char * version;
+//			char * stuffz;
+//			unsigned int decompSize;
+//			char * data;
+//			std::vector<field> fields;
+//		};
 		/**
 		 * @struct group
 		 * @brief A group of records.
 		 * @details This contains the data for a group of records, as each group is composed of a list of records.
 		 * @note May add a group-list as well, as some groups may themselves contain groups. Something I'll think about.
 		 */
-		struct group{
-			char * groupHeader;
-			unsigned int groupSize;
-			char * groupName;
-			char * type;
-			char * stamp;
-			char * stuffz1;
-			char * version;
-			char * stuffz2;
-			std::vector<group> groups;
-			std::vector<record> records;
+//		struct group{
+//			char * groupHeader;
+//			unsigned int groupSize;
+//			char * groupName;
+//			char * type;
+//			char * stamp;
+//			char * stuffz1;
+//			char * version;
+//			char * stuffz2;
+////			std::vector<group> groups;
+////			std::vector<record> records;
+//			std::vector<item*> items;
+//		};
+		enum Type{
+			GROUP,
+			RECORD
+		};
+		struct item{
+//			bool isGroup;
+			enum Type type;
+			union{
+				struct{
+					char * recName;
+					unsigned int size;
+					unsigned int flags;
+					unsigned int ID;
+					char * recID;
+					char * revision;
+					char * version;
+					char * stuffz;
+					unsigned int decompSize;
+					char * data;
+					std::vector<field> fields;
+				}record;
+				struct{
+					char * groupHeader;
+					unsigned int groupSize;
+					char * groupName;
+					char * type;
+					char * stamp;
+					char * stuffz1;
+					char * version;
+					char * stuffz2;
+//					std::vector<group> groups;
+//					std::vector<record> records;
+					std::vector<item> items;
+				}group;
+			};//stuff;
 		};
 		/**
 		 * @struct file
@@ -142,16 +183,20 @@ namespace parser{
 			char * revision;
 			char * version;
 			char * stuffz;
-			std::vector<record> records;
+//			std::vector<record> records;
 			std::vector<field> fields;
-			std::vector<group> groups;
+//			std::vector<group> groups;
+			std::vector<item> items;
 		};
 		void init();
 		void readFile(std::ifstream &input, file &File1);
 		void readHeaderThing(std::ifstream &input, file &File1);
 		unsigned int readField(std::ifstream &input, field &Field1);
-		unsigned int readGroup(std::ifstream &input, group &Group1);
-		unsigned int readRecord(std::ifstream &input, record &Record1);
+//		unsigned int readGroup(std::ifstream &input, group &Group1);
+		unsigned int readGroup(std::ifstream &input, item &Group1);
+//		unsigned int readRecord(std::ifstream &input, record &Record1);
+		unsigned int readRecord(std::ifstream &input, item &Record1);
+		
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
@@ -159,7 +204,7 @@ namespace parser{
 		 * The record that we want to check.
 		 * @returns <tt> \b true </tt> if the record is compressed, <tt> \b false </tt> otherwise.
 		 */
-		bool isCompressed(record &recordA);
+		bool isCompressed(item &recordA);
 		/**
 		 * @brief Checks to see if a plugin file is a 'master'.
 		 * @details Checks the flag on the plugin file to see if the 'master' flag is set (may be useful, no telling).
@@ -418,7 +463,8 @@ namespace parser{
 		inline void setVerLength(){
 			std::stringstream(common::structVals[common::options::game]["VerLength"][0]) >> verLength;
 		}
-		void iterate(group &Group1);
+//		void iterate(group &Group1);
+		void iterate(item &Group1);
 	}
 	/*END OF LINE*/
 }
