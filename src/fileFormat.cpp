@@ -321,8 +321,8 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 	return masters;
 }
 void parser::fileFormat::iterate(parser::fileFormat::group &Group1){
-			if(Group1.groups.size() == 0)
-				return;
+//			if(Group1.groups.size() == 0)
+//				return;
 			for(unsigned int i = 0; i < Group1.groups.size(); ++i){
 				std::cout << "Nested ";
 				std::cout.write(Group1.groups[i].groupHeader, 4) << std::endl;
