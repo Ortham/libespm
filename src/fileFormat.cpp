@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with libespm. If not, see <http://www.gnu.org/licenses/>.
  */
- 
+
 /**
  * @mainpage
  * @author deaths_soul AKA MCP
@@ -287,7 +287,7 @@ unsigned int parser::fileFormat::readSize(std::ifstream &file){
 	for(unsigned int i = 0; i < getFieldSizeLength(); ++i)
 		size += file.get();
 	return size;
-} 
+}
 std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &File){
 	std::vector<char *> masters;
 	for(int i = 0; i < File.fields.size(); ++i)

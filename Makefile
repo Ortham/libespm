@@ -3,20 +3,20 @@ OBJECTS =							Objects/skyrimParserRedoRel.o \
 									Objects/parser.o \
 									Objects/parserClasses.o \
 									Objects/viewer.o
-																						
-																						
+
+
 OBJECTS2 =							src/commonSupport.cpp \
 									src/parser.cpp \
 									src/parserClasses.cpp \
 									src/viewer.cpp
-																						
-																						
+
+
 TESTOBJ =							Objects/commonSupport.o \
 									Objects/fileFormat.o \
 									Objects/parser.o \
 									Objects/test.o
-																					
-																					
+
+
 TESTOBJ2 =							src/commonSupport.cpp \
 									src/fileFormat.cpp \
 									src/parser.cpp
@@ -32,9 +32,9 @@ Test :								init $(TESTOBJ)
 Test.exe :							src/test.cpp
 									i686-w64-mingw32-g++ src/test.cpp src/commonSupport.cpp  src/fileFormat.cpp src/parser.cpp -I/usr/i686-w64-mingw32/sys-root/mingw/include -L/usr/i686-w64-mingw32/sys-root/mingw/lib -lz -o Test.exe -static
 init :
-									mkdir -p Objects																					
+									mkdir -p Objects
 Objects/%.o :						src/%.cpp
-									g++ -c -o $@ $<																					
+									g++ -c -o $@ $<
 Objects/skyrimParserRedoRel.o \
 Objects/commonSupport.o \
 Objects/parser.o \

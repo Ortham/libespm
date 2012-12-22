@@ -23,7 +23,7 @@
  * @author deaths_soul AKA MCP
  * @file skyrimParserRedoRel.cpp
  * @brief The main program that manages all the parsing.
- * @details All the parsing of the records is managed here and passes arguments to functions and the 
+ * @details All the parsing of the records is managed here and passes arguments to functions and the
  * hex-viewer in order to extract all the record information from the EXE and ESMs/ESPs.
  */
 #include <fstream>
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 		string inputFile = argv[1];
 		string temp;
 		parser::setFileName(inputFile);
-		ifstream file; 
+		ifstream file;
 		ofstream out;
 		ofstream out2;
 		/*START HEX-VIEWER*/
@@ -139,7 +139,6 @@ int main(int argc, char *argv[]){
 				#ifdef __WIN32__
 					file.open(common::inputName(inputFile, " - Records.txt"));
 					out.open(common::inputName(inputFile, " - Extracted Records.txt"));
-					
 				#else
 					file.open(common::inputName(inputFile, " - Records"));
 					out.open(common::inputName(inputFile, " - Extracted Records"));
@@ -151,7 +150,7 @@ int main(int argc, char *argv[]){
 							out << line << endl;
 					}
 					out.close();
-				}	
+				}
 				file.close();
 			}
 			else if(parser::isSave(file)){
@@ -194,7 +193,6 @@ int main(int argc, char *argv[]){
 				#else
 					out.open(common::inputName(inputFile, " - Ops"));
 					ofstream records(common::inputName(inputFile, " - Records"));
-					
 				#endif
 				if(parser::isOp(line)){
 					line.erase(0, 2);

@@ -61,6 +61,6 @@ int main(int argc, char *argv[]){
 	masters = parser::fileFormat::getMasters(File);
 	for(int i = 0; i < masters.size(); ++i)
 		cout << "Master " << i << ": " << masters[i] << endl;
+	/*END OF LINE*/
 	return 0;
 }
-/*END OF LINE*/
