@@ -141,7 +141,7 @@ namespace parser{
 		struct item{
 //			bool isGroup;
 			enum Type type;
-			union{
+			//union{
 				struct{
 					char * recName;
 					unsigned int size;
@@ -168,7 +168,7 @@ namespace parser{
 //					std::vector<record> records;
 					std::vector<item> items;
 				}group;
-			};//stuff;
+			//};//stuff;
 		};
 		/**
 		 * @struct file
