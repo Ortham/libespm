@@ -55,22 +55,12 @@ int main(int argc, char *argv[]){
 		cout.write(File.items[i].group.groupHeader, 4) << endl;
 		cout << "----------------" << endl;
 		cout.write(File.items[i].group.groupName, 4) << endl;
-//		for(int j = 0; j < File.groups[i].records.size(); ++j){
-//			cout << "\t";
-//			cout.write(File.groups[i].records[j].recName, 4) << endl;
-//			for(int k = 0; k < File.groups[i].records[j].fields.size(); ++k){
-//				cout << "\t\t";
-//				cout.write(File.groups[i].records[j].fields[k].name, 4) << endl;
-//				//cout << File.groups[i].records[j].fields[k].data << endl;
-//			}
-//		}
 		parser::fileFormat::iterate(File.items[i]);
 	}
-//	for(unsigned int i = 0; i < File.groups.size() - 1; ++i)
-//		parser::fileFormat::iterate(File.groups[i]);
 	vector<char *> masters;
 	masters = parser::fileFormat::getMasters(File);
 	for(int i = 0; i < masters.size(); ++i)
 		cout << "Master " << i << ": " << masters[i] << endl;
 	return 0;
 }
+/*END OF LINE*/
