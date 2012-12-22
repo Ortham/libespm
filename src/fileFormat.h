@@ -25,7 +25,7 @@
  * @brief Contains the file format stuff.
  * @details A support library to hold the general information on the format of a specific file type, as opposed to the general patterns. I think...
  * It's missing some notes, but I'll get them included later.
- * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to 
+ * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to.
  */
 #pragma once
 #include <iostream>
@@ -80,6 +80,10 @@ namespace parser{
 		 * The length of the version (?) field in bytes
 		 */
 		extern unsigned int verLength;
+		enum Type{
+			GROUP,
+			RECORD
+		};
 		/**
 		 * @struct field
 		 * @brief A field.
@@ -90,36 +94,32 @@ namespace parser{
 			unsigned int size;
 			char * data;
 		};
-		enum Type{
-			GROUP,
-			RECORD
-		};
 		struct item{
 			enum Type type;
-				struct{
-					char * recName;
-					unsigned int size;
-					unsigned int flags;
-					unsigned int ID;
-					char * recID;
-					char * revision;
-					char * version;
-					char * stuffz;
-					unsigned int decompSize;
-					char * data;
-					std::vector<field> fields;
-				}record;
-				struct{
-					char * groupHeader;
-					unsigned int groupSize;
-					char * groupName;
-					char * type;
-					char * stamp;
-					char * stuffz1;
-					char * version;
-					char * stuffz2;
-					std::vector<item> items;
-				}group;
+			struct{
+				char * recName;
+				unsigned int size;
+				unsigned int flags;
+				unsigned int ID;
+				char * recID;
+				char * revision;
+				char * version;
+				char * stuffz;
+				unsigned int decompSize;
+				char * data;
+				std::vector<field> fields;
+			}record;
+			struct{
+				char * groupHeader;
+				unsigned int groupSize;
+				char * groupName;
+				char * type;
+				char * stamp;
+				char * stuffz1;
+				char * version;
+				char * stuffz2;
+				std::vector<item> items;
+			}group;
 		};
 		/**
 		 * @struct file
@@ -138,27 +138,27 @@ namespace parser{
 			std::vector<item> items;
 		};
 		void init();
-		void readFile(std::ifstream &input, file &File1);
-		void readHeaderThing(std::ifstream &input, file &File1);
+		void readFile(std::ifstream &input, file &File);
+		void readHeaderThing(std::ifstream &input, file &File);
 		unsigned int readField(std::ifstream &input, field &Field1);
-		unsigned int readGroup(std::ifstream &input, item &Group1);
-		unsigned int readRecord(std::ifstream &input, item &Record1);
+		unsigned int readGroup(std::ifstream &input, item &Group);
+		unsigned int readRecord(std::ifstream &input, item &Record);
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
-		 * @param &recordA
+		 * @param &Record
 		 * The record that we want to check.
 		 * @returns <tt> \b true </tt> if the record is compressed, <tt> \b false </tt> otherwise.
 		 */
-		bool isCompressed(item &recordA);
+		bool isCompressed(item &Record);
 		/**
 		 * @brief Checks to see if a plugin file is a 'master'.
 		 * @details Checks the flag on the plugin file to see if the 'master' flag is set (may be useful, no telling).
-		 * @param &fileA
+		 * @param &File
 		 * The plugin file that we want to check.
 		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
 		 */
-		bool isMaster(file &fileA);
+		bool isMaster(file &File);
 		/**
 		 * @brief Reads the flags.
 		 * @details Reads the flags from various sections based on the length of the flag section.
@@ -195,12 +195,12 @@ namespace parser{
 		/**
 		 * @brief Gets the 'masters' of a plugin.
 		 * @details Gets a list of all of the 'masters' of a file.
-		 * @param &File1
+		 * @param &File
 		 * The file, respresented as a struct, that we want to get the 'masters' of. This can currently only be called after we read in the data from a file.
 		 * However, after the planned refactoring, this will hopefully be much saner to use. I hope...
 		 * @returns A list of the 'masters' of a file.
 		 */
-		std::vector<char *> getMasters(file &File1);
+		std::vector<char *> getMasters(file &File);
 		/**
 		 * @brief Gets the length of the delimiter.
 		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
@@ -306,7 +306,7 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setDecompSizeLength();
-		inline void setFieldSizeLength2();
+		inline void setFieldSizeLength();
 		inline void setGroupSizeLength();
 		inline void setHeadSizeLength();
 		inline void setRecSizeLength();
@@ -322,6 +322,7 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setVerLength();
+		void iterate(item &Group);
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}
@@ -391,7 +392,7 @@ namespace parser{
 		inline void setDecompSizeLength(){
 			std::stringstream(common::structVals[common::options::game]["DecompSizeLength"][0]) >> decompSizeLength;
 		}
-		inline void setFieldSizeLength2(){
+		inline void setFieldSizeLength(){
 			std::stringstream(common::structVals[common::options::game]["FieldSizeLength"][0]) >> fieldSizeLength;
 		}
 		inline void setGroupSizeLength(){
@@ -409,7 +410,6 @@ namespace parser{
 		inline void setVerLength(){
 			std::stringstream(common::structVals[common::options::game]["VerLength"][0]) >> verLength;
 		}
-		void iterate(item &Group1);
 	}
 	/*END OF LINE*/
 }
