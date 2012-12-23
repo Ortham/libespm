@@ -140,6 +140,10 @@ namespace parser{
 		void init();
 		void readFile(std::ifstream &input, file &File);
 		void readHeaderThing(std::ifstream &input, file &File);
+		void getRecords(file &File, std::vector<item> &records, item &Item);
+		bool getRecordByFieldD(file &File, item &Item, char * fieldName, char * fieldData, item &Record);
+		item getRecordByFieldD(file &File, char * fieldName, char * fieldData);
+		std::vector<item> getRecords(file &File);
 		unsigned int readField(std::ifstream &input, field &Field1);
 		unsigned int readGroup(std::ifstream &input, item &Group);
 		unsigned int readRecord(std::ifstream &input, item &Record);

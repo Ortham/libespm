@@ -319,4 +319,44 @@ void parser::fileFormat::iterate(parser::fileFormat::item &Group){
 		iterate(Group.group.items[i]);
 	}
 }
+void parser::fileFormat::getRecords(parser::fileFormat::file &File, std::vector<parser::fileFormat::item> &records, parser::fileFormat::item &Item){
+	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+		if(Item.group.items[i].type == RECORD)
+			records.push_back(Item);
+		getRecords(File, records, Item.group.items[i]);
+	}
+}
+std::vector<parser::fileFormat::item> parser::fileFormat::getRecords(parser::fileFormat::file &File){
+	std::vector<item> records;
+	for(unsigned int i = 0; i < File.items.size(); ++i)
+		getRecords(File, records, File.items[i]);
+	std::cout << "Num Rec Test: " << records.size() << std::endl;
+	return records;
+}
+bool parser::fileFormat::getRecordByFieldD(parser::fileFormat::file &File, parser::fileFormat::item &Item, char * fieldName, char * fieldData, parser::fileFormat::item &Record){
+	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+		if(Item.group.items[i].type == RECORD){
+			std::cout <<"Boom" << std::endl;
+			for(unsigned int j = 0; j < Item.group.items[i].record.fields.size(); ++j){
+				//std::cout <<"Boom 2" << std::endl;
+				if(strncmp(fieldName, Item.group.items[i].record.fields[j].name, getDelimiterLength()) == 0 && strcmp(fieldData, Item.group.items[i].record.fields[j].data) == 0){
+					Record = Item.group.items[i];
+					std::cout << "Record name: " << Record.record.recName << std::endl;
+					return true;
+				}
+			}
+		}
+		getRecordByFieldD(File, Item.group.items[i], fieldName, fieldData, Record);
+	}
+	return false;
+}
+parser::fileFormat::item parser::fileFormat::getRecordByFieldD(parser::fileFormat::file &File, char * fieldName, char * fieldData){
+	item Record;
+	for(unsigned int i = 0; i < File.items.size(); ++i){
+		if(getRecordByFieldD(File, File.items[i], fieldName, fieldData, Record)){
+			std::cout << "Record name: " << Record.record.recName << std::endl;
+			return Record;
+		}
+	}
+}
 /*END OF LINE*/

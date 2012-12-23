@@ -61,6 +61,13 @@ int main(int argc, char *argv[]){
 	masters = parser::fileFormat::getMasters(File);
 	for(int i = 0; i < masters.size(); ++i)
 		cout << "Master " << i << ": " << masters[i] << endl;
+	cout << "Num Items: " << File.items.size() << endl;
+	vector<parser::fileFormat::item> records;
+	records = parser::fileFormat::getRecords(File);
+	cout << "Num Records: " << records.size() << endl;
+	parser::fileFormat::item recTest;
+	recTest = parser::fileFormat::getRecordByFieldD(File, "EDID", "EnchFortifyAlchemyConstantSelf");
+	cout << recTest.record.recName << endl;
 	/*END OF LINE*/
 	return 0;
 }
