@@ -51,8 +51,9 @@ Objects/fileFormat.o :				src/commonSupport.h
 Objects/fileFormat.o \
 Objects/parser.o \
 Objects/parserClasses.o :			src/parser.h
-Objects/parserClasses.o :			src/parserClasses.h
+Objects/fileFormat.o \
 Objects/test.o :					src/fileFormat.h
+Objects/parserClasses.o :			src/parserClasses.h
 Objects/viewer.o :					src/viewer.h
 Release :							Parse
 									7z a -t7z -m0=lzma2 -mx=9 -ms=on -i@fileList Parser.7z
