@@ -23,18 +23,20 @@ TESTOBJ2 =							src/commonSupport.cpp \
 
 
 all :								Parse Parse.exe
-Parse :								init $(OBJECTS)
+Parse :								$(OBJECTS)
 									g++ -o Parse $(OBJECTS)
 Parse.exe :							src/skyrimParserRedoRel.cpp
 									i686-w64-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
-Test :								init $(TESTOBJ)
+Test :								$(TESTOBJ)
 									g++ -lz -o Test $(TESTOBJ)
 Test.exe :							src/test.cpp
 									i686-w64-mingw32-g++ src/test.cpp src/commonSupport.cpp  src/fileFormat.cpp src/parser.cpp -I/usr/i686-w64-mingw32/sys-root/mingw/include -L/usr/i686-w64-mingw32/sys-root/mingw/lib -lz -o Test.exe -static
-init :
-									mkdir -p Objects
 Objects/%.o :						src/%.cpp
 									g++ -c -o $@ $<
+$(OBJECTS) \
+$(TESTOBJ1) :						| Objects
+Objects :
+									mkdir Objects
 Objects/skyrimParserRedoRel.o \
 Objects/commonSupport.o \
 Objects/parser.o \
