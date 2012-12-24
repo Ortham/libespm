@@ -66,7 +66,8 @@ int main(int argc, char *argv[]){
 	records = parser::fileFormat::getRecords(File);
 	cout << "Num Records: " << records.size() << endl;
 	parser::fileFormat::item recTest;
-	recTest = parser::fileFormat::getRecordByFieldD(File, "EDID", "EnchFortifyAlchemyConstantSelf");
+	//Params are: File, fieldName, fieldData, length of search terms WITH terminating character
+	recTest = parser::fileFormat::getRecordByFieldD(File, "EDID", "EnchFortifyAlchemyConstantSelf", 31);
 	cout << recTest.record.recName << endl;
 	/*END OF LINE*/
 	return 0;
