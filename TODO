@@ -7,6 +7,7 @@ Extraction of the useful data from ESS files.
 Code to generate the struct representing the file format for any all games (including future ones) using the ESP/ESM format. This is possible since they use a similar basic structure. One can use this structure to create a skeleton of the file format and then parse through using the predefined format of lengths and sizes of fields to create the actual file struct that will be used per game. The records are gained by using the format the is consistent across all 5 games at the moment.
 --Basic code is just about done. 10/09/2012
 Add accessors for getting various stuff from the structs.
+--Record retrieval is done, as is searching by field data. 12/25/2012
 
 
 Not coming soon but planned:
@@ -39,4 +40,4 @@ Overhaul the storage and stuff that is used for the handling of plugin files (ma
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 12/16/2012
+On: 12/25/2012
