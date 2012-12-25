@@ -155,9 +155,8 @@ void common::writeXML(std::ofstream &out){
 		for(it2 = (*it).second.begin(); it2 != (*it).second.end(); ++it2){
 			out << "\t\t<" << (*it2).first << ">" << std::endl;
 			stuff.push((*it2).first);
-			for(int i = 0; i < (*it2).second.size(); ++i){
+			for(unsigned int i = 0; i < (*it2).second.size(); ++i)
 				out << "\t\t\t<data>\n\t\t\t\t" << (*it2).second[i] << "\n\t\t\t</data>" << std::endl;
-			}
 			out << "\t\t</" << stuff.top() << ">" << std::endl;
 			stuff.pop();
 		}
