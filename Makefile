@@ -27,8 +27,6 @@ Parse :								$(OBJECTS)
 									g++ -o Parse $(OBJECTS)
 Parse.exe :							src/skyrimParserRedoRel.cpp
 									i686-w64-mingw32-g++ -o Parse.exe src/skyrimParserRedoRel.cpp $(OBJECTS2) -static
-#Test :								$(TESTOBJ)
-#									g++ -lz -o Test $(TESTOBJ)
 Test :								$(TESTOBJ) -lz
 									g++ $^ -o $@
 Test.exe :							src/test.cpp
