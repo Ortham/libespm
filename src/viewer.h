@@ -26,7 +26,9 @@
  * @details All the functions that make the extraction of the raw data possible.
  * @note Still a work in progress and currently not very useful.
  */
-#pragma once
+#ifndef __VIEWER_H__
+#define __VIEWER_H__
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -164,3 +166,5 @@ namespace viewer{
 	}
 	/*END OF LINE*/
 }
+
+#endif /* __VIEWER_H__ */

@@ -27,7 +27,9 @@
  * It's missing some notes, but I'll get them included later.
  * The notes missing include, but are not limited to, the observation that the main TES4 section's size value corresponds to.
  */
-#pragma once
+#ifndef __FILE_FORMAT_H__
+#define __FILE_FORMAT_H__
+
 #include <iostream>
 #include <sstream>
 #include "commonSupport.h"
@@ -417,3 +419,5 @@ namespace parser{
 	}
 	/*END OF LINE*/
 }
+
+#endif /* __FILE_FORMAT_H__ */

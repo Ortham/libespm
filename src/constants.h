@@ -35,9 +35,13 @@
  * @def PRINT_END
  * The highest hexadecimal value that corresponds with a printable character.
  */
-#pragma once
+#ifndef __CONSTANTS_H__
+#define __CONSTANTS_H__
+
 #define RANGE_MIN 0x41
 #define RANGE_MAX 0x5A
 #define PRINT_START 0x20
 #define PRINT_END 0x7E
 /*END OF LINE*/
+
+#endif /* __CONSTANTS_H__ */

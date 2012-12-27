@@ -26,7 +26,9 @@
  * @details The main library of functions that the parser uses to dig through the files that the hex-viewer has generated after picking apart the inputted files.
  * @attention Do not include this file if using parserClasses.h.
  */
-#pragma once
+#ifndef __PARSER_H__
+#define __PARSER_H__
+
 #include "commonSupport.h"
 /**
  * @namespace parser
@@ -463,3 +465,5 @@ namespace parser{
 	}
 	/*END OF LINE*/
 }
+
+#endif /* __PARSER_H__ */

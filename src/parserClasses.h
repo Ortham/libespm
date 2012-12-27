@@ -26,7 +26,9 @@
  * @details Holds the objects for the parser to work with, such as files, so that we can work with multiple files in a single run and not need to re-run the program.
  * @attention Do not include parser.h if using this file.
  */
-#pragma once
+#ifndef __PARSER_CLASSES_H__
+#define __PARSER_CLASSES_H__
+
 #include "parser.h"
 namespace parser{
 #ifdef __cplusplus
@@ -176,3 +178,5 @@ extern "C"{
 	}
 	/*END OF LINE*/
 }
+
+#endif /* __PARSER_CLASSES_H__ */

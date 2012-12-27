@@ -25,7 +25,9 @@
  * @brief Contains general utility functions for the game files.
  * @details Contains the functions related to things like merging, master creation, and so forth.
  */
-#pragma once
+#ifndef __FILE_UTIL_H__
+#define __FILE_UTIL_H__
+
 #include "fileFormat.h"
 /**
  * @namespace util
@@ -66,3 +68,5 @@ namespace util{
 	void revCreateONAM(parser::fileFormat::file &fileA);
 	/*END OF LINE*/
 }
+
+#endif /* __FILE_UTIL_H__ */

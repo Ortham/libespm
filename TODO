@@ -27,7 +27,6 @@ Another overhaul of the organization of the code:
 **One possibility for this is to break out each namespace into a separate repository, project, or something and then use the submodules feature of git to link them all together.
 **Another possibility is to have a single umbrella project, repository, or whatever and set up each portion as a separate directory or something.
 **Either way, the includes and stuff would need to be changed to reflect the new structure.
-*Look into replacing the #pragma once usage with the more standard include-guards for compiler portability.
 *Look into converting some functions into template functions for more sanity.
 *Do a general cleanup of the code for readability and to make it easier to go through and stuff.
 *Replace the use of gcount() with the variables. We're already passing the values in, so this adds extra overhead that isn't needed.
@@ -40,4 +39,4 @@ Overhaul the storage and stuff that is used for the handling of plugin files (ma
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 12/25/2012
+On: 12/27/2012

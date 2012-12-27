@@ -25,7 +25,9 @@
  * @brief Contains the functions common to the viewer and parser.
  * @details A support library to hold functions that both programs use to help with keeping down clutter.
  */
-#pragma once
+#ifndef __COMMON_SUPPORT_H__
+#define __COMMON_SUPPORT_H__
+
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -175,3 +177,5 @@ namespace common{
 	}
 	/*END OF LINE*/
 }
+
+#endif /* __COMMON_SUPPORT_H__ */
