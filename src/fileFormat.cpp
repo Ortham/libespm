@@ -104,12 +104,12 @@ unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFor
 	Field1.size = 0;
 	unsigned int count = 0;
 	input.read(Field1.name, getDelimiterLength());
-	count += input.gcount();
+	count += getDelimiterLength();
 	input.read((char*)&(Field1.size), getFieldSizeLength());
-	count += input.gcount();
+	count += getFieldSizeLength();
 	Field1.data = new char[Field1.size];
 	input.read(Field1.data, Field1.size);
-	count += input.gcount();
+	count += Field1.size;
 	return count;
 }
 unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::item &Group){
@@ -124,21 +124,21 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	Group.group.version = new char[getVerLength()];
 	Group.group.stuffz2 = new char[getStuffzLength()];
 	input.read(Group.group.groupHeader, getDelimiterLength());
-	count += input.gcount();
+	count += getDelimiterLength();
 	input.read((char*)&Group.group.groupSize, getGroupSizeLength());
-	count += input.gcount();
+	count += getGroupSizeLength();
 	input.read(Group.group.groupName, getDelimiterLength());
-	count += input.gcount();
+	count += getDelimiterLength();
 	input.read(Group.group.type, getGroupTypeLength());
-	count += input.gcount();
+	count += getGroupTypeLength();
 	input.read(Group.group.stamp, getGroupStampLength());
-	count += input.gcount();
+	count += getGroupStampLength();
 	input.read(Group.group.stuffz1, getStuffzLength());
-	count += input.gcount();
+	count += getStuffzLength();
 	input.read(Group.group.version, getVerLength());
-	count += input.gcount();
+	count += getVerLength();
 	input.read(Group.group.stuffz2, getStuffzLength());
-	count += input.gcount();
+	count += getStuffzLength();
 	//read in pre-meat stuffz
 	//count += groupStuffz; //this is due to the groupSize being the size of the entire block, will need a secondary counter for records to return back to this function
 	char * temp;
@@ -190,33 +190,33 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	Record.record.stuffz = new char[getStuffzLength()];
 	Record.record.decompSize = 0;
 	input.read(Record.record.recName, getDelimiterLength());
-	totalCount += input.gcount();
+	totalCount += getDelimiterLength();
 	input.read((char *)&(Record.record.size), getRecSizeLength());
-	totalCount += input.gcount();
+	totalCount += getRecSizeLength();
 	input.read((char *)&(Record.record.flags), getFlagLength());
-	totalCount += input.gcount();
+	totalCount += getFlagLength();
 	input.read(Record.record.recID, getIDLength());
-	totalCount += input.gcount();
+	totalCount += getIDLength();
 	input.read(Record.record.revision, getRevLength());
-	totalCount += input.gcount();
+	totalCount += getRevLength();
 	input.read(Record.record.version, getVerLength());
-	totalCount += input.gcount();
+	totalCount += getVerLength();
 	input.read(Record.record.stuffz, getStuffzLength());
-	totalCount += input.gcount();
+	totalCount += getStuffzLength();
 	if(isCompressed(Record)){
 		//read in compressed data and uncompress
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
 		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff.
 		 *That's the uncompressed size of the data.*/
 		input.read((char*)&Record.record.decompSize, getDecompSizeLength());
-		totalCount += input.gcount();
+		totalCount += getDecompSizeLength();
 		char * decData;
 		decData = new char[Record.record.decompSize]; //may change the size to Record1.decompSize * 2; though, the zlib documentation isn't clear if it shrinks the memory block down
 		char * data;
 		data = new char[Record.record.size];
 		unsigned int compSize = Record.record.size - getDecompSizeLength();
 		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
-		totalCount += input.gcount();
+		totalCount += compSize;
 		//uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
 		uncompress((Bytef*)decData, (uLongf*)&Record.record.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
