@@ -53,6 +53,12 @@ namespace viewer{
 	 */
 	bool isPrintable(unsigned int data);
 	/**
+	 * @brief Gets the size of the file we are currently dealing with.
+	 * @details It gives us the file's size so that we can more easily refer to it in various ways.
+	 * @returns The file size.
+	 */
+	inline std::ifstream::pos_type getSize();
+	/**
 	 * @brief Reads the input file.
 	 * @details It reads in all the data from the file and stores it into an array of characters to make messing with the data easier.
 	 * @param &file
@@ -68,12 +74,6 @@ namespace viewer{
 	 * @returns A <tt>char</tt> array containing all the data in the file.
 	 */
 	unsigned char * readFile2(std::ifstream &file);
-	/**
-	 * @brief Gets the size of the file we are currently dealing with.
-	 * @details It gives us the file's size so that we can more easily refer to it in various ways.
-	 * @returns The file size.
-	 */
-	inline std::ifstream::pos_type getSize();
 	/**
 	 * @brief Stores the size of the file we are currently dealing with.
 	 * @details It stores the file's size for us so that we can more easily refer to it in various ways.
@@ -108,15 +108,6 @@ namespace viewer{
 	 */
 	extern "C" void runView(char * inputFile1, std::ifstream &file, std::ofstream &out);
 	/**
-	 * @brief Writes the hexadecimal data to a file.
-	 * @details Writes the printable hexadecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.
-	 * @param data[]
-	 * The data contained in the file.
-	 * @param &out
-	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
-	 */
-	void writePrintableHex(unsigned char data[], std::ofstream &out);
-	/**
 	 * @brief Writes the character data to a file.
 	 * @details Writes the printable character data to a file to allow for analysis later on. This allows us to parse the data later on and turn it into usable information.
 	 * @param data[]
@@ -127,13 +118,13 @@ namespace viewer{
 	void writePrintableChar(unsigned char data[], std::ofstream &out);
 	/**
 	 * @brief Writes the hexadecimal data to a file.
-	 * @details Writes the raw hexadecimal data to a file to allow for analysis later on.
+	 * @details Writes the printable hexadecimal data to a file to allow for analysis later on. Not very useful on its own, but useful when combined with the raw data.
 	 * @param data[]
 	 * The data contained in the file.
 	 * @param &out
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
-	void writeRawHex(unsigned char data[], std::ofstream &out);
+	void writePrintableHex(unsigned char data[], std::ofstream &out);
 	/**
 	 * @brief Writes the character data to a file
 	 * @details Writes the raw character data to a file. Essentially makes a backup copy of the data we are using.
@@ -158,6 +149,15 @@ namespace viewer{
 	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
 	 */
 	void writeRawChar2(unsigned char data[], std::ofstream &out);
+	/**
+	 * @brief Writes the hexadecimal data to a file.
+	 * @details Writes the raw hexadecimal data to a file to allow for analysis later on.
+	 * @param data[]
+	 * The data contained in the file.
+	 * @param &out
+	 * The file stream to use for the output. This is so that we are not making multiple streams and use as few as possible.
+	 */
+	void writeRawHex(unsigned char data[], std::ofstream &out);
 	inline std::ifstream::pos_type getSize(){
 		return size;
 	}

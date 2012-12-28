@@ -154,21 +154,6 @@ void viewer::runView(char * inputFile1, std::ifstream &file, std::ofstream &out)
 	else
 		std::cout << "Unable to open file" << std::endl;
 }
-void viewer::writePrintableHex(unsigned char data[], std::ofstream &out){
-	bool flag = false;
-	for(unsigned int i = 0; i < getSize(); ++i){
-		if(isPrintable(static_cast<unsigned int>(data[i]))){
-			out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
-			flag = true;
-		}
-		else{
-			if(flag){
-				out << std::endl;
-				flag = false;
-			}
-		}
-	}
-}
 void viewer::writePrintableChar(unsigned char data[], std::ofstream &out){
 	bool flag = false;
 	for(unsigned int i = 0; i < getSize(); ++i){
@@ -184,9 +169,20 @@ void viewer::writePrintableChar(unsigned char data[], std::ofstream &out){
 		}
 	}
 }
-void viewer::writeRawHex(unsigned char data[], std::ofstream &out){
-	for(unsigned int i = 0; i < getSize(); ++i)
-		out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
+void viewer::writePrintableHex(unsigned char data[], std::ofstream &out){
+	bool flag = false;
+	for(unsigned int i = 0; i < getSize(); ++i){
+		if(isPrintable(static_cast<unsigned int>(data[i]))){
+			out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
+			flag = true;
+		}
+		else{
+			if(flag){
+				out << std::endl;
+				flag = false;
+			}
+		}
+	}
 }
 void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 	for(unsigned int i = 0; i < getSize(); ++i)
@@ -195,5 +191,9 @@ void viewer::writeRawChar(unsigned char data[], std::ofstream &out){
 }
 void viewer::writeRawChar2(unsigned char data[], std::ofstream &out){
 	out.write((char *)data, getSize());
+}
+void viewer::writeRawHex(unsigned char data[], std::ofstream &out){
+	for(unsigned int i = 0; i < getSize(); ++i)
+		out << std::hex << static_cast<unsigned int>(data[i]) << "\t";
 }
 /*END OF LINE*/

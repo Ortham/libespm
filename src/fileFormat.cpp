@@ -44,60 +44,50 @@ unsigned int parser::fileFormat::headSizeLength;
 unsigned int parser::fileFormat::recSizeLength;
 unsigned int parser::fileFormat::stuffzLength;
 unsigned int parser::fileFormat::verLength;
-void parser::fileFormat::init(){
-	setDelimiterLength2();
-	setFlagLength2();
-	setGroupStampLength();
-	setGroupTypeLength();
-	setIDLength();
-	setRevLength();
-	setDecompSizeLength();
-	setFieldSizeLength();
-	setGroupSizeLength();
-	setHeadSizeLength();
-	setRecSizeLength();
-	setStuffzLength();
-	setVerLength();
+bool parser::fileFormat::getRecordByFieldD(parser::fileFormat::item &Item, char * fieldName, char * fieldData, parser::fileFormat::item &Record, unsigned int length){
+	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+		if(Item.group.items[i].type == RECORD){
+			for(unsigned int j = 0; j < Item.group.items[i].record.fields.size(); ++j){
+				if(strncmp(fieldName, Item.group.items[i].record.fields[j].name, getDelimiterLength()) == 0 && length == Item.group.items[i].record.fields[j].size && strncmp(fieldData, Item.group.items[i].record.fields[j].data, length) == 0){
+					Record = Item.group.items[i];
+					return true;
+				}
+			}
+		}
+		getRecordByFieldD(Item.group.items[i], fieldName, fieldData, Record, length);
+	}
+	return false;
 }
-void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File){
-	init();
-	readHeaderThing(input, File);
-	while(input.good()){
-		struct item Item;
-		readGroup(input, Item);
-		File.items.push_back(Item);
-//		delete Group.groupHeader;
-//		delete Group.groupName;
-//		delete Group.type;
-//		delete Group.stamp;
-//		delete Group.stuffz1;
-//		delete Group.version;
-//		delete Group.stuffz2;
+bool parser::fileFormat::isCompressed(parser::fileFormat::item &Record){
+	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
+	if((Record.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
+		return true;
+	return false;
+}
+bool parser::fileFormat::isMaster(parser::fileFormat::file &File){
+	//if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
+	if((File.flags & strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0))
+		return true;
+	return false;
+}
+parser::fileFormat::item parser::fileFormat::getRecordByFieldD(parser::fileFormat::file &File, char * fieldName, char * fieldData, unsigned int length){
+	item Record;
+	for(unsigned int i = 0; i < File.items.size(); ++i){
+		if(getRecordByFieldD(File.items[i], fieldName, fieldData, Record, length))
+			return Record;
 	}
 }
-void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileFormat::file &File){
-//	struct field Field;
-	unsigned int count = 0;
-	File.header = new char[getDelimiterLength()];
-	File.size = 0;
-	File.flags = 0;
-	File.ID = new char[getIDLength()];
-	File.revision = new char[getRevLength()];
-	File.version = new char[getVerLength()];
-	File.stuffz = new char[getStuffzLength()];
-	input.read(File.header, getDelimiterLength());
-	input.read((char *)&(File.size), getHeadSizeLength());
-	input.read((char *)&(File.flags), getFlagLength());
-	input.read(File.ID, getIDLength());
-	input.read(File.revision, getRevLength());
-	input.read(File.version, getVerLength());
-	input.read(File.stuffz, getStuffzLength());
-	while(count < File.size){
-		count += readField(input, Field);
-		File.fields.push_back(Field);
-//		delete Field.name;
-//		delete Field.data;
-	}
+///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
+unsigned char * parser::fileFormat::readRecord(std::ifstream &file){
+	unsigned char * data;
+	file.read((char *)data, getDelimiterLength());
+	return data;
+}
+///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
+unsigned char * parser::fileFormat::readRecordData(std::ifstream &file){
+	unsigned char * data;
+	//file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
+	return data;
 }
 unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
 	Field1.name = new char[getDelimiterLength()];
@@ -111,6 +101,12 @@ unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFor
 	input.read(Field1.data, Field1.size);
 	count += Field1.size;
 	return count;
+}
+///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
+unsigned int parser::fileFormat::readFlags(std::ifstream &file){
+	unsigned int data;
+	file.read((char *)&data, getFlagLength());
+	return data;
 }
 unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::item &Group){
 	unsigned int count = 0;
@@ -217,7 +213,6 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		unsigned int compSize = Record.record.size - getDecompSizeLength();
 		input.read(data, compSize); //may need a gcount here; definietly change it so that decompSize works off a config value for its size
 		totalCount += compSize;
-		//uncompress(decData, &Record1.decompSize, data, compSize); //this could be completely wrong, but the zlib documentation isn't really clear
 		uncompress((Bytef*)decData, (uLongf*)&Record.record.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
 		while(count < Record.record.decompSize){
@@ -254,34 +249,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	}
 	return totalCount;
 }
-bool parser::fileFormat::isCompressed(parser::fileFormat::item &Record){
-	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
-	if((Record.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
-		return true;
-	return false;
-}
-bool parser::fileFormat::isMaster(parser::fileFormat::file &File){
-	//if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
-	if((File.flags & strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0))
-		return true;
-	return false;
-}
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
-unsigned int parser::fileFormat::readFlags(std::ifstream &file){
-	unsigned int data;
-	file.read((char *)&data, getFlagLength());
-	return data;
-}
-unsigned char * parser::fileFormat::readRecord(std::ifstream &file){
-	unsigned char * data;
-	file.read((char *)data, getDelimiterLength());
-	return data;
-}
-unsigned char * parser::fileFormat::readRecordData(std::ifstream &file){
-	unsigned char * data;
-	//file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
-	return data;
-}
 unsigned int parser::fileFormat::readSize(std::ifstream &file){
 	unsigned int size = 0;
 	for(unsigned int i = 0; i < getFieldSizeLength(); ++i)
@@ -294,6 +262,34 @@ std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &Fil
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			masters.push_back(File.fields[i].data);
 	return masters;
+}
+std::vector<parser::fileFormat::item> parser::fileFormat::getRecords(parser::fileFormat::file &File){
+	std::vector<item> records;
+	for(unsigned int i = 0; i < File.items.size(); ++i)
+		getRecords(records, File.items[i]);
+	return records;
+}
+void parser::fileFormat::getRecords(std::vector<parser::fileFormat::item> &records, parser::fileFormat::item &Item){
+	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+		if(Item.group.items[i].type == RECORD)
+			records.push_back(Item);
+		getRecords(records, Item.group.items[i]);
+	}
+}
+void parser::fileFormat::init(){
+	setDelimiterLength2();
+	setFlagLength2();
+	setGroupStampLength();
+	setGroupTypeLength();
+	setIDLength();
+	setRevLength();
+	setDecompSizeLength();
+	setFieldSizeLength();
+	setGroupSizeLength();
+	setHeadSizeLength();
+	setRecSizeLength();
+	setStuffzLength();
+	setVerLength();
 }
 void parser::fileFormat::iterate(parser::fileFormat::item &Group){
 	for(unsigned int i = 0; i < Group.group.items.size(); ++i){
@@ -319,38 +315,44 @@ void parser::fileFormat::iterate(parser::fileFormat::item &Group){
 		iterate(Group.group.items[i]);
 	}
 }
-void parser::fileFormat::getRecords(std::vector<parser::fileFormat::item> &records, parser::fileFormat::item &Item){
-	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
-		if(Item.group.items[i].type == RECORD)
-			records.push_back(Item);
-		getRecords(records, Item.group.items[i]);
+void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File){
+	init();
+	readHeaderThing(input, File);
+	while(input.good()){
+		struct item Item;
+		readGroup(input, Item);
+		File.items.push_back(Item);
+//		delete Group.groupHeader;
+//		delete Group.groupName;
+//		delete Group.type;
+//		delete Group.stamp;
+//		delete Group.stuffz1;
+//		delete Group.version;
+//		delete Group.stuffz2;
 	}
 }
-std::vector<parser::fileFormat::item> parser::fileFormat::getRecords(parser::fileFormat::file &File){
-	std::vector<item> records;
-	for(unsigned int i = 0; i < File.items.size(); ++i)
-		getRecords(records, File.items[i]);
-	return records;
-}
-bool parser::fileFormat::getRecordByFieldD(parser::fileFormat::item &Item, char * fieldName, char * fieldData, parser::fileFormat::item &Record, unsigned int length){
-	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
-		if(Item.group.items[i].type == RECORD){
-			for(unsigned int j = 0; j < Item.group.items[i].record.fields.size(); ++j){
-				if(strncmp(fieldName, Item.group.items[i].record.fields[j].name, getDelimiterLength()) == 0 && length == Item.group.items[i].record.fields[j].size && strncmp(fieldData, Item.group.items[i].record.fields[j].data, length) == 0){
-					Record = Item.group.items[i];
-					return true;
-				}
-			}
-		}
-		getRecordByFieldD(Item.group.items[i], fieldName, fieldData, Record, length);
-	}
-	return false;
-}
-parser::fileFormat::item parser::fileFormat::getRecordByFieldD(parser::fileFormat::file &File, char * fieldName, char * fieldData, unsigned int length){
-	item Record;
-	for(unsigned int i = 0; i < File.items.size(); ++i){
-		if(getRecordByFieldD(File.items[i], fieldName, fieldData, Record, length))
-			return Record;
+void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileFormat::file &File){
+//	struct field Field;
+	unsigned int count = 0;
+	File.header = new char[getDelimiterLength()];
+	File.size = 0;
+	File.flags = 0;
+	File.ID = new char[getIDLength()];
+	File.revision = new char[getRevLength()];
+	File.version = new char[getVerLength()];
+	File.stuffz = new char[getStuffzLength()];
+	input.read(File.header, getDelimiterLength());
+	input.read((char *)&(File.size), getHeadSizeLength());
+	input.read((char *)&(File.flags), getFlagLength());
+	input.read(File.ID, getIDLength());
+	input.read(File.revision, getRevLength());
+	input.read(File.version, getVerLength());
+	input.read(File.stuffz, getStuffzLength());
+	while(count < File.size){
+		count += readField(input, Field);
+		File.fields.push_back(Field);
+//		delete Field.name;
+//		delete Field.data;
 	}
 }
 /*END OF LINE*/

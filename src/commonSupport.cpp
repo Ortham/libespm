@@ -29,8 +29,8 @@
 #include <stack>
 #include "constants.h"
 #include "commonSupport.h"
-std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
 enum common::type types;
+std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
 std::string common::options::game;
 bool common::isString(unsigned char data[]){
 	unsigned int dataSize = sizeof data;
@@ -42,28 +42,33 @@ bool common::isString(unsigned char data[]){
 	return true;
 }
 const char* common::inputName(std::string base, std::string addon){
-	//cout << base << endl;
-	//cout << addon << endl;
-	//cout << base + addon << endl;
 	return (base + addon).c_str();
 }
 const char* common::inputName(char * base1, char * addon1){
 	std::string base(base1);
 	std::string addon(addon1);
-	//cout << base << endl;
-	//cout << addon << endl;
-	//cout << base + addon << endl;
 	return (base + addon).c_str();
 }
-/*int common::numLines(ifstream &in){
-	///in.seekg(0, ios::beg);
-	string line;
-	vector<string> lines;
-	while(getline(in, line))
-		lines.push_back(line);
-	//in.seekg(0, ios::beg);
-	return lines.size();
-}*/
+common::type common::getType(std::string var){
+	if(var == "String")
+		return STRING;
+	else if(var == "UnsignedInt")
+		return UNSIGNED_INT;
+	else if(var == "SignedInt")
+		return SIGNED_INT;
+	else if(var == "UnsignedLong")
+		return UNSIGNED_LONG;
+	else if(var == "SignedLong")
+		return SIGNED_LONG;
+	else if(var == "UnsignedShort")
+		return UNSIGNED_SHORT;
+	else if(var == "SignedShort")
+		return SIGNED_SHORT;
+	else if(var == "Float")
+		return FLOAT;
+	else if(var == "Double")
+		return DOUBLE;
+}
 void common::callViewer(std::string fileName){
 	fileName = "\"" + fileName + "\"";
 	#ifdef __WIN32__
@@ -164,26 +169,6 @@ void common::writeXML(std::ofstream &out){
 		stuff.pop();
 	}
 	out << "</Games>" << std::endl;
-}
-common::type common::getType(std::string var){
-	if(var == "String")
-		return STRING;
-	else if(var == "UnsignedInt")
-		return UNSIGNED_INT;
-	else if(var == "SignedInt")
-		return SIGNED_INT;
-	else if(var == "UnsignedLong")
-		return UNSIGNED_LONG;
-	else if(var == "SignedLong")
-		return SIGNED_LONG;
-	else if(var == "UnsignedShort")
-		return UNSIGNED_SHORT;
-	else if(var == "SignedShort")
-		return SIGNED_SHORT;
-	else if(var == "Float")
-		return FLOAT;
-	else if(var == "Double")
-		return DOUBLE;
 }
 bool common::options::contains(std::string opt, std::string val){
 	for(unsigned int i = 0; i < structVals[game][opt].size(); ++i)

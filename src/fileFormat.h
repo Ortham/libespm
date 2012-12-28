@@ -41,6 +41,10 @@ namespace parser{
 	 * this is where the main programs will output a parsed format to in various structs.
 	 */
 	namespace fileFormat{
+		enum Type{
+			GROUP,
+			RECORD
+		};
 		/**
 		 * @var delimiterLength
 		 * The length of the delimiter in bytes.
@@ -82,10 +86,6 @@ namespace parser{
 		 * The length of the version (?) field in bytes
 		 */
 		extern unsigned int verLength;
-		enum Type{
-			GROUP,
-			RECORD
-		};
 		/**
 		 * @struct field
 		 * @brief A field.
@@ -139,16 +139,7 @@ namespace parser{
 			std::vector<field> fields;
 			std::vector<item> items;
 		};
-		void init();
-		void readFile(std::ifstream &input, file &File);
-		void readHeaderThing(std::ifstream &input, file &File);
-		void getRecords(std::vector<item> &records, item &Item);
 		bool getRecordByFieldD(item &Item, char * fieldName, char * fieldData, item &Record, unsigned int length);
-		item getRecordByFieldD(file &File, char * fieldName, char * fieldData, unsigned int length);
-		std::vector<item> getRecords(file &File);
-		unsigned int readField(std::ifstream &input, field &Field1);
-		unsigned int readGroup(std::ifstream &input, item &Group);
-		unsigned int readRecord(std::ifstream &input, item &Record);
 		/**
 		 * @brief Checks to see if a record is compressed.
 		 * @details Checks the flag on the record to see if the compression flag is set.
@@ -165,14 +156,7 @@ namespace parser{
 		 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
 		 */
 		bool isMaster(file &File);
-		/**
-		 * @brief Reads the flags.
-		 * @details Reads the flags from various sections based on the length of the flag section.
-		 * @param &file
-		 * The file that is open.
-		 * @returns The flags in a C-String, since their format can change and this enables them to be stored for whatever use.
-		 */
-		unsigned int readFlags(std::ifstream &file);
+		item getRecordByFieldD(file &File, char * fieldName, char * fieldData, unsigned int length);
 		/**
 		 * @brief Reads a record name.
 		 * @details Reads the record name based on the length for the delimiter.
@@ -189,24 +173,6 @@ namespace parser{
 		 * @returns The record data in a C-String, since their format can change and this enables them to be stored for whatever use.
 		 */
 		unsigned char * readRecordData(std::ifstream &file);
-		/**
-		 * @brief Reads the size of a record.
-		 * @details Reads the record size based on the length of the size section.
-		 * @param &file
-		 * The file that is open.
-		 * @returns The record size as an unsigned int.
-		 * @note The type of the size may need tweaking in case it changes to support a value larger than an unsigned int can contain.
-		 */
-		unsigned int readSize(std::ifstream &file);
-		/**
-		 * @brief Gets the 'masters' of a plugin.
-		 * @details Gets a list of all of the 'masters' of a file.
-		 * @param &File
-		 * The file, respresented as a struct, that we want to get the 'masters' of. This can currently only be called after we read in the data from a file.
-		 * However, after the planned refactoring, this will hopefully be much saner to use. I hope...
-		 * @returns A list of the 'masters' of a file.
-		 */
-		std::vector<char *> getMasters(file &File);
 		/**
 		 * @brief Gets the length of the delimiter.
 		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
@@ -262,6 +228,41 @@ namespace parser{
 		 * @returns The length of the version field.
 		 */
 		inline unsigned int getVerLength();
+		unsigned int readField(std::ifstream &input, field &Field1);
+		/**
+		 * @brief Reads the flags.
+		 * @details Reads the flags from various sections based on the length of the flag section.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The flags in a C-String, since their format can change and this enables them to be stored for whatever use.
+		 */
+		unsigned int readFlags(std::ifstream &file);
+		unsigned int readGroup(std::ifstream &input, item &Group);
+		unsigned int readRecord(std::ifstream &input, item &Record);
+		/**
+		 * @brief Reads the size of a record.
+		 * @details Reads the record size based on the length of the size section.
+		 * @param &file
+		 * The file that is open.
+		 * @returns The record size as an unsigned int.
+		 * @note The type of the size may need tweaking in case it changes to support a value larger than an unsigned int can contain.
+		 */
+		unsigned int readSize(std::ifstream &file);
+		/**
+		 * @brief Gets the 'masters' of a plugin.
+		 * @details Gets a list of all of the 'masters' of a file.
+		 * @param &File
+		 * The file, respresented as a struct, that we want to get the 'masters' of. This can currently only be called after we read in the data from a file.
+		 * However, after the planned refactoring, this will hopefully be much saner to use. I hope...
+		 * @returns A list of the 'masters' of a file.
+		 */
+		std::vector<char *> getMasters(file &File);
+		std::vector<item> getRecords(file &File);
+		void getRecords(std::vector<item> &records, item &Item);
+		void init();
+		void iterate(item &Group);
+		void readFile(std::ifstream &input, file &File);
+		void readHeaderThing(std::ifstream &input, file &File);
 		/**
 		 * @brief Sets the length of the delimiter.
 		 * @details Is here to allow for cases where the delimiter isn't the 4-character standard that we have now. In case it changes, all that will need to be done is to
@@ -328,7 +329,6 @@ namespace parser{
 		 * pass on the new length to properly read the files.
 		 */
 		inline void setVerLength();
-		void iterate(item &Group);
 		inline unsigned int getDelimiterLength(){
 			return delimiterLength;
 		}
