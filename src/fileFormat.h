@@ -55,7 +55,15 @@ namespace parser{
 		 * The length of the flag field in bytes.
 		 */
 		extern unsigned int flagLength;
+		/**
+		 * @var groupStampLength
+		 * The length of the group time-stamp field in bytes.
+		 */
 		extern unsigned int groupStampLength;
+		/**
+		 * @var groupTypeLength
+		 * The length of the group type field in bytes.
+		 */
 		extern unsigned int groupTypeLength;
 		/**
 		 * @var IDLength
@@ -68,13 +76,29 @@ namespace parser{
 		 */
 		extern unsigned int revLength;
 		/**
-		 * @var sizeLength
-		 * The length of the size field in bytes.
+		 * @var decompSizeLength
+		 * The length of the decompressed size field in bytes.
 		 */
 		extern unsigned int decompSizeLength;
+		/**
+		 * @var fieldSizeLength
+		 * The length of the size field for fields in bytes.
+		 */
 		extern unsigned int fieldSizeLength;
+		/**
+		 * @var headSizeLength
+		 * The length of the size field for the file header in bytes.
+		 */
 		extern unsigned int headSizeLength;
+		/**
+		 * @var groupSizeLength
+		 * The length of the size field for groups in bytes.
+		 */
 		extern unsigned int groupSizeLength;
+		/**
+		 * @var recSizeLength
+		 * The length of the size field for records in bytes.
+		 */
 		extern unsigned int recSizeLength;
 		/**
 		 * @var stuffzLength
