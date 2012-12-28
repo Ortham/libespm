@@ -95,7 +95,8 @@ unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFor
 	unsigned int count = 0;
 	input.read(Field1.name, getDelimiterLength());
 	count += getDelimiterLength();
-	input.read((char*)&(Field1.size), getFieldSizeLength());
+	//input.read((char*)&(Field1.size), getFieldSizeLength());
+	input.read(reinterpret_cast<char*>(&Field1.size), getFieldSizeLength());
 	count += getFieldSizeLength();
 	Field1.data = new char[Field1.size];
 	input.read(Field1.data, Field1.size);
@@ -121,7 +122,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	Group.group.stuffz2 = new char[getStuffzLength()];
 	input.read(Group.group.groupHeader, getDelimiterLength());
 	count += getDelimiterLength();
-	input.read((char*)&Group.group.groupSize, getGroupSizeLength());
+	input.read(reinterpret_cast<char*>(&Group.group.groupSize), getGroupSizeLength());
 	count += getGroupSizeLength();
 	input.read(Group.group.groupName, getDelimiterLength());
 	count += getDelimiterLength();
@@ -187,9 +188,9 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	Record.record.decompSize = 0;
 	input.read(Record.record.recName, getDelimiterLength());
 	totalCount += getDelimiterLength();
-	input.read((char *)&(Record.record.size), getRecSizeLength());
+	input.read(reinterpret_cast<char*>(&Record.record.size), getRecSizeLength());
 	totalCount += getRecSizeLength();
-	input.read((char *)&(Record.record.flags), getFlagLength());
+	input.read(reinterpret_cast<char*>(&Record.record.flags), getFlagLength());
 	totalCount += getFlagLength();
 	input.read(Record.record.recID, getIDLength());
 	totalCount += getIDLength();
@@ -204,7 +205,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 		/*For the compressed stuff, the size of the record is the number of bytes for meat after you get through all the information stuff like flags.
 		 *That's the raw size, not the actual size. The actual size is contained in the 4 bytes (which are counted in the raw size) after the informational stuff.
 		 *That's the uncompressed size of the data.*/
-		input.read((char*)&Record.record.decompSize, getDecompSizeLength());
+		input.read(reinterpret_cast<char*>(&Record.record.decompSize), getDecompSizeLength());
 		totalCount += getDecompSizeLength();
 		char * decData;
 		decData = new char[Record.record.decompSize]; //may change the size to Record1.decompSize * 2; though, the zlib documentation isn't clear if it shrinks the memory block down
@@ -222,7 +223,7 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 			count += getDelimiterLength();
 			for(int i = 0; i < getDelimiterLength(); ++i)
 				decData++;
-			memcpy((char *)&Field.size, decData, getFieldSizeLength());
+			memcpy(reinterpret_cast<char*>(&Field.size), decData, getFieldSizeLength());
 			count += getFieldSizeLength();
 			for(int i = 0; i < getFieldSizeLength(); ++i)
 				decData++;
@@ -342,8 +343,8 @@ void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileForma
 	File.version = new char[getVerLength()];
 	File.stuffz = new char[getStuffzLength()];
 	input.read(File.header, getDelimiterLength());
-	input.read((char *)&(File.size), getHeadSizeLength());
-	input.read((char *)&(File.flags), getFlagLength());
+	input.read(reinterpret_cast<char*>(&File.size), getHeadSizeLength());
+	input.read(reinterpret_cast<char*>(&File.flags), getFlagLength());
 	input.read(File.ID, getIDLength());
 	input.read(File.revision, getRevLength());
 	input.read(File.version, getVerLength());
