@@ -2,7 +2,7 @@
 *.o
 gitignore
 *.diff
-Objects/
+obj/
 *.exe
 *.7z
 *.tar
