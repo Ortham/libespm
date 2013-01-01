@@ -29,7 +29,6 @@
 #define __COMMON_SUPPORT_H__
 
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <string>
 #include <vector>

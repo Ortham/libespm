@@ -19,8 +19,11 @@
  */
 
 #include <cstring>
+#include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
+#include "commonSupport.h"
 #include "fileFormat.h"
 using namespace std;
 int main(int argc, char *argv[]){

@@ -19,6 +19,7 @@
  */
 
 #include <cstdlib>
+#include "commonSupport.h"
 #include "fileUtil.h"
 void util::createMast(parser::fileFormat::file &fileA){
 	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);

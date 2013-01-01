@@ -26,6 +26,7 @@
  * @details All the functions that make the extraction of the raw data possible.
  * @note Still a work in progress and currently not very useful.
  */
+#include <iostream>
 #include "commonSupport.h"
 #include "viewer.h"
 std::ifstream::pos_type viewer::size;

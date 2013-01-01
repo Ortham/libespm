@@ -30,8 +30,9 @@
 #ifndef __FILE_FORMAT_H__
 #define __FILE_FORMAT_H__
 
-#include <iostream>
+#include <fstream>
 #include <sstream>
+#include <vector>
 #include "constants.h"
 #include "commonSupport.h"
 namespace parser{

@@ -29,8 +29,9 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include <fstream>
+#include <string>
 #include "constants.h"
-#include "commonSupport.h"
 /**
  * @namespace parser
  * @brief Contains the parser specific functions.

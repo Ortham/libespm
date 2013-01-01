@@ -27,6 +27,7 @@
  */
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 #include <zlib.h>
 #include "fileFormat.h"
 #include "parser.h"

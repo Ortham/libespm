@@ -30,7 +30,6 @@
 #define __VIEWER_H__
 
 #include <fstream>
-#include <iostream>
 #include <string>
 #include "constants.h"
 /**
