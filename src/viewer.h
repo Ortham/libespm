@@ -32,6 +32,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include "constants.h"
 /**
  * @namespace viewer
  * @brief Contains the viewer specific functions.

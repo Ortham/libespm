@@ -33,6 +33,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "constants.h"
 /**
  * @namespace common
  * @brief The common stuff to all programs.

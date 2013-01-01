@@ -28,6 +28,7 @@
 #ifndef __FILE_UTIL_H__
 #define __FILE_UTIL_H__
 
+#include "constants.h"
 #include "fileFormat.h"
 /**
  * @namespace util

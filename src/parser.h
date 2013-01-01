@@ -29,6 +29,7 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
+#include "constants.h"
 #include "commonSupport.h"
 /**
  * @namespace parser

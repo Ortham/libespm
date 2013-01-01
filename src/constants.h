@@ -38,6 +38,11 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
+#ifndef __cplusplus
+	#define bool int
+	#define true 1
+	#define false 0
+#endif
 #define RANGE_MIN 0x41
 #define RANGE_MAX 0x5A
 #define PRINT_START 0x20

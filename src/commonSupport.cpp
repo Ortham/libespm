@@ -27,7 +27,6 @@
  */
 #include <cstdlib>
 #include <stack>
-#include "constants.h"
 #include "commonSupport.h"
 enum common::type types;
 std::map<std::string, std::map<std::string, std::vector<std::string> > > common::structVals;
