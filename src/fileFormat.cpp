@@ -31,21 +31,21 @@
 #include <zlib.h>
 #include "fileFormat.h"
 #include "parser.h"
-struct parser::fileFormat::field Field; //This may go away in favor of using it only in the functions, but we shall see
-unsigned int parser::fileFormat::delimiterLength;
-unsigned int parser::fileFormat::flagLength;
-unsigned int parser::fileFormat::groupStampLength;
-unsigned int parser::fileFormat::groupTypeLength;
-unsigned int parser::fileFormat::IDLength;
-unsigned int parser::fileFormat::revLength;
-unsigned int parser::fileFormat::decompSizeLength;
-unsigned int parser::fileFormat::fieldSizeLength;
-unsigned int parser::fileFormat::groupSizeLength;
-unsigned int parser::fileFormat::headSizeLength;
-unsigned int parser::fileFormat::recSizeLength;
-unsigned int parser::fileFormat::stuffzLength;
-unsigned int parser::fileFormat::verLength;
-bool parser::fileFormat::getRecordByFieldD(parser::fileFormat::item &Item, char * fieldName, char * fieldData, parser::fileFormat::item &Record, unsigned int length){
+struct espm::field Field; //This may go away in favor of using it only in the functions, but we shall see
+unsigned int espm::delimiterLength;
+unsigned int espm::flagLength;
+unsigned int espm::groupStampLength;
+unsigned int espm::groupTypeLength;
+unsigned int espm::IDLength;
+unsigned int espm::revLength;
+unsigned int espm::decompSizeLength;
+unsigned int espm::fieldSizeLength;
+unsigned int espm::groupSizeLength;
+unsigned int espm::headSizeLength;
+unsigned int espm::recSizeLength;
+unsigned int espm::stuffzLength;
+unsigned int espm::verLength;
+bool espm::getRecordByFieldD(espm::item &Item, char * fieldName, char * fieldData, espm::item &Record, unsigned int length){
 	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD){
 			for(unsigned int j = 0; j < Item.group.items[i].record.fields.size(); ++j){
@@ -59,19 +59,19 @@ bool parser::fileFormat::getRecordByFieldD(parser::fileFormat::item &Item, char 
 	}
 	return false;
 }
-bool parser::fileFormat::isCompressed(parser::fileFormat::item &Record){
+bool espm::isCompressed(espm::item &Record){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
 	if((Record.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
 		return true;
 	return false;
 }
-bool parser::fileFormat::isMaster(parser::fileFormat::file &File){
+bool espm::isMaster(espm::file &File){
 	//if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
 	if((File.flags & strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0))
 		return true;
 	return false;
 }
-parser::fileFormat::item parser::fileFormat::getRecordByFieldD(parser::fileFormat::file &File, char * fieldName, char * fieldData, unsigned int length){
+espm::item espm::getRecordByFieldD(espm::file &File, char * fieldName, char * fieldData, unsigned int length){
 	item Record;
 	for(unsigned int i = 0; i < File.items.size(); ++i){
 		if(getRecordByFieldD(File.items[i], fieldName, fieldData, Record, length))
@@ -79,18 +79,18 @@ parser::fileFormat::item parser::fileFormat::getRecordByFieldD(parser::fileForma
 	}
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
-unsigned char * parser::fileFormat::readRecord(std::ifstream &file){
+unsigned char * espm::readRecord(std::ifstream &file){
 	unsigned char * data;
 	file.read((char *)data, getDelimiterLength());
 	return data;
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
-unsigned char * parser::fileFormat::readRecordData(std::ifstream &file){
+unsigned char * espm::readRecordData(std::ifstream &file){
 	unsigned char * data;
 	//file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
 	return data;
 }
-unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFormat::field &Field1){
+unsigned int espm::readField(std::ifstream &input, espm::field &Field1){
 	Field1.name = new char[getDelimiterLength()];
 	Field1.size = 0;
 	unsigned int count = 0;
@@ -105,12 +105,12 @@ unsigned int parser::fileFormat::readField(std::ifstream &input, parser::fileFor
 	return count;
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
-unsigned int parser::fileFormat::readFlags(std::ifstream &file){
+unsigned int espm::readFlags(std::ifstream &file){
 	unsigned int data;
 	file.read((char *)&data, getFlagLength());
 	return data;
 }
-unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFormat::item &Group){
+unsigned int espm::readGroup(std::ifstream &input, espm::item &Group){
 	unsigned int count = 0;
 	Group.type = GROUP;
 	Group.group.groupHeader = new char[getDelimiterLength()];
@@ -174,7 +174,7 @@ unsigned int parser::fileFormat::readGroup(std::ifstream &input, parser::fileFor
 	}
 	return count;
 }
-unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFormat::item &Record){
+unsigned int espm::readRecord(std::ifstream &input, espm::item &Record){
 //	struct field Field;
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
@@ -252,33 +252,33 @@ unsigned int parser::fileFormat::readRecord(std::ifstream &input, parser::fileFo
 	return totalCount;
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
-unsigned int parser::fileFormat::readSize(std::ifstream &file){
+unsigned int espm::readSize(std::ifstream &file){
 	unsigned int size = 0;
 	for(unsigned int i = 0; i < getFieldSizeLength(); ++i)
 		size += file.get();
 	return size;
 }
-std::vector<char *> parser::fileFormat::getMasters(parser::fileFormat::file &File){
+std::vector<char *> espm::getMasters(espm::file &File){
 	std::vector<char *> masters;
 	for(int i = 0; i < File.fields.size(); ++i)
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			masters.push_back(File.fields[i].data);
 	return masters;
 }
-std::vector<parser::fileFormat::item> parser::fileFormat::getRecords(parser::fileFormat::file &File){
+std::vector<espm::item> espm::getRecords(espm::file &File){
 	std::vector<item> records;
 	for(unsigned int i = 0; i < File.items.size(); ++i)
 		getRecords(records, File.items[i]);
 	return records;
 }
-void parser::fileFormat::getRecords(std::vector<parser::fileFormat::item> &records, parser::fileFormat::item &Item){
+void espm::getRecords(std::vector<espm::item> &records, espm::item &Item){
 	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD)
 			records.push_back(Item);
 		getRecords(records, Item.group.items[i]);
 	}
 }
-void parser::fileFormat::init(){
+void espm::init(){
 	setDelimiterLength2();
 	setFlagLength2();
 	setGroupStampLength();
@@ -293,7 +293,7 @@ void parser::fileFormat::init(){
 	setStuffzLength();
 	setVerLength();
 }
-void parser::fileFormat::iterate(parser::fileFormat::item &Group){
+void espm::iterate(espm::item &Group){
 	for(unsigned int i = 0; i < Group.group.items.size(); ++i){
 		std::cout << "Nested ";
 		if(Group.group.items[i].type == GROUP){
@@ -317,7 +317,7 @@ void parser::fileFormat::iterate(parser::fileFormat::item &Group){
 		iterate(Group.group.items[i]);
 	}
 }
-void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file &File){
+void espm::readFile(std::ifstream &input, espm::file &File){
 	init();
 	readHeaderThing(input, File);
 	while(input.good()){
@@ -333,7 +333,7 @@ void parser::fileFormat::readFile(std::ifstream &input, parser::fileFormat::file
 //		delete Group.stuffz2;
 	}
 }
-void parser::fileFormat::readHeaderThing(std::ifstream &input, parser::fileFormat::file &File){
+void espm::readHeaderThing(std::ifstream &input, espm::file &File){
 //	struct field Field;
 	unsigned int count = 0;
 	File.header = new char[getDelimiterLength()];

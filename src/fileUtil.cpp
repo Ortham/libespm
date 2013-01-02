@@ -21,10 +21,10 @@
 #include <cstdlib>
 #include "commonSupport.h"
 #include "fileUtil.h"
-void util::createMast(parser::fileFormat::file &fileA){
+void util::createMast(espm::file &fileA){
 	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
-void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileFormat::file> masters){
+void util::createONAM(espm::file &fileA, std::vector<espm::file> masters){
 	std::string ids;
 	bool test = false;
 	for(unsigned int i = 0; i < fileA.groups.size(); ++i){
@@ -48,20 +48,20 @@ void util::createONAM(parser::fileFormat::file &fileA, std::vector<parser::fileF
 		}
 	}
 	ids += "00";
-	std::vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
+	std::vector<espm::record>::iterator it = fileA.records.begin();
 	while((*it).name != "INTV" || (*it).name != "INCC" || it != fileA.records.end())
 		++it;
-	parser::fileFormat::record ONAM;
+	espm::record ONAM;
 	ONAM.name = "ONAM";
 	ONAM.size = ids.length() + 1;
 	ONAM.data = ids.c_str();
 	fileA.records.insert(it, ONAM);
 }
-void util::revCreateMast(parser::fileFormat::file &fileA){
+void util::revCreateMast(espm::file &fileA){
 	fileA.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
-void util::revCreateONAM(parser::fileFormat::file &fileA){
-	std::vector<parser::fileFormat::record>::iterator it = fileA.records.begin();
+void util::revCreateONAM(espm::file &fileA){
+	std::vector<espm::record>::iterator it = fileA.records.begin();
 	while((*it).name != "ONAM" || it != fileA.records.end())
 		++it;
 	fileA.records.erase(it);

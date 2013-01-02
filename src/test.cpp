@@ -33,9 +33,9 @@ int main(int argc, char *argv[]){
 	common::readOptions(input);
 	input.close();
 	input.open(argv[2], ios::binary);
-	struct parser::fileFormat::file File;
-	parser::fileFormat::readFile(input, File);
-	if(parser::fileFormat::isMaster(File))
+	struct espm::file File;
+	espm::readFile(input, File);
+	if(espm::isMaster(File))
 		cout << "true" << endl;
 	else
 		cout << "false" << endl;
@@ -58,19 +58,19 @@ int main(int argc, char *argv[]){
 		cout.write(File.items[i].group.groupHeader, 4) << endl;
 		cout << "----------------" << endl;
 		cout.write(File.items[i].group.groupName, 4) << endl;
-		parser::fileFormat::iterate(File.items[i]);
+		espm::iterate(File.items[i]);
 	}
 	vector<char *> masters;
-	masters = parser::fileFormat::getMasters(File);
+	masters = espm::getMasters(File);
 	for(int i = 0; i < masters.size(); ++i)
 		cout << "Master " << i << ": " << masters[i] << endl;
 	cout << "Num Items: " << File.items.size() << endl;
-	vector<parser::fileFormat::item> records;
-	records = parser::fileFormat::getRecords(File);
+	vector<espm::item> records;
+	records = espm::getRecords(File);
 	cout << "Num Records: " << records.size() << endl;
-	parser::fileFormat::item recTest;
+	espm::item recTest;
 	//Params are: File, fieldName, fieldData, length of search terms WITH terminating character
-	recTest = parser::fileFormat::getRecordByFieldD(File, "EDID", "EnchFortifyAlchemyConstantSelf", 31);
+	recTest = espm::getRecordByFieldD(File, "EDID", "EnchFortifyAlchemyConstantSelf", 31);
 	cout << recTest.record.recName << endl;
 	/*END OF LINE*/
 	return 0;
