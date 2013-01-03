@@ -173,6 +173,7 @@ namespace espm{
 	 * @returns <tt> \b true </tt> if the record is compressed, <tt> \b false </tt> otherwise.
 	 */
 	bool isCompressed(item &Record);
+	bool isGRUP(char * data);
 	/**
 	 * @brief Checks to see if a plugin file is a 'master'.
 	 * @details Checks the flag on the plugin file to see if the 'master' flag is set (may be useful, no telling).

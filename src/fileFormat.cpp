@@ -30,7 +30,6 @@
 #include <iostream>
 #include <zlib.h>
 #include "fileFormat.h"
-#include "parser.h"
 struct espm::field Field; //This may go away in favor of using it only in the functions, but we shall see
 unsigned int espm::delimiterLength;
 unsigned int espm::flagLength;
@@ -64,6 +63,9 @@ bool espm::isCompressed(espm::item &Record){
 	if((Record.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
 		return true;
 	return false;
+}
+bool espm::isGRUP(char * data){
+	return (strncmp(data, common::structVals[common::options::game]["Group"][0].c_str(), getDelimiterLength()) == 0);
 }
 bool espm::isMaster(espm::file &File){
 	//if(((unsigned int)fileA.flags & 0x00000001) == 0x00000001)
@@ -143,7 +145,7 @@ unsigned int espm::readGroup(std::ifstream &input, espm::item &Group){
 	temp = new char[4];
 	while(count < Group.group.groupSize){
 		input.read(temp, getDelimiterLength());
-		if(parser::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
+		if(espm::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
 			struct item groupNew;
