@@ -47,14 +47,14 @@ int main(int argc, char *argv[]){
 	cout << (unsigned int&)*(File.revision) << endl;
 	cout << (unsigned short&)*(File.version) << endl;
 	cout << (unsigned short&)*(File.stuffz) << endl;
-	for(int i = 0; i < File.fields.size(); ++i){
+	for(unsigned long long i = 0; i < File.fields.size(); ++i){
 		cout.write(File.fields[i].name, 4) << endl;
 		cout << File.fields[i].size << endl;
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			cout << "Master: ";
 		cout << File.fields[i].data << endl;
 	}
-	for(unsigned int i = 0; i < File.items.size() - 1; ++i){
+	for(unsigned long long i = 0; i < File.items.size() - 1; ++i){
 		cout.write(File.items[i].group.groupHeader, 4) << endl;
 		cout << "----------------" << endl;
 		cout.write(File.items[i].group.groupName, 4) << endl;
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]){
 	}
 	vector<char *> masters;
 	masters = espm::getMasters(File);
-	for(int i = 0; i < masters.size(); ++i)
+	for(unsigned long long i = 0; i < masters.size(); ++i)
 		cout << "Master " << i << ": " << masters[i] << endl;
 	cout << "Num Items: " << File.items.size() << endl;
 	vector<espm::item> records;

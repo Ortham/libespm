@@ -46,9 +46,9 @@ unsigned int espm::recSizeLength;
 unsigned int espm::stuffzLength;
 unsigned int espm::verLength;
 bool espm::getRecordByFieldD(espm::item &Item, char * fieldName, char * fieldData, espm::item &Record, unsigned int length){
-	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+	for(unsigned long long i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD){
-			for(unsigned int j = 0; j < Item.group.items[i].record.fields.size(); ++j){
+			for(unsigned long long j = 0; j < Item.group.items[i].record.fields.size(); ++j){
 				if(strncmp(fieldName, Item.group.items[i].record.fields[j].name, getDelimiterLength()) == 0 && length == Item.group.items[i].record.fields[j].size && strncmp(fieldData, Item.group.items[i].record.fields[j].data, length) == 0){
 					Record = Item.group.items[i];
 					return true;
@@ -73,7 +73,7 @@ bool espm::isMaster(espm::file &File){
 }
 espm::item espm::getRecordByFieldD(espm::file &File, char * fieldName, char * fieldData, unsigned int length){
 	item Record;
-	for(unsigned int i = 0; i < File.items.size(); ++i){
+	for(unsigned long long i = 0; i < File.items.size(); ++i){
 		if(getRecordByFieldD(File.items[i], fieldName, fieldData, Record, length))
 			return Record;
 	}
@@ -260,19 +260,19 @@ unsigned int espm::readSize(std::ifstream &file){
 }
 std::vector<char *> espm::getMasters(espm::file &File){
 	std::vector<char *> masters;
-	for(int i = 0; i < File.fields.size(); ++i)
+	for(unsigned long long i = 0; i < File.fields.size(); ++i)
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			masters.push_back(File.fields[i].data);
 	return masters;
 }
 std::vector<espm::item> espm::getRecords(espm::file &File){
 	std::vector<item> records;
-	for(unsigned int i = 0; i < File.items.size(); ++i)
+	for(unsigned long long i = 0; i < File.items.size(); ++i)
 		getRecords(records, File.items[i]);
 	return records;
 }
 void espm::getRecords(std::vector<espm::item> &records, espm::item &Item){
-	for(unsigned int i = 0; i < Item.group.items.size(); ++i){
+	for(unsigned long long i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD)
 			records.push_back(Item);
 		getRecords(records, Item.group.items[i]);
@@ -294,7 +294,7 @@ void espm::init(){
 	setVerLength();
 }
 void espm::iterate(espm::item &Group){
-	for(unsigned int i = 0; i < Group.group.items.size(); ++i){
+	for(unsigned long long i = 0; i < Group.group.items.size(); ++i){
 		std::cout << "Nested ";
 		if(Group.group.items[i].type == GROUP){
 			std::cout.write(Group.group.items[i].group.groupHeader, 4) << std::endl;
@@ -308,7 +308,7 @@ void espm::iterate(espm::item &Group){
 			std::cout << "-----------";
 			std::cout << std::endl;
 			std::cout.write(Group.group.items[i].record.recName, 4) << std::endl;
-			for(unsigned int k = 0; k < Group.group.items[i].record.fields.size(); ++k){
+			for(unsigned long long k = 0; k < Group.group.items[i].record.fields.size(); ++k){
 				std::cout << "\t\t";
 				std::cout.write(Group.group.items[i].record.fields[k].name, 4) << std::endl;
 				//std::cout << "\t\t\t" << Group.group.items[i].record.fields[k].data << std::endl;
