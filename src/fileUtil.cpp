@@ -21,20 +21,20 @@
 #include <cstdlib>
 #include "commonSupport.h"
 #include "fileUtil.h"
-void util::createMast(espm::file &fileA){
-	fileA.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
+void util::createMast(espm::file &File){
+	File.flags |= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
-void util::createONAM(espm::file &fileA, std::vector<espm::file> masters){
+void util::createONAM(espm::file &File, std::vector<espm::file> masters){
 	std::string ids;
 	bool test = false;
-	for(unsigned int i = 0; i < fileA.groups.size(); ++i){
-		for(unsigned int j = 0; j < fileA.groups[i].records.size(); ++j){
-			if(common::options::contains("ONAM", fileA.groups[i].records[j].name)){
-				for(unsigned int k = 0; k < masters.size(); ++k){
-					for(unsigned int l = 0; l < masters[k].groups.size(); ++l){
-						for(unsigned int m = 0; m < masters[k].groups[l].records.size(); ++m){
-							if(fileA.groups[i].records[j].ID == masters[k].groups[l].records[m].ID){
-								ids += fileA.groups[i].records[j].ID;
+	for(unsigned long long i = 0; i < File.items.size(); ++i){
+		for(unsigned long long j = 0; j < File.items[i].group.records.size(); ++j){
+			if(common::options::contains("ONAM", File.items[i].group.records[j].name)){
+				for(unsigned long long k = 0; k < masters.size(); ++k){
+					for(unsigned long long l = 0; l < masters[k].items.size(); ++l){
+						for(unsigned long long m = 0; m < masters[k].items[l].group.records.size(); ++m){
+							if(File.groups[i].records[j].ID == masters[k].items[l].group.records[m].ID){
+								ids += File.items[i].group.records[j].ID;
 								test = true;
 								break;
 							}
@@ -48,22 +48,22 @@ void util::createONAM(espm::file &fileA, std::vector<espm::file> masters){
 		}
 	}
 	ids += "00";
-	std::vector<espm::record>::iterator it = fileA.records.begin();
-	while((*it).name != "INTV" || (*it).name != "INCC" || it != fileA.records.end())
+	std::vector<espm::record>::iterator it = File.records.begin();
+	while((*it).name != "INTV" || (*it).name != "INCC" || it != File.records.end())
 		++it;
 	espm::record ONAM;
 	ONAM.name = "ONAM";
 	ONAM.size = ids.length() + 1;
 	ONAM.data = ids.c_str();
-	fileA.records.insert(it, ONAM);
+	File.records.insert(it, ONAM);
 }
-void util::revCreateMast(espm::file &fileA){
-	fileA.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
+void util::revCreateMast(espm::file &File){
+	File.flags ^= strtoul(common::structVals[common::options::game]["MastFlag"][0].c_str(), NULL, 0);
 }
-void util::revCreateONAM(espm::file &fileA){
-	std::vector<espm::record>::iterator it = fileA.records.begin();
-	while((*it).name != "ONAM" || it != fileA.records.end())
+void util::revCreateONAM(espm::file &File){
+	std::vector<espm::record>::iterator it = File.records.begin();
+	while((*it).name != "ONAM" || it != File.records.end())
 		++it;
-	fileA.records.erase(it);
+	File.records.erase(it);
 }
 /*END OF LINE*/

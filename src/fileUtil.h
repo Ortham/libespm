@@ -43,7 +43,7 @@ namespace util{
 	 * @param &fileA
 	 * The <tt> struct </tt> representing the file we want to make a 'master'.
 	 */
-	void createMast(espm::file &fileA);
+	void createMast(espm::file &File);
 	/**
 	 * @brief Creates the ONAM record.
 	 * @details Scans through a list of masters and a file to see if any of the records' ID are identical and also checks to see if the record names are in the ONAM entry
@@ -53,21 +53,21 @@ namespace util{
 	 * @param masters
 	 * The list of masters to scan.
 	 */
-	void createONAM(espm::file &fileA, std::vector<espm::file> masters);
+	void createONAM(espm::file &File, std::vector<espm::file> masters);
 	/**
 	 * @brief Un-sets the flag for a plugin file for it to be a 'master'.
 	 * @details Un-sets the flag for a plugin file for it to be a 'master'.
 	 * @param &fileA
 	 * The <tt> struct </tt> representing a file we want to convert from a 'master'.
 	 */
-	void revCreateMast(espm::file &fileA);
+	void revCreateMast(espm::file &File);
 	/**
 	 * @brief Removes ONAM stuff.
 	 * @details Scans through the top-level record list in a plugin file and removes the ONAM record.
 	 * @param &fileA
 	 * The <tt> struct </tt> representing the file we want to remove the ONAM stuff for.
 	 */
-	void revCreateONAM(espm::file &fileA);
+	void revCreateONAM(espm::file &File);
 	/*END OF LINE*/
 }
 
