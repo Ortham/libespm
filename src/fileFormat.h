@@ -165,6 +165,7 @@ namespace espm{
 		std::vector<item> items;
 	};
 	bool getRecordByFieldD(item &Item, char * fieldName, char * fieldData, item &Record, unsigned int length);
+	bool getRecordByID(item &Item, unsigned int ID, item &Record);
 	/**
 	 * @brief Checks to see if a record is compressed.
 	 * @details Checks the flag on the record to see if the compression flag is set.
@@ -182,7 +183,9 @@ namespace espm{
 	 * @returns <tt> \b true </tt> if the plugin file is a 'master', <tt> \b false </tt> otherwise.
 	 */
 	bool isMaster(file &File);
+	item getGroupByName(file &File, char * name);
 	item getRecordByFieldD(file &File, char * fieldName, char * fieldData, unsigned int length);
+	item getRecordByID(file &File, unsigned int ID);
 	/**
 	 * @brief Reads a record name.
 	 * @details Reads the record name based on the length for the delimiter.
@@ -283,6 +286,7 @@ namespace espm{
 	 * @returns A list of the 'masters' of a file.
 	 */
 	std::vector<char *> getMasters(file &File);
+	std::vector<item> getGroups(file &File);
 	std::vector<item> getRecords(file &File);
 	void getRecords(std::vector<item> &records, item &Item);
 	void init();

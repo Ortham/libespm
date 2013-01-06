@@ -58,6 +58,18 @@ bool espm::getRecordByFieldD(espm::item &Item, char * fieldName, char * fieldDat
 	}
 	return false;
 }
+bool espm::getRecordByID(espm::item &Item, unsigned int ID, espm::item &Record){
+	for(unsigned long long i = 0; i < Item.group.items.size(); ++i){
+		if(Item.group.items[i].type == RECORD){
+			if(strncmp(reinterpret_cast<char*>(&ID), Item.group.items[i].record.recID, getIDLength()) == 0){
+				Record = Item.group.items[i];
+				return true;
+			}
+		}
+		getRecordByID(Item.group.items[i], ID, Record);
+	}
+	return false;
+}
 bool espm::isCompressed(espm::item &Record){
 	//if(((unsigned int)recordA.flags & 0x00040000) == 0x00040000)
 	if((Record.record.flags & strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0)) == strtoul(common::structVals[common::options::game]["CompFlag"][0].c_str(), NULL, 0))
@@ -73,12 +85,28 @@ bool espm::isMaster(espm::file &File){
 		return true;
 	return false;
 }
+espm::item espm::getGroupByName(espm::file &File, char * name){
+	for(unsigned long long i = 0; i < File.items.size(); ++i)
+		if(File.items[i].type == GROUP && (strncmp(File.items[i].group.groupName, name, getDelimiterLength()) == 0))
+			return File.items[i];
+	item newItem;
+	return newItem;
+}
 espm::item espm::getRecordByFieldD(espm::file &File, char * fieldName, char * fieldData, unsigned int length){
 	item Record;
-	for(unsigned long long i = 0; i < File.items.size(); ++i){
+	for(unsigned long long i = 0; i < File.items.size(); ++i)
 		if(getRecordByFieldD(File.items[i], fieldName, fieldData, Record, length))
 			return Record;
-	}
+	item newItem;
+	return newItem;
+}
+espm::item espm::getRecordByID(espm::file &File, unsigned int ID){
+	item Record;
+	for(unsigned long long i = 0; i < File.items.size(); ++i)
+		if(getRecordByID(File.items[i], ID, Record))
+			return Record;
+	item newItem;
+	return newItem;
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
 unsigned char * espm::readRecord(std::ifstream &file){
@@ -266,6 +294,9 @@ std::vector<char *> espm::getMasters(espm::file &File){
 		if(strncmp("MAST", File.fields[i].name, 4) == 0)
 			masters.push_back(File.fields[i].data);
 	return masters;
+}
+std::vector<espm::item> espm::getGroups(espm::file &File){
+	return File.items;
 }
 std::vector<espm::item> espm::getRecords(espm::file &File){
 	std::vector<item> records;
