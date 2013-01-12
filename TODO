@@ -9,6 +9,14 @@ Code to generate the struct representing the file format for any all games (incl
 Add accessors for getting various stuff from the structs.
 --Record retrieval is done, as is searching by field data. 12/25/2012
 --Maybe return a list of IDs. This one is very much a maybe
+Take care of a possible special case in reading fields that came to light the other day. This is trivial, but an example still needs to materialize.
+Take care of possible Morrowind support. This appears trivial and will go ahead and add in support if it is indeed trivial. No point in not taking care of it.
+Run some testing to get an idea of how long things take, get an idea of the memory handling, and some general user feedback on the overall design.
+Break more functions up into their own namespaces/groups/clumps/whatever organization I end up going with to make more logical sense and help reduce clutter.
+Cut out a lot of the dead code and optimize condition statements. For the latter, I noticed that I've got some pointless checks in place that could be removed to improve performance some, if at all, by a trivial amount. May be minor, but the readability will be enhanced.
+Look into the general style and possibly change it up some.
+Add some utility functions, such as checking various flags.
+--This item may expand/contract over time.
 
 
 Not coming soon but planned:
@@ -41,4 +49,4 @@ Modify the makefile to be easier to read and generally just better.
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 01/06/2013
+On: 01/12/2013
