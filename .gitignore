@@ -15,3 +15,9 @@ obj/
 *.gz
 *.bzip
 *.bz2
+test/
+log/
+bin/
+diff/
+cleanup
+notes/
