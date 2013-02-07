@@ -17,6 +17,8 @@ Cut out a lot of the dead code and optimize condition statements. For the latter
 Look into the general style and possibly change it up some.
 Add some utility functions, such as checking various flags.
 --This item may expand/contract over time.
+Fix the memory handling
+See if we can make it so that both common line endings (\n and \r\n) are able to be used for the configuration file and manage this in the reading code for the file
 
 
 Not coming soon but planned:
@@ -52,4 +54,4 @@ Possibly convert part of the code to work with C instead of C++ to allow for mor
 Last modified:
 
 By: deaths_soul (AKA MCP)
-On: 01/27/2013
+On: 02/07/2013
