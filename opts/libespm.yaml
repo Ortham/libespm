@@ -1,0 +1,39 @@
+Default:
+    Length: 4
+    FieldSizeLength: 2
+    FlagLength: 4
+    BSAHead: BSA
+    MastExt: .esm
+    PlugExt: .esp
+    SaveExt: .ess
+    Group: GRUP
+    PlugHead: TES4
+    CompFlag: 0x00040000
+    MastFlag: 0x00000001
+    
+Morrowind:
+    PlugHead: TES3
+    SaveHead: TES3
+    
+Oblivion:
+    SaveHead: TES4SAVEGAME
+    
+Skyrim:
+    ONAM:
+        - ACHR
+        - LAND
+        - NAVM
+        - PGRE
+        - PHZD
+        - REFR
+    IDLength: 4
+    RevLength: 4
+    VerLength: 2
+    StuffzLength: 2
+    SaveHead: TESV_SAVEGAME
+    HeadSizeLength: 4
+    RecSizeLength: 4
+    DecompSizeLength: 4
+    GroupTypeLength: 4
+    GroupStampLength: 2
+    GroupSizeLength: 4

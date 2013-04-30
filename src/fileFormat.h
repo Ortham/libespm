@@ -33,6 +33,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <algorithm>
 #include "constants.h"
 #include "commonSupport.h"
 /**
@@ -117,13 +118,23 @@ namespace espm{
 	 * @details Contains the data for a field for which a record contains.
 	 */
 	struct field{
+		field();
+		field(field const &other);
+		~field(); 
+		field& operator= (field other);
+		
 		char * name;
 		unsigned int size;
 		char * data;
 	};
 	struct item{
 		enum Type type;
-		struct{
+		struct _record {
+			_record();
+			_record(_record const &other);
+			~_record();
+			_record& operator= (_record other);
+		
 			char * recName;
 			unsigned int size;
 			unsigned int flags;
@@ -133,10 +144,14 @@ namespace espm{
 			char * version;
 			char * stuffz;
 			unsigned int decompSize;
-			char * data;
 			std::vector<field> fields;
-		}record;
-		struct{
+		} record;
+		struct _group {
+			_group();
+			_group(_group const &other);
+			~_group();
+			_group& operator= (_group other);
+			
 			char * groupHeader;
 			unsigned int groupSize;
 			char * groupName;
@@ -154,6 +169,11 @@ namespace espm{
 	 * @details This represents a file (specifically a mod file, the others will come in time), which consists of a lump of data with records and then the list of groups.
 	 */
 	struct file{
+		file();
+		file(file const &other);
+		~file();
+		file& operator= (file other);
+		
 		char * header;
 		unsigned int size;
 		unsigned int flags;

@@ -30,7 +30,6 @@
 #include <iostream>
 #include <zlib.h>
 #include "fileFormat.h"
-struct espm::field Field; //This may go away in favor of using it only in the functions, but we shall see
 unsigned int espm::delimiterLength;
 unsigned int espm::flagLength;
 unsigned int espm::groupStampLength;
@@ -44,6 +43,220 @@ unsigned int espm::headSizeLength;
 unsigned int espm::recSizeLength;
 unsigned int espm::stuffzLength;
 unsigned int espm::verLength;
+
+espm::field::field() : name(NULL), size(0), data(NULL) {
+	name = new char[getDelimiterLength()];
+	//size varies so can't allocate data memory.
+}
+
+espm::field::field(field const &other) {
+	name = new char[getDelimiterLength()];
+	size = other.size;
+	data = new char[size];
+	
+	memcpy(name, other.name, getDelimiterLength());
+	memcpy(data, other.data, size);
+}
+	
+espm::field::~field() {
+	delete [] name;
+	delete [] data;
+}
+
+espm::field& espm::field::operator= (field other) {
+	size = other.size;
+	std::swap(name, other.name);
+	std::swap(data, other.data);
+	return *this;
+}
+
+espm::item::_record::_record()
+	: recName(NULL), 
+	  size(0), 
+	  flags(0), 
+	  ID(0), 
+	  recID(NULL), 
+	  revision(NULL), 
+	  version(NULL), 
+	  stuffz(NULL), 
+	  decompSize(0) {
+
+	recName = new char[getDelimiterLength()];
+	recID = new char[getIDLength()];
+	revision = new char[getRevLength()];
+	version = new char[getVerLength()];
+	stuffz = new char[getStuffzLength()];
+
+}
+
+espm::item::_record::_record(espm::item::_record const &other) {
+	recName = new char[getDelimiterLength()];
+	recID = new char[getIDLength()];
+	revision = new char[getRevLength()];
+	version = new char[getVerLength()];
+	stuffz = new char[getStuffzLength()];
+	
+	size = other.size;
+	flags = other.flags;
+	ID = other.ID;
+	decompSize = other.decompSize;
+	fields = other.fields;
+	
+	memcpy(recName, other.recName, getDelimiterLength());
+	memcpy(recID, other.recID, getIDLength());
+	memcpy(revision, other.revision, getRevLength());
+	memcpy(version, other.version, getVerLength());
+	memcpy(stuffz, other.stuffz, getStuffzLength());
+}
+
+espm::item::_record::~_record() {
+	delete [] recName;
+	delete [] recID;
+	delete [] revision;
+	delete [] version;
+	delete [] stuffz;
+}
+
+espm::item::_record& espm::item::_record::operator= (espm::item::_record other) {
+	size = other.size;
+	flags = other.flags;
+	ID = other.ID;
+	decompSize = other.decompSize;
+	
+	std::swap(recName, other.recName);
+	std::swap(recID, other.recID);
+	std::swap(revision, other.revision);
+	std::swap(version, other.version);
+	std::swap(stuffz, other.stuffz);
+	std::swap(fields, other.fields);
+	
+	return *this;
+}
+
+espm::item::_group::_group() 
+	: groupHeader(NULL), 
+	  groupSize(0), 
+	  groupName(NULL), 
+	  type(NULL), 
+	  stamp(NULL), 
+	  stuffz1(NULL), 
+	  version(NULL), 
+	  stuffz2(NULL) {
+				
+	groupHeader = new char[getDelimiterLength()];
+	groupName = new char[getDelimiterLength()];
+	type = new char[getGroupTypeLength()];
+	stamp = new char[getGroupStampLength()];
+	stuffz1 = new char[getStuffzLength()];
+	version = new char[getVerLength()];
+	stuffz2 = new char[getStuffzLength()];		
+}
+
+espm::item::_group::_group(espm::item::_group const &other) {
+	groupHeader = new char[getDelimiterLength()];
+	groupName = new char[getDelimiterLength()];
+	type = new char[getGroupTypeLength()];
+	stamp = new char[getGroupStampLength()];
+	stuffz1 = new char[getStuffzLength()];
+	version = new char[getVerLength()];
+	stuffz2 = new char[getStuffzLength()];		
+	
+	groupSize = other.groupSize;
+	
+	memcpy(groupHeader, other.groupHeader, getDelimiterLength());
+	memcpy(groupName, other.groupName, getDelimiterLength());
+	memcpy(type, other.type, getGroupTypeLength());
+	memcpy(stamp, other.stamp, getGroupStampLength());
+	memcpy(stuffz1, other.stuffz1, getStuffzLength());
+	memcpy(version, other.version, getVerLength());
+	memcpy(stuffz2, other.stuffz2, getStuffzLength());
+	
+	items = other.items;
+}
+
+espm::item::_group::~_group() {
+	delete [] groupHeader;
+	delete [] groupName;
+	delete [] type;
+	delete [] stamp;
+	delete [] stuffz1;
+	delete [] version;
+	delete [] stuffz2;
+}
+
+espm::item::_group& espm::item::_group::operator= (espm::item::_group other) {
+	groupSize = other.groupSize;
+	
+	std::swap(groupHeader, other.groupHeader);
+	std::swap(groupName, other.groupName);
+	std::swap(type, other.type);
+	std::swap(stamp, other.stamp);
+	std::swap(stuffz1, other.stuffz1);
+	std::swap(version, other.version);
+	std::swap(stuffz2, other.stuffz2);
+	std::swap(items, other.items);
+	
+	return *this;
+}
+
+espm::file::file() 
+	: header(NULL), 
+	  size(0), 
+	  flags(0), 
+	  ID(NULL), 
+	  revision(NULL), 
+	  version(NULL), 
+	  stuffz(NULL) {
+		  
+	header = new char[getDelimiterLength()];
+	ID = new char[getIDLength()];
+	revision = new char[getRevLength()];
+	version = new char[getVerLength()];
+	stuffz = new char[getStuffzLength()];
+}
+
+espm::file::file(espm::file const &other) {
+	header = new char[getDelimiterLength()];
+	ID = new char[getIDLength()];
+	revision = new char[getRevLength()];
+	version = new char[getVerLength()];
+	stuffz = new char[getStuffzLength()];
+	
+	size = other.size;
+	flags = other.flags;
+	fields = other.fields;
+	items = other.items;
+	
+	memcpy(header, other.header, getDelimiterLength());
+	memcpy(ID, other.ID, getIDLength());
+	memcpy(revision, other.revision, getRevLength());
+	memcpy(version, other.version, getVerLength());
+	memcpy(stuffz, other.stuffz, getStuffzLength());
+}
+
+espm::file::~file() {
+	delete [] header;
+	delete [] ID;
+	delete [] revision;
+	delete [] version;
+	delete [] stuffz;
+}
+
+espm::file& espm::file::operator= (espm::file other) {
+	size = other.size;
+	flags = other.flags;
+	
+	std::swap(header, other.header);
+	std::swap(ID, other.ID);
+	std::swap(revision, other.revision);
+	std::swap(version, other.version);
+	std::swap(stuffz, other.stuffz);
+	std::swap(fields, other.fields);
+	std::swap(items, other.items);
+	
+	return *this;
+}
+
 bool espm::getRecordByFieldD(espm::item &Item, char * fieldName, char * fieldData, espm::item &Record, unsigned int length){
 	for(unsigned long long i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD){
@@ -120,18 +333,16 @@ unsigned char * espm::readRecordData(std::ifstream &file){
 	//file.read(data, size); //size refers to a future storage place for all the stuff we're reading in and I haven't decided on how to handle that yet
 	return data;
 }
-unsigned int espm::readField(std::ifstream &input, espm::field &Field1){
-	Field1.name = new char[getDelimiterLength()];
-	Field1.size = 0;
+unsigned int espm::readField(std::ifstream &input, espm::field &Field){
 	unsigned int count = 0;
-	input.read(Field1.name, getDelimiterLength());
+	input.read(Field.name, getDelimiterLength());
 	count += getDelimiterLength();
 	//input.read((char*)&(Field1.size), getFieldSizeLength());
-	input.read(reinterpret_cast<char*>(&Field1.size), getFieldSizeLength());
+	input.read(reinterpret_cast<char*>(&Field.size), getFieldSizeLength());
 	count += getFieldSizeLength();
-	Field1.data = new char[Field1.size];
-	input.read(Field1.data, Field1.size);
-	count += Field1.size;
+	Field.data = new char[Field.size];
+	input.read(Field.data, Field.size);
+	count += Field.size;
 	return count;
 }
 ///@todo Look into stripping some of these functions out or rewriting them to be more useful. Right now, they seem to be taking up space more than anything else...
@@ -143,14 +354,6 @@ unsigned int espm::readFlags(std::ifstream &file){
 unsigned int espm::readGroup(std::ifstream &input, espm::item &Group){
 	unsigned int count = 0;
 	Group.type = GROUP;
-	Group.group.groupHeader = new char[getDelimiterLength()];
-	Group.group.groupSize = 0;
-	Group.group.groupName = new char[getDelimiterLength()];
-	Group.group.type = new char[getGroupTypeLength()];
-	Group.group.stamp = new char[getGroupStampLength()];
-	Group.group.stuffz1 = new char[getStuffzLength()];
-	Group.group.version = new char[getVerLength()];
-	Group.group.stuffz2 = new char[getStuffzLength()];
 	input.read(Group.group.groupHeader, getDelimiterLength());
 	count += getDelimiterLength();
 	input.read(reinterpret_cast<char*>(&Group.group.groupSize), getGroupSizeLength());
@@ -176,47 +379,27 @@ unsigned int espm::readGroup(std::ifstream &input, espm::item &Group){
 		if(espm::isGRUP(temp)){ //will probably need to change this so that we don't have a dependency on parser.h/parser.cpp; may not change it, we'll see
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
-			struct item groupNew;
+			item groupNew;
 			groupNew.type = GROUP;
 			count += readGroup(input, groupNew);
 			Group.group.items.push_back(groupNew);
-//			delete groupNew.groupHeader;
-//			delete groupNew.groupName;
-//			delete groupNew.type;
-//			delete groupNew.stamp;
-//			delete groupNew.stuffz1;
-//			delete groupNew.version;
-//			delete groupNew.stuffz2;
 		}
 		else{
 			for(unsigned int i = 0; i < getDelimiterLength(); ++i)
 				input.unget();
-			struct item recordNew;
+			item recordNew;
 			recordNew.type = RECORD;
 			count += readRecord(input, recordNew);
 			Group.group.items.push_back(recordNew);
-//			delete recordNew.recName;
-//			delete recordNew.recID;
-//			delete recordNew.revision;
-//			delete recordNew.version;
-//			delete recordNew.stuffz;
 		}
 	}
+	delete [] temp;
 	return count;
 }
 unsigned int espm::readRecord(std::ifstream &input, espm::item &Record){
-//	struct field Field;
 	unsigned int count = 0;
 	unsigned int totalCount = 0;
 	Record.type = RECORD;
-	Record.record.recName = new char[getDelimiterLength()];
-	Record.record.size = 0;
-	Record.record.flags = 0;
-	Record.record.recID = new char[getIDLength()];
-	Record.record.revision = new char[getRevLength()];
-	Record.record.version = new char[getVerLength()];
-	Record.record.stuffz = new char[getStuffzLength()];
-	Record.record.decompSize = 0;
 	input.read(Record.record.recName, getDelimiterLength());
 	totalCount += getDelimiterLength();
 	input.read(reinterpret_cast<char*>(&Record.record.size), getRecSizeLength());
@@ -248,34 +431,31 @@ unsigned int espm::readRecord(std::ifstream &input, espm::item &Record){
 		uncompress((Bytef*)decData, (uLongf*)&Record.record.decompSize, (Bytef*)data, compSize);
 		/*Now we need to treat the block of uncompressed data the same as if the record was not compressed in the first place*/
 		while(count < Record.record.decompSize){
-			Field.name = new char[getDelimiterLength()];
-			Field.size = 0;
-			memcpy(Field.name, decData, getDelimiterLength());
+			char * decDataOffset = decData;
+			field Field;
+			memcpy(Field.name, decDataOffset, getDelimiterLength());
 			count += getDelimiterLength();
 			for(int i = 0; i < getDelimiterLength(); ++i)
-				decData++;
-			memcpy(reinterpret_cast<char*>(&Field.size), decData, getFieldSizeLength());
+				decDataOffset++;
+			memcpy(reinterpret_cast<char*>(&Field.size), decDataOffset, getFieldSizeLength());
 			count += getFieldSizeLength();
 			for(int i = 0; i < getFieldSizeLength(); ++i)
-				decData++;
+				decDataOffset++;
 			Field.data = new char[Field.size];
-			memcpy(Field.data, decData, Field.size);
+			memcpy(Field.data, decDataOffset, Field.size);
 			count += Field.size;
 			for(int i = 0; i < Field.size; ++i)
-				decData++;
+				decDataOffset++;
 			Record.record.fields.push_back(Field);
-//			delete Field.name;
-//			delete Field.data;
 		}
-//		delete decData;
-//		delete data;
+		delete [] decData;
+		delete [] data;
 	}
 	else{
 		while(count < Record.record.size){
+			field Field;
 			count += readField(input, Field);
 			Record.record.fields.push_back(Field);
-//			delete Field.name;
-//			delete Field.data;
 		}
 		totalCount += count;
 	}
@@ -307,7 +487,7 @@ std::vector<espm::item> espm::getRecords(espm::file &File){
 void espm::getRecords(std::vector<espm::item> &records, espm::item &Item){
 	for(unsigned long long i = 0; i < Item.group.items.size(); ++i){
 		if(Item.group.items[i].type == RECORD)
-			records.push_back(Item);
+			records.push_back(Item.group.items[i]);
 		getRecords(records, Item.group.items[i]);
 	}
 }
@@ -354,28 +534,13 @@ void espm::readFile(std::ifstream &input, espm::file &File){
 	init();
 	readHeaderThing(input, File);
 	while(input.good()){
-		struct item Item;
+		item Item;
 		readGroup(input, Item);
 		File.items.push_back(Item);
-//		delete Group.groupHeader;
-//		delete Group.groupName;
-//		delete Group.type;
-//		delete Group.stamp;
-//		delete Group.stuffz1;
-//		delete Group.version;
-//		delete Group.stuffz2;
 	}
 }
 void espm::readHeaderThing(std::ifstream &input, espm::file &File){
-//	struct field Field;
 	unsigned int count = 0;
-	File.header = new char[getDelimiterLength()];
-	File.size = 0;
-	File.flags = 0;
-	File.ID = new char[getIDLength()];
-	File.revision = new char[getRevLength()];
-	File.version = new char[getVerLength()];
-	File.stuffz = new char[getStuffzLength()];
 	input.read(File.header, getDelimiterLength());
 	input.read(reinterpret_cast<char*>(&File.size), getHeadSizeLength());
 	input.read(reinterpret_cast<char*>(&File.flags), getFlagLength());
@@ -384,10 +549,9 @@ void espm::readHeaderThing(std::ifstream &input, espm::file &File){
 	input.read(File.version, getVerLength());
 	input.read(File.stuffz, getStuffzLength());
 	while(count < File.size){
+		field Field;
 		count += readField(input, Field);
 		File.fields.push_back(Field);
-//		delete Field.name;
-//		delete Field.data;
 	}
 }
 /*END OF LINE*/
