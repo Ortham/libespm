@@ -1,21 +1,20 @@
-Default:
+Morrowind:
+    PlugHead: TES3
+    MastExt: .esm
+    PlugExt: .esp
+    SaveExt: .ess
+    BSAHead: BSA
+    SaveHead: TES3
+    
+Oblivion:
     Length: 4
     FieldSizeLength: 2
-    FlagLength: 4
     BSAHead: BSA
     MastExt: .esm
     PlugExt: .esp
     SaveExt: .ess
     Group: GRUP
     PlugHead: TES4
-    CompFlag: 0x00040000
-    MastFlag: 0x00000001
-    
-Morrowind:
-    PlugHead: TES3
-    SaveHead: TES3
-    
-Oblivion:
     SaveHead: TES4SAVEGAME
     
 Skyrim:
@@ -26,11 +25,22 @@ Skyrim:
         - PGRE
         - PHZD
         - REFR
+    Length: 4
+    FieldSizeLength: 2
     IDLength: 4
     RevLength: 4
     VerLength: 2
     StuffzLength: 2
+    FlagLength: 4
+    BSAHead: BSA
+    MastExt: .esm
+    PlugExt: .esp
+    SaveExt: .ess
+    Group: GRUP
+    PlugHead: TES4
     SaveHead: TESV_SAVEGAME
+    CompFlag: 0x00040000
+    MastFlag: 0x00000001
     HeadSizeLength: 4
     RecSizeLength: 4
     DecompSizeLength: 4
