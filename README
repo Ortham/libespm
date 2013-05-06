@@ -3,13 +3,6 @@ WrinklyNinja's libespm Fork
 
 The purpose of this fork is so that I can make changes to deaths_soul's libespm that make it more useful for BOSS.
 
-Ideas:
-    - Reduce memory usage. Currently libespm runs out of memory before it can finish loading big plugins like Skyrim.esm
-    - Make it possible to use libespm with multiple games' plugins at the same time, ie. no global settings.
-    - Object-orientate the interface, it makes more sense if a constructor for a File object loads a file, rather than a separate function.
-    - Swap out the configuration file stuff with a YAML-based config file, and add the ability to specify config parameters in code.
-    - Fix crashes on loading certain plugins:
-      - Skyrim.esm
-      - Tamriel Compendium.esp
-      - Tamriel Compendium - Skill Books.esp
-      The crashes have something to do with memory usage, the loading might just be inefficient, or it might be getting stuck somewhere.
+Memory usage improvements, elimination of global settings, OOP interface, YAML-based settings file and crash fixes have been implemented in src/playground.h.
+
+playground.h requires yaml-cpp and zlib.
