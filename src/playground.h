@@ -29,7 +29,7 @@
 #include <zlib.h>
 
 /*
-    Libespm playground for BOSSv3. Useful things will be implemented properly into my libespm fork. Try to improve performance by reading record and group headers into memory as a block.
+    Libespm playground for BOSSv3. 
 */
 
 namespace espm {
@@ -222,7 +222,7 @@ namespace espm {
             input.read(reinterpret_cast<char*>(&revision), settings.record.rev_len);
             input.read(reinterpret_cast<char*>(&version), settings.record.ver_len);
             input.read(reinterpret_cast<char*>(&unknown2), settings.record.unk2_len);
-
+ 
             uint32_t count = 0;
             if (readFields) {
                 if (isCompressed(settings)) {
@@ -262,17 +262,11 @@ namespace espm {
                     }
                 }
             } else {
-                //Check distance to end of file.
-                uint32_t pos = input.tellg();
-                input.seekg(0, std::ios_base::end);
-                uint32_t pos2 = input.tellg();
-                if (dataSize <= pos2 - pos)
-                    input.seekg(pos + dataSize, std::ios_base::beg);
+                input.seekg(dataSize, std::ios_base::cur);
                 count = dataSize;
             }
                 
-
-            return (uint32_t)settings.record.type_len + settings.record.size_len + settings.record.unk1_len + settings.record.flags_len + settings.record.id_len + settings.record.rev_len + settings.record.ver_len + settings.record.unk2_len + count;
+            return settings.record.type_len + settings.record.size_len + settings.record.unk1_len + settings.record.flags_len + settings.record.id_len + settings.record.rev_len + settings.record.ver_len + settings.record.unk2_len + count;
         }
     };
 
@@ -288,24 +282,24 @@ namespace espm {
         uint16_t version;
         uint16_t unknown2;
 
-        std::vector<uint32_t> formids;
         std::vector<Record> records;
         std::vector<Group> subgroups;
 
         uint32_t read(std::ifstream &input, const Settings& settings, bool readFields) {
+
             try {
                 input.read(type, settings.group.type_len);
+                input.read(reinterpret_cast<char*>(&groupSize), settings.group.size_len);
+                input.read(label, settings.group.label_len);
+                input.read(reinterpret_cast<char*>(&groupType), settings.group.groupType_len);
+                input.read(reinterpret_cast<char*>(&stamp), settings.group.stamp_len);
+                input.read(reinterpret_cast<char*>(&unknown1), settings.group.unk1_len);
+                input.read(reinterpret_cast<char*>(&version), settings.group.ver_len);
+                input.read(reinterpret_cast<char*>(&unknown2), settings.group.unk1_len);
             } catch (std::ifstream::failure &e) {
                 return 0;
             }
-            input.read(reinterpret_cast<char*>(&groupSize), settings.group.size_len);
-            input.read(label, settings.group.label_len);
-            input.read(reinterpret_cast<char*>(&groupType), settings.group.groupType_len);
-            input.read(reinterpret_cast<char*>(&stamp), settings.group.stamp_len);
-            input.read(reinterpret_cast<char*>(&unknown1), settings.group.unk1_len);
-            input.read(reinterpret_cast<char*>(&version), settings.group.ver_len);
-            input.read(reinterpret_cast<char*>(&unknown2), settings.group.unk1_len);
-
+            
             uint32_t count = settings.group.type_len + settings.group.size_len + settings.group.label_len + settings.group.groupType_len + settings.group.stamp_len + settings.group.unk1_len + settings.group.unk2_len + settings.group.ver_len;
 
             while (count < groupSize && input.good()) {
@@ -328,18 +322,16 @@ namespace espm {
             }
 
             return count;
-
         }
 
         std::vector<uint32_t> getFormIDs() {
-            if (formids.empty()) {
-                for (int i=0,max=subgroups.size(); i < max; ++i) {
-                    std::vector<uint32_t> fids = subgroups[i].getFormIDs();
-                    formids.insert(formids.end(), fids.begin(), fids.end());
-                }
-                for (int i=0,max=records.size(); i < max; ++i) {
-                    formids.push_back(records[i].id);
-                }
+            std::vector<uint32_t> formids;
+            for (int i=0,max=subgroups.size(); i < max; ++i) {
+                std::vector<uint32_t> fids = subgroups[i].getFormIDs();
+                formids.insert(formids.end(), fids.begin(), fids.end());
+            }
+            for (int i=0,max=records.size(); i < max; ++i) {
+                formids.push_back(records[i].id);
             }
             return formids;
         }
@@ -381,21 +373,33 @@ namespace espm {
     };
 
     struct File : public Record {  // Inherited record is (assumed to be) TES4 or TES3.
-        std::vector<uint32_t> formids;
         std::vector<Group> groups;
-
-        File() {}
-        File(std::ifstream &input, const Settings& settings, bool readFields, bool headerOnly) {
+        std::vector<Record> records;
+        
+        void read(std::ifstream &input, const Settings& settings, bool readFields, bool headerOnly) {
                 
             Record::read(input, settings, true);  //Always read header fields.
 
             if (!headerOnly) {
-                while (input.good()) {
-                    Group group;
-                    group.read(input, settings, readFields);
-                    groups.push_back(group);
+                if (settings.group.type.empty()) {
+                    while (input.good()) {
+                        Record record;
+                        record.read(input, settings, readFields);
+                        records.push_back(record);
+                    }
+                } else {
+                    while (input.good()) {
+                        Group group;
+                        group.read(input, settings, readFields);
+                        groups.push_back(group);
+                    }
                 }
             }
+        }
+
+        File() {}
+        File(std::ifstream &input, const Settings& settings, bool readFields, bool headerOnly) {
+           read(input, settings, readFields, headerOnly);
         }
 
         File(const std::string& filepath, const Settings& settings, bool readFields, bool headerOnly) {
@@ -403,25 +407,19 @@ namespace espm {
             std::ifstream input(filepath.c_str(), std::ios::binary);
             input.exceptions(std::ifstream::failbit | std::ifstream::badbit);
                 
-            Record::read(input, settings, true);  //Always read header fields.
-
-            if (!headerOnly) {
-                while (input.good()) {
-                    Group group;
-                    group.read(input, settings, readFields);
-                    groups.push_back(group);
-                }
-            }
+            read(input, settings, readFields, headerOnly);
 
             input.close();
         }
 
         std::vector<uint32_t> getFormIDs() {
-            if (formids.empty()) {
-                for (int i=0,max=groups.size(); i < max; ++i) {
-                    std::vector<uint32_t> fids = groups[i].getFormIDs();
-                    formids.insert(formids.end(), fids.begin(), fids.end());
-                }
+            std::vector<uint32_t> formids;
+            for (int i=0,max=groups.size(); i < max; ++i) {
+                std::vector<uint32_t> fids = groups[i].getFormIDs();
+                formids.insert(formids.end(), fids.begin(), fids.end());
+            }
+            for (int i=0,max=records.size(); i < max; ++i) {
+                formids.push_back(records[i].id);
             }
             return formids;
         }
@@ -447,14 +445,24 @@ namespace espm {
                 if (groups[i].getRecordByFieldData(type, data, dataSize, record, settings))
                     return true;
             }
+            for (std::vector<Record>::const_iterator it=records.begin(),endIt=records.end(); it != endIt; ++it) {
+                for (std::vector<Field>::const_iterator jt=it->fields.begin(), endjt=it->fields.end(); jt != endjt; ++jt) {
+                    if (jt->dataSize == dataSize
+                     && strncmp(jt->type, type, settings.group.type_len) == 0
+                     && memcmp(jt->data, data, dataSize) == 0) {
+                        record = *it;
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 
         std::vector<Record> getRecords() const {
-            std::vector<Record> records;
+            std::vector<Record> recs = records;
             for (int i=0,max=groups.size(); i < max; ++i) {
-                std::vector<Record> recs = groups[i].getRecords();
-                records.insert(records.end(), recs.begin(), recs.end());
+                std::vector<Record> g_recs = groups[i].getRecords();
+                recs.insert(recs.end(), g_recs.begin(), g_recs.end());
             }
             return records;
         }
@@ -463,6 +471,12 @@ namespace espm {
             for (int i=0,max=groups.size(); i < max; ++i) {
                 if (groups[i].getRecordByID(id, record))
                     return true;
+            }
+            for (std::vector<Record>::const_iterator it=records.begin(),endIt=records.end(); it != endIt; ++it) {
+                if (it->id == id) {
+                    record = *it;
+                    return true;
+                }
             }
             return false;
         }
