@@ -30,10 +30,6 @@
 
 /*
     Libespm playground for BOSSv3. Useful things will be implemented properly into my libespm fork. Try to improve performance by reading record and group headers into memory as a block.
-
-    Also need to implement getRecords, getRecordByFieldData, getRecordByID, getGroupByType and getGroups.
-
-    
 */
 
 namespace espm {
@@ -320,7 +316,7 @@ namespace espm {
                 for (int i=0; i < settings.record.type_len; ++i)
                     input.unget();
 
-                if (strncmp(temp,settings.group.type.data(), 4) == 0) {
+                if (strncmp(temp,settings.group.type.data(), settings.group.type_len) == 0) {
                     Group subgroup;
                     count += subgroup.read(input, settings, readFields);
                     subgroups.push_back(subgroup);
@@ -348,19 +344,39 @@ namespace espm {
             return formids;
         }
 
-        Record getRecordByFieldData(char * name, char * data, uint32_t dataLength) const {
-            Record record;
-            return record;
+        bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& record, const Settings& settings) const {
+            std::vector<Record> recs = getRecords();
+            for (std::vector<Record>::const_iterator it=recs.begin(),endIt=recs.end(); it != endIt; ++it) {
+                for (std::vector<Field>::const_iterator jt=it->fields.begin(), endjt=it->fields.end(); jt != endjt; ++jt) {
+                    if (jt->dataSize == dataSize
+                     && strncmp(jt->type, type, settings.group.type_len) == 0
+                     && memcmp(jt->data, data, dataSize) == 0) {
+                        record = *it;
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         std::vector<Record> getRecords() const {
-            std::vector<Record> records;
+            std::vector<Record> recs = records;
+            for (std::vector<Group>::const_iterator it=subgroups.begin(),endIt=subgroups.end(); it != endIt; ++it) {
+                std::vector<Record> g_recs = it->getRecords();
+                recs.insert(recs.end(), g_recs.begin(), g_recs.end());
+            }
             return records;
         }
 
-        Record getRecordByID(uint32_t id) const {
-            Record record;
-            return record;
+        bool getRecordByID(uint32_t id, Record& record) const {
+            std::vector<Record> recs = getRecords();
+            for (std::vector<Record>::const_iterator it=recs.begin(),endIt=recs.end(); it != endIt; ++it) {
+                if (it->id == id) {
+                    record = *it;
+                    return true;
+                }
+            }
+            return false;
         }
     };
 
@@ -426,28 +442,42 @@ namespace espm {
             return masters;
         }
 
-        Record getRecordByFieldData(char * name, char * data, uint32_t dataLength) const {
-            Record record;
-            return record;
+        bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& record, const Settings& settings) const {
+            for (int i=0,max=groups.size(); i < max; ++i) {
+                if (groups[i].getRecordByFieldData(type, data, dataSize, record, settings))
+                    return true;
+            }
+            return false;
         }
 
         std::vector<Record> getRecords() const {
             std::vector<Record> records;
+            for (int i=0,max=groups.size(); i < max; ++i) {
+                std::vector<Record> recs = groups[i].getRecords();
+                records.insert(records.end(), recs.begin(), recs.end());
+            }
             return records;
         }
 
-        Record getRecordByID(uint32_t id) const {
-            Record record;
-            return record;
+        bool getRecordByID(uint32_t id, Record& record) const {
+            for (int i=0,max=groups.size(); i < max; ++i) {
+                if (groups[i].getRecordByID(id, record))
+                    return true;
+            }
+            return false;
         }
 
-        Group getGroupByType(char * type) const {
-            Group group;
-            return group;
+        bool getGroupByType(char * type, Group& group, const Settings& settings) const {
+            for (int i=0,max=groups.size(); i < max; ++i) {
+                if (strncmp(type, groups[i].type, settings.group.type_len) == 0) {
+                    group = groups[i];
+                    return true;
+                }
+            }
+            return false;
         }
 
         std::vector<Group> getGroups() const {
-            std::vector<Group> groups;
             return groups;
         }
     };
