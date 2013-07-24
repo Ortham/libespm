@@ -23,25 +23,32 @@
 #include <string>
 #include <vector>
 #include <stdint.h>
-#include <fstream>
 
 #include <yaml-cpp/yaml.h>
 #include <zlib.h>
 
+#include <boost/filesystem.hpp>
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/file_descriptor.hpp>
+
 /*
-    Libespm playground for BOSSv3. 
+    Libespm playground for BOSSv3.
 */
 
 namespace espm {
 
+    typedef boost::iostreams::stream< boost::iostreams::file_descriptor_sink > ofstream;
+    typedef boost::iostreams::stream< boost::iostreams::file_descriptor_source > ifstream;
+    typedef boost::iostreams::stream< boost::iostreams::file_descriptor > fstream;
+
     struct Settings {
         Settings() {}
         Settings(const std::string& filepath, const std::string& game) {
-            
+
             YAML::Node contents = YAML::LoadFile(filepath);  //Throws exception on failure.
 
             YAML::Node ys = contents[game];
-            
+
             group.type = ys["Group Type"].as<std::string>();
 
             if (ys["Group Lengths"]) {
@@ -57,7 +64,7 @@ namespace espm {
 
             record.comp_flag = ys["Compression Flag"].as<uint32_t>();
             record.mast_flag = ys["Master Flag"].as<uint32_t>();
-            
+
             record.type_len  = ys["Record Lengths"]["Type"].as<unsigned int>();
             record.size_len  = ys["Record Lengths"]["Size"].as<unsigned int>();
             record.unk1_len   = ys["Record Lengths"]["Unknown 1"].as<unsigned int>();
@@ -66,7 +73,7 @@ namespace espm {
             record.rev_len   = ys["Record Lengths"]["Revision"].as<unsigned int>();
             record.ver_len   = ys["Record Lengths"]["Version"].as<unsigned int>();
             record.unk2_len   = ys["Record Lengths"]["Unknown 2"].as<unsigned int>();
-            
+
             field.type_len = ys["Field Lengths"]["Type"].as<unsigned int>();
             field.size_len = ys["Field Lengths"]["Size"].as<unsigned int>();
 
@@ -75,11 +82,11 @@ namespace espm {
 
             if (ys["PlugHead"])
                 plug_head = ys["PlugHead"].as<std::string>();
-            
+
             if (ys["SaveHead"])
                 save_head = ys["SaveHead"].as<std::string>();
 
-            if (ys["MastExt"])    
+            if (ys["MastExt"])
                 mast_ext  = ys["MastExt"].as<std::string>();
 
             if (ys["PlugExt"])
@@ -87,11 +94,11 @@ namespace espm {
 
             if (ys["SaveExt"])
                 save_ext  = ys["SaveExt"].as<std::string>();
-                
+
             if (ys["ONAM"])
                 onam = ys["ONAM"].as< std::vector<std::string> >();*/
         }
-        
+
         struct {
             std::string type;
 
@@ -104,7 +111,7 @@ namespace espm {
             unsigned int ver_len;
             unsigned int unk2_len;
         } group;
-        
+
         struct {
             uint32_t comp_flag;
             uint32_t mast_flag;
@@ -118,7 +125,7 @@ namespace espm {
             unsigned int ver_len;
             unsigned int unk2_len;
         } record;
-        
+
         struct {
             unsigned int type_len;
             unsigned int size_len;
@@ -142,7 +149,7 @@ namespace espm {
             memcpy(type, field.type, 4);
             memcpy(data, field.data, dataSize);
         }
-        
+
         ~Field() {
             delete [] data;
         }
@@ -159,21 +166,18 @@ namespace espm {
 
             return *this;
         }
-        
+
         char type[4];
         uint32_t dataSize;  //Usually 16 bit, but 32 bit needed for XXXX-extended subrecords.
         char * data;
 
-        uint32_t read(std::ifstream &input, const Settings& settings, const Field& lastField) {
+        uint32_t read(char * buffer, const Settings& settings) {
 
-            input.read(type, settings.field.type_len);
-            input.read(reinterpret_cast<char*>(&dataSize), settings.field.size_len);
-
-            if (strncmp(lastField.type,"XXXX", 4) == 0)
-                memcpy(&dataSize, lastField.data, 4);
+            memcpy(type, buffer, settings.field.type_len);
+            memcpy(&dataSize, buffer + settings.field.type_len, settings.field.size_len);
 
             data = new char[dataSize];
-            input.read(data, dataSize);
+            memcpy(data, buffer + settings.field.type_len + settings.field.size_len, dataSize);
 
             return (uint32_t)settings.field.type_len + settings.field.size_len + dataSize;
         }
@@ -181,7 +185,7 @@ namespace espm {
         uint32_t read(char * buffer, const Settings& settings, const Field& lastField) {
 
             memcpy(type, buffer, settings.field.type_len);
-            
+
             if (strncmp(lastField.type,"XXXX", 4) == 0)
                 memcpy(&dataSize, lastField.data, 4);
             else
@@ -190,20 +194,20 @@ namespace espm {
             data = new char[dataSize];
             memcpy(data, buffer + settings.field.type_len + settings.field.size_len, dataSize);
 
-            
+
             return (uint32_t)settings.field.type_len + settings.field.size_len + dataSize;
         }
     };
 
     struct Record {
         char type[4];
-        
+
         uint32_t dataSize;
         uint16_t unknown1;
         uint32_t flags;
         uint32_t id;
         uint32_t revision;
-        
+
         uint16_t version;
         uint16_t unknown2;
 
@@ -213,67 +217,92 @@ namespace espm {
             return flags & settings.record.comp_flag;
         }
 
-        uint32_t read(std::ifstream &input, const Settings& settings, bool readFields) {
-            input.read(type, settings.record.type_len);
-            input.read(reinterpret_cast<char*>(&dataSize), settings.record.size_len);
-            input.read(reinterpret_cast<char*>(&unknown1), settings.record.unk1_len);
-            input.read(reinterpret_cast<char*>(&flags), settings.record.flags_len);
-            input.read(reinterpret_cast<char*>(&id), settings.record.id_len);
-            input.read(reinterpret_cast<char*>(&revision), settings.record.rev_len);
-            input.read(reinterpret_cast<char*>(&version), settings.record.ver_len);
-            input.read(reinterpret_cast<char*>(&unknown2), settings.record.unk2_len);
- 
-            uint32_t count = 0;
-            if (readFields) {
-                if (isCompressed(settings)) {
+        uint32_t readHeader(char * buffer, const Settings& settings) {
+            uint32_t headerSize =
+                settings.record.type_len +
+                settings.record.size_len +
+                settings.record.unk1_len +
+                settings.record.flags_len +
+                settings.record.id_len +
+                settings.record.rev_len +
+                settings.record.ver_len +
+                settings.record.unk2_len;
 
-                    uint32_t compSize = dataSize - 4;
-                    uint32_t decompSize;
-                    
-                    input.read(reinterpret_cast<char*>(&decompSize), 4);
+            memcpy(type, buffer, settings.record.type_len);
+            buffer += settings.record.type_len;
 
-                    char * decompData = new char[decompSize];
-                    char * compData = new char[compSize];
-                    
-                    input.read(compData, compSize);
+            dataSize = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.record.size_len;
 
-                    int ret = uncompress((Bytef*)decompData, (uLongf*)&decompSize, (Bytef*)compData, (uLong)compSize);
+            unknown1 = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.record.unk1_len;
 
-                    while (count < decompSize) {
-                        Field field, last;
-                        if (!fields.empty())
-                            last = fields.back();
-                        else
-                            memcpy(last.type, "DMMY", 4);  //Initialise the type so nothing weird happens when it gets compared.
-                        count += field.read(decompData + count, settings, last);
-                        fields.push_back(field);
-                    }
+            flags = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.record.flags_len;
 
-                    count = dataSize;
-                } else {
-                    while (count < dataSize) {
-                        Field field, last;
-                        if (!fields.empty())
-                            last = fields.back();
-                        else
-                            memcpy(last.type, "DMMY", 4);  //Initialise the type so nothing weird happens when it gets compared.
-                        count += field.read(input, settings, last);
-                        fields.push_back(field);
-                    }
-                }
-            } else {
-                input.seekg(dataSize, std::ios_base::cur);
-                count = dataSize;
+            id = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.record.id_len;
+
+            revision = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.record.rev_len;
+
+            version = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.record.ver_len;
+
+            unknown2 = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.record.unk2_len;
+            buffer -= headerSize;
+
+            return headerSize;
+        }
+
+        uint32_t readFields(char * buffer, const Settings& settings) {
+
+            char * trueData = buffer;
+            uint32_t trueDataSize = dataSize;
+            if (isCompressed(settings)) {
+                //Need to uncompress the data.
+                uint32_t compSize = dataSize - 4;
+                uint32_t trueDataSize = *reinterpret_cast<uint32_t*>(trueData);
+                trueData += 4;
+
+                char * decompData = new char[trueDataSize];
+
+                int ret = uncompress((Bytef*)decompData, (uLongf*)&trueDataSize, (Bytef*)trueData, (uLong)compSize);
+
+                trueData = decompData;
             }
-                
-            return settings.record.type_len + settings.record.size_len + settings.record.unk1_len + settings.record.flags_len + settings.record.id_len + settings.record.rev_len + settings.record.ver_len + settings.record.unk2_len + count;
+
+            uint32_t count = 0;
+            while (count < trueDataSize) {
+                Field field;
+                if (fields.empty())
+                    count += field.read(trueData + count, settings);
+                else
+                    count += field.read(trueData + count, settings, fields.back());
+                fields.push_back(field);
+            }
+
+            if (isCompressed(settings))
+                delete [] trueData;  //Free what was allocated as decompData.
+
+            return dataSize;
+        }
+
+        uint32_t read(char * buffer, const Settings& settings, bool doReadFields) {
+            uint32_t count = readHeader(buffer, settings);
+
+            if (doReadFields)
+                readFields(buffer + count, settings);
+
+            return count + dataSize;
         }
     };
 
     struct Group {
         char type[4];
         char label[4];
-        
+
         uint32_t groupSize;
         uint32_t groupType;
 
@@ -285,38 +314,60 @@ namespace espm {
         std::vector<Record> records;
         std::vector<Group> subgroups;
 
-        uint32_t read(std::ifstream &input, const Settings& settings, bool readFields) {
+        uint32_t readHeader(char * buffer, const Settings& settings) {
+            uint32_t headerSize =
+                settings.group.type_len +
+                settings.group.size_len +
+                settings.group.label_len +
+                settings.group.groupType_len +
+                settings.group.stamp_len +
+                settings.group.unk1_len +
+                settings.group.ver_len +
+                settings.group.unk2_len;
 
-            try {
-                input.read(type, settings.group.type_len);
-                input.read(reinterpret_cast<char*>(&groupSize), settings.group.size_len);
-                input.read(label, settings.group.label_len);
-                input.read(reinterpret_cast<char*>(&groupType), settings.group.groupType_len);
-                input.read(reinterpret_cast<char*>(&stamp), settings.group.stamp_len);
-                input.read(reinterpret_cast<char*>(&unknown1), settings.group.unk1_len);
-                input.read(reinterpret_cast<char*>(&version), settings.group.ver_len);
-                input.read(reinterpret_cast<char*>(&unknown2), settings.group.unk1_len);
-            } catch (std::ifstream::failure &e) {
-                return 0;
-            }
-            
-            uint32_t count = settings.group.type_len + settings.group.size_len + settings.group.label_len + settings.group.groupType_len + settings.group.stamp_len + settings.group.unk1_len + settings.group.unk2_len + settings.group.ver_len;
+            memcpy(type, buffer, settings.group.type_len);
+            buffer += settings.group.type_len;
 
-            while (count < groupSize && input.good()) {
+            groupSize = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.group.size_len;
+
+            memcpy(label, buffer, settings.group.label_len);
+            buffer += settings.group.label_len;
+
+            groupType = *reinterpret_cast<uint32_t*>(buffer);
+            buffer += settings.group.groupType_len;
+
+            stamp = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.group.stamp_len;
+
+            unknown1 = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.group.unk1_len;
+
+            version = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.group.ver_len;
+
+            unknown2 = *reinterpret_cast<uint16_t*>(buffer);
+            buffer += settings.group.unk2_len;
+            buffer -= headerSize;
+
+            return headerSize;
+        }
+
+        uint32_t read(char * buffer, const Settings& settings, bool readFields) {
+
+            uint32_t count = readHeader(buffer, settings);
+
+            while (count < groupSize) {
                 char temp[4];
+                memcpy(temp, buffer + count, sizeof(temp));
 
-                input.read(temp, settings.record.type_len);
-
-                for (int i=0; i < settings.record.type_len; ++i)
-                    input.unget();
-
-                if (strncmp(temp,settings.group.type.data(), settings.group.type_len) == 0) {
+                if (strncmp(temp, settings.group.type.data(), settings.group.type_len) == 0) {
                     Group subgroup;
-                    count += subgroup.read(input, settings, readFields);
+                    count += subgroup.read(buffer + count, settings, readFields);
                     subgroups.push_back(subgroup);
                 } else {
                     Record record;
-                    count += record.read(input, settings, readFields);
+                    count += record.read(buffer + count, settings, readFields);
                     records.push_back(record);
                 }
             }
@@ -375,41 +426,46 @@ namespace espm {
     struct File : public Record {  // Inherited record is (assumed to be) TES4 or TES3.
         std::vector<Group> groups;
         std::vector<Record> records;
-        
-        void read(std::ifstream &input, const Settings& settings, bool readFields, bool headerOnly) {
-                
-            Record::read(input, settings, true);  //Always read header fields.
+
+        File() {}
+
+        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) {
+
+            ifstream input(filepath, std::ios::binary);
+            input.exceptions(std::ios_base::badbit);
+
+            input.seekg(0, input.end);
+            int length = input.tellg();
+            input.seekg(0, input.beg);
+
+            //Allocate memory for file contents.
+            char * buffer = new char[length];
+
+            //Read whole file in.
+            input.read(buffer, length);
+
+            input.close();
+
+            //First read the TES4/TES3 header.
+            uint32_t count = Record::read(buffer, settings, true);
 
             if (!headerOnly) {
-                if (settings.group.type.empty()) {
-                    while (input.good()) {
+                if (settings.group.type.empty()) {  //Morrowind.
+                    while (count < length) {
                         Record record;
-                        record.read(input, settings, readFields);
+                        count += record.read(buffer + count, settings, readFields);
                         records.push_back(record);
                     }
                 } else {
-                    while (input.good()) {
+                    while (count < length) {
                         Group group;
-                        group.read(input, settings, readFields);
+                        count += group.read(buffer + count, settings, readFields);
                         groups.push_back(group);
                     }
                 }
             }
-        }
 
-        File() {}
-        File(std::ifstream &input, const Settings& settings, bool readFields, bool headerOnly) {
-           read(input, settings, readFields, headerOnly);
-        }
-
-        File(const std::string& filepath, const Settings& settings, bool readFields, bool headerOnly) {
-
-            std::ifstream input(filepath.c_str(), std::ios::binary);
-            input.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-                
-            read(input, settings, readFields, headerOnly);
-
-            input.close();
+            delete [] buffer;
         }
 
         std::vector<uint32_t> getFormIDs() {
