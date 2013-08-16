@@ -1,8 +1,0 @@
-WrinklyNinja's libespm Fork
-===========================
-
-The purpose of this fork is so that I can make changes to deaths_soul's libespm that make it more useful for BOSS.
-
-Memory usage improvements, elimination of global settings, OOP interface, YAML-based settings file and crash fixes have been implemented in src/playground.h.
-
-playground.h requires yaml-cpp and zlib.
