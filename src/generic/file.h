@@ -21,8 +21,8 @@
 #define __ESPM_FILES__
 
 #include "settings.h"
-#include "records.h"
-#include "groups.h"
+#include "record.h"
+#include "group.h"
 #include "streams.h"
 
 #include <string>
@@ -34,7 +34,8 @@
 
 namespace espm {
 
-    struct File : public Record {  // Inherited record is (assumed to be) TES4 or TES3.
+    //Abstract base class.
+    struct File {
         std::vector<Group> groups;
         std::vector<Record> records;
         uint32_t crc;
@@ -64,7 +65,9 @@ namespace espm {
             crc = result.checksum();
 
             //First read the TES4/TES3 header.
-            uint32_t count = Record::read(buffer, settings, true);
+            Record header;
+            uint32_t count = header.read(buffer, settings, true);
+            records.push_back(header);
 
             if (!headerOnly) {
                 if (settings.group.type.empty()) {  //Morrowind.
@@ -85,6 +88,12 @@ namespace espm {
             delete [] buffer;
         }
 
+        virtual bool isMaster(const Settings& settings) const = 0;
+
+        virtual std::vector<std::string> getMasters() const = 0;
+
+        virtual std::string getDescription() const = 0;
+
         std::vector<uint32_t> getFormIDs() {
             std::vector<uint32_t> formids;
             for (int i=0,max=groups.size(); i < max; ++i) {
@@ -95,22 +104,6 @@ namespace espm {
                 formids.push_back(records[i].id);
             }
             return formids;
-        }
-
-        bool isMaster(const Settings& settings) const {
-            if (settings.record.mast_flag)
-                return (flags & settings.record.mast_flag);
-            else
-                return false;
-        }
-
-        std::vector<std::string> getMasters() const {
-            std::vector<std::string> masters;
-            for(size_t i=0,max=fields.size(); i < max; ++i){
-                if (strncmp(fields[i].type,"MAST", 4) == 0)
-                    masters.push_back(fields[i].data);
-            }
-            return masters;
         }
 
         bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& record, const Settings& settings) const {

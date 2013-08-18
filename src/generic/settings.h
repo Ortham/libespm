@@ -31,7 +31,7 @@ namespace espm {
 
     struct Settings {
         Settings() {}
-        Settings(const std::string& filepath, const std::string& game) {
+        Settings(const std::string& filepath, const std::string& game) : _game(game) {
 
             YAML::Node contents = YAML::LoadFile(filepath);  //Throws exception on failure.
 
@@ -66,6 +66,8 @@ namespace espm {
             field.size_len = ys["Field Lengths"]["Size"].as<unsigned int>();
 
         }
+
+        std::string _game;
 
         struct {
             std::string type;
