@@ -28,7 +28,7 @@ namespace espm { namespace tes4 {
 
     struct File : public espm::File {
 
-        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
+        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
 
         // The TES4 record is the file header, and so its data is also file metadata.
 
@@ -37,11 +37,11 @@ namespace espm { namespace tes4 {
         }
 
         std::vector<std::string> getMasters() const {
-            return static_cast<const TES4::Record*>(&records.at(0))->getMasters();
+            return TES4::Record(records.at(0)).getMasters();
         }
 
         std::string getDescription() const {
-            return static_cast<const TES4::Record*>(&records.at(0))->getDescription();
+            return TES4::Record(records.at(0)).getDescription();
         }
     };
 

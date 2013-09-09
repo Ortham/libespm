@@ -26,24 +26,29 @@
 namespace espm { namespace tes4 { namespace TES4 {
 
     struct MAST : public espm::Field {
+        MAST(const espm::Field& field) : espm::Field(field) {}
+
         std::string getString() const {
             return std::string(data, dataSize);
         }
     };
 
     struct SNAM : public espm::Field {
+        SNAM(const espm::Field& field) : espm::Field(field) {}
+
         std::string getString() const {
             return std::string(data, dataSize);
         }
     };
 
     struct Record : public espm::Record {
+        Record(const espm::Record& record) : espm::Record(record) {}
 
         std::vector<std::string> getMasters() const {
             std::vector<std::string> masters;
-            for(size_t i=0,max=fields.size(); i < max; ++i){
+            for(size_t i=0,max=fields.size(); i < max; ++i) {
                 if (strncmp(fields[i].type,"MAST", 4) == 0)
-                    masters.push_back(static_cast<const MAST*>(&fields[i])->getString());
+                    masters.push_back(MAST(fields[i]).getString());
             }
             return masters;
         }
@@ -51,7 +56,7 @@ namespace espm { namespace tes4 { namespace TES4 {
         std::string getDescription() const {
             for(size_t i=0,max=fields.size(); i < max; ++i){
                 if (strncmp(fields[i].type,"SNAM", 4) == 0)
-                    return static_cast<const SNAM*>(&fields[i])->getString();
+                    return SNAM(fields[i]).getString();
             }
             return "";
         }

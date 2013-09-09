@@ -26,12 +26,15 @@
 namespace espm { namespace tes3 { namespace TES3 {
 
     struct MAST : public espm::Field {
+        MAST(const espm::Field& field) : espm::Field(field) {}
+
         std::string getString() const {
             return std::string(data, dataSize);
         }
     };
 
     struct HEDR : public espm::Field {
+        HEDR(const espm::Field& field) : espm::Field(field) {}
 
         std::string getDescription() const {
             return std::string(data + 40, dataSize - 44);
@@ -39,12 +42,13 @@ namespace espm { namespace tes3 { namespace TES3 {
     };
 
     struct Record : public espm::Record {
+        Record(const espm::Record& record) : espm::Record(record) {}
 
         std::vector<std::string> getMasters() const {
             std::vector<std::string> masters;
             for(size_t i=0,max=fields.size(); i < max; ++i){
                 if (strncmp(fields[i].type,"MAST", 4) == 0)
-                    masters.push_back(static_cast<const MAST*>(&fields[i])->getString());
+                    masters.push_back(MAST(fields[i]).getString());
             }
             return masters;
         }
@@ -52,7 +56,7 @@ namespace espm { namespace tes3 { namespace TES3 {
         std::string getDescription() const {
             for(size_t i=0,max=fields.size(); i < max; ++i){
                 if (strncmp(fields[i].type,"HEDR", 4) == 0) {
-                    return static_cast<const HEDR*>(&fields[i])->getDescription();
+                    return HEDR(fields[i]).getDescription();
                 }
             }
             return "";

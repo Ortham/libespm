@@ -42,13 +42,13 @@ namespace espm {
 
         File() {}
 
-        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) {
+        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) {
 
             ifstream input(filepath, std::ios::binary);
             input.exceptions(std::ios_base::badbit);
 
             input.seekg(0, input.end);
-            int length = input.tellg();
+            unsigned int length = input.tellg();
             input.seekg(0, input.beg);
 
             //Allocate memory for file contents.

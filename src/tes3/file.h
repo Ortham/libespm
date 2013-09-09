@@ -37,11 +37,11 @@ namespace espm { namespace tes3 {
         }
 
         std::vector<std::string> getMasters() const {
-            return static_cast<const TES3::Record*>(&records.at(0))->getMasters();
+            return TES3::Record(records.at(0)).getMasters();
         }
 
         std::string getDescription() const {
-            return static_cast<const TES3::Record*>(&records.at(0))->getDescription();
+            return TES3::Record(records.at(0)).getDescription();
         }
     };
 
