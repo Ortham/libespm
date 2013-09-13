@@ -29,7 +29,7 @@ namespace espm { namespace tes3 { namespace TES3 {
         MAST(const espm::Field& field) : espm::Field(field) {}
 
         std::string getString() const {
-            return std::string(data, dataSize);
+            return std::string(data, dataSize - 1);  //Data should be null terminated.
         }
     };
 
