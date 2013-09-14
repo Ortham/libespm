@@ -22,6 +22,7 @@
 #define __ESPM_RECORDS__
 
 #include "settings.h"
+#include "streams.h"
 #include "field.h"
 
 #include <string>
@@ -126,6 +127,39 @@ namespace espm {
 
             if (doReadFields)
                 readFields(buffer + count, settings);
+
+            return count + dataSize;
+        }
+
+        uint32_t read(ifstream& in, const Settings& settings, bool doReadFields) {
+            uint32_t headerSize =
+                settings.record.type_len +
+                settings.record.size_len +
+                settings.record.unk1_len +
+                settings.record.flags_len +
+                settings.record.id_len +
+                settings.record.rev_len +
+                settings.record.ver_len +
+                settings.record.unk2_len;
+
+            //Allocate memory for record contents.
+            char * buffer = new char[headerSize];
+
+            //Read whole file in.
+            in.read(buffer, headerSize);
+
+            //Now extract info from buffer.
+            uint32_t count = readHeader(buffer, settings);
+
+            //Reallocate the buffer for the fields.
+
+            delete [] buffer;
+            buffer = new char[dataSize];
+
+            if (doReadFields)
+                readFields(buffer + count, settings);
+
+            delete [] buffer;
 
             return count + dataSize;
         }

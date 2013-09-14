@@ -42,10 +42,20 @@ namespace espm {
 
         File() {}
 
-        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) {
+        // If headerOnly is true, a side effect is that the CRC is not calculated.
+        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
 
             ifstream input(filepath, std::ios::binary);
             input.exceptions(std::ios_base::badbit);
+
+            if (headerOnly) {
+                Record header;
+                header.read(input, settings, true);
+                records.push_back(header);
+
+                input.close();
+                return;
+            }
 
             input.seekg(0, input.end);
             unsigned int length = input.tellg();
