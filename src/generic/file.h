@@ -110,7 +110,7 @@ namespace espm {
                 std::vector<uint32_t> fids = groups[i].getFormIDs();
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
-            for (int i=0,max=records.size(); i < max; ++i) {
+            for (int i=1,max=records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).
                 formids.push_back(records[i].id);
             }
             return formids;
