@@ -102,6 +102,9 @@ namespace espm {
                 }
             }
 
+            if (settings.progressCallback != NULL && settings.progressObject != NULL)
+                settings.progressCallback(settings.progressObject);
+
             return count;
         }
 

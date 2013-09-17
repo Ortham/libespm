@@ -30,8 +30,8 @@
 namespace espm {
 
     struct Settings {
-        Settings() {}
-        Settings(const std::string& filepath, const std::string& game) : _game(game) {
+        Settings() : progressCallback(NULL), progressObject(NULL) {}
+        Settings(const std::string& filepath, const std::string& game) : _game(game), progressCallback(NULL), progressObject(NULL) {
 
             YAML::Node contents = YAML::LoadFile(filepath);  //Throws exception on failure.
 
@@ -68,6 +68,8 @@ namespace espm {
         }
 
         std::string _game;
+        void (*progressCallback)(void * pointer);
+        void * progressObject;
 
         struct {
             std::string type;
