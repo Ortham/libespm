@@ -143,21 +143,32 @@ namespace espm {
                 settings.record.unk2_len;
 
             //Allocate memory for record contents.
-            char * buffer = new char[headerSize];
+            char * buffer;
+            try {
+                buffer = new char[headerSize];
+            } catch (std::bad_alloc& e) {
+                return 0;
+            }
 
-            //Read whole file in.
+            //Read header in.
             in.read(buffer, headerSize);
 
             //Now extract info from buffer.
             uint32_t count = readHeader(buffer, settings);
 
             //Reallocate the buffer for the fields.
-
             delete [] buffer;
-            buffer = new char[dataSize];
+            try {
+                buffer = new char[dataSize];
+            } catch (std::bad_alloc& e) {
+                return headerSize;
+            }
+
+            //Read fields in.
+            in.read(buffer, dataSize);
 
             if (doReadFields)
-                readFields(buffer + count, settings);
+                readFields(buffer, settings);
 
             delete [] buffer;
 

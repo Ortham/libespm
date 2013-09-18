@@ -45,6 +45,9 @@ namespace espm {
         // If headerOnly is true, a side effect is that the CRC is not calculated.
         File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
 
+            if (!boost::filesystem::exists(filepath))
+                return;
+
             ifstream input(filepath, std::ios::binary);
             input.exceptions(std::ios_base::badbit);
 
@@ -62,7 +65,12 @@ namespace espm {
             input.seekg(0, input.beg);
 
             //Allocate memory for file contents.
-            char * buffer = new char[length];
+            char * buffer;
+            try {
+                buffer = new char[length];
+            } catch (std::bad_alloc& e) {
+                return;
+            }
 
             //Read whole file in.
             input.read(buffer, length);
