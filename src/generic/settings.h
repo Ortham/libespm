@@ -21,53 +21,176 @@
 #ifndef __ESPM_SETTINGS__
 #define __ESPM_SETTINGS__
 
+#include "streams.h"
+
 #include <string>
 #include <vector>
 #include <stdint.h>
 
-#include <yaml-cpp/yaml.h>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include "boost/lexical_cast.hpp"
 
 namespace espm {
 
     struct Settings {
         Settings() : progressCallback(NULL), progressObject(NULL) {}
-        Settings(const std::string& filepath, const std::string& game) : _game(game), progressCallback(NULL), progressObject(NULL) {
+        Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(NULL), progressObject(NULL) {
 
-            YAML::Node contents = YAML::LoadFile(filepath);  //Throws exception on failure.
+            if (!boost::filesystem::exists(filepath))
+                return;
 
-            YAML::Node ys = contents[game];
+            try {
+                espm::ifstream input(filepath, std::ios::binary);
+                input.exceptions(std::ios_base::badbit);
 
-            group.type = ys["Group Type"].as<std::string>();
+                std::string line;
+                while (getline(input, line)) {
+                    if (!boost::starts_with(line, game))
+                        continue;
 
-            if (ys["Group Lengths"]) {
-                group.type_len      = ys["Group Lengths"]["Type"].as<unsigned int>();
-                group.size_len      = ys["Group Lengths"]["Size"].as<unsigned int>();
-                group.label_len     = ys["Group Lengths"]["Label"].as<unsigned int>();
-                group.groupType_len = ys["Group Lengths"]["GroupType"].as<unsigned int>();
-                group.stamp_len     = ys["Group Lengths"]["Stamp"].as<unsigned int>();
-                group.unk1_len       = ys["Group Lengths"]["Unknown 1"].as<unsigned int>();
-                group.ver_len       = ys["Group Lengths"]["Version"].as<unsigned int>();
-                group.unk2_len       = ys["Group Lengths"]["Unknown 2"].as<unsigned int>();
+                    size_t pos1 = line.find('.');
+                    size_t pos2 = line.find('=');
+                    if (pos1 == std::string::npos || pos2 == std::string::npos)
+                        continue;
+
+                    std::string key = boost::trim_copy(line.substr(pos1 + 1, pos2 - pos1 - 1));
+                    std::string value = boost::trim_copy(line.substr(pos2 + 1));
+
+                    //If the value is in hex, chop the 0x off so that it doesn't confuse lexical_cast.
+                    if (boost::starts_with(value, "0x"))
+                        value = value.substr(2);
+
+                    if (key == "group.type") {
+                       group.type = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.type_len") {
+                       group.type_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.size_len") {
+                       group.size_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.label_len") {
+                       group.label_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.groupType_len") {
+                       group.groupType_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.stamp_len") {
+                       group.stamp_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.unk1_len") {
+                       group.unk1_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.ver_len") {
+                       group.ver_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "group.unk2_len") {
+                       group.unk2_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.comp_flag") {
+                       record.comp_flag = boost::lexical_cast<uint32_t>(value);
+                    } else if (key == "record.mast_flag") {
+                       record.mast_flag = boost::lexical_cast<uint32_t>(value);
+                    } else if (key == "record.type_len") {
+                       record.type_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.size_len") {
+                       record.size_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.unk1_len") {
+                       record.unk1_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.flags_len") {
+                       record.flags_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.id_len") {
+                       record.id_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.rev_len") {
+                       record.rev_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.ver_len") {
+                       record.ver_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "record.unk2_len") {
+                       record.unk2_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "field.type_len") {
+                       field.type_len = boost::lexical_cast<unsigned int>(value);
+                    } else if (key == "field.size_len") {
+                       field.size_len = boost::lexical_cast<unsigned int>(value);
+                    }
+                }
+
+                input.close();
+            } catch (std::exception& e) {
             }
-
-            record.comp_flag = ys["Compression Flag"].as<uint32_t>();
-            record.mast_flag = ys["Master Flag"].as<uint32_t>();
-
-            record.type_len  = ys["Record Lengths"]["Type"].as<unsigned int>();
-            record.size_len  = ys["Record Lengths"]["Size"].as<unsigned int>();
-            record.unk1_len   = ys["Record Lengths"]["Unknown 1"].as<unsigned int>();
-            record.flags_len = ys["Record Lengths"]["Flags"].as<unsigned int>();
-            record.id_len    = ys["Record Lengths"]["ID"].as<unsigned int>();
-            record.rev_len   = ys["Record Lengths"]["Revision"].as<unsigned int>();
-            record.ver_len   = ys["Record Lengths"]["Version"].as<unsigned int>();
-            record.unk2_len   = ys["Record Lengths"]["Unknown 2"].as<unsigned int>();
-
-            field.type_len = ys["Field Lengths"]["Type"].as<unsigned int>();
-            field.size_len = ys["Field Lengths"]["Size"].as<unsigned int>();
-
         }
+        Settings(const std::string& game) : progressCallback(NULL), progressObject(NULL) {
+            if (game == "tes3") {
+                /* Init Morrowind settings. */
 
-        std::string _game;
+                group.type = "";
+                group.type_len = 0;
+                group.size_len = 0;
+                group.label_len = 0;
+                group.groupType_len = 0;
+                group.stamp_len = 0;
+                group.unk1_len = 0;
+                group.ver_len = 0;
+                group.unk2_len = 0;
+
+                record.comp_flag = 0;
+                record.mast_flag = 0;
+                record.type_len = 4;
+                record.size_len = 4;
+                record.unk1_len = 4;
+                record.flags_len = 4;
+                record.id_len = 0;
+                record.rev_len = 0;
+                record.ver_len = 0;
+                record.unk2_len = 0;
+
+                field.type_len = 4;
+                field.size_len = 4;
+            } else if (game == "tes4") {
+                /* Init Oblivion settings. */
+
+                group.type = "GRUP";
+                group.type_len = 4;
+                group.size_len = 4;
+                group.label_len = 4;
+                group.groupType_len = 4;
+                group.stamp_len = 4;
+                group.unk1_len = 0;
+                group.ver_len = 0;
+                group.unk2_len = 0;
+
+                record.comp_flag = 0x00040000;
+                record.mast_flag = 0x00000001;
+                record.type_len = 4;
+                record.size_len = 4;
+                record.unk1_len = 0;
+                record.flags_len = 4;
+                record.id_len = 4;
+                record.rev_len = 4;
+                record.ver_len = 0;
+                record.unk2_len = 0;
+
+                field.type_len = 4;
+                field.size_len = 2;
+            } else if (game == "tes5" || game == "fo3" || game == "fonv") {
+                /* Init Skyrim settings. */
+
+                group.type = "GRUP";
+                group.type_len = 4;
+                group.size_len = 4;
+                group.label_len = 4;
+                group.groupType_len = 4;
+                group.stamp_len = 2;
+                group.unk1_len = 2;
+                group.ver_len = 2;
+                group.unk2_len = 2;
+
+                record.comp_flag = 0x00040000;
+                record.mast_flag = 0x00000001;
+                record.type_len = 4;
+                record.size_len = 4;
+                record.unk1_len = 0;
+                record.flags_len = 4;
+                record.id_len = 4;
+                record.rev_len = 4;
+                record.ver_len = 2;
+                record.unk2_len = 2;
+
+                field.type_len = 4;
+                field.size_len = 2;
+            }
+        }
         void (*progressCallback)(void * pointer);
         void * progressObject;
 
@@ -103,89 +226,6 @@ namespace espm {
             unsigned int size_len;
         } field;
     };
-
-    inline void InitPredefinedSettings(const std::string game, Settings& settings) {
-
-        if (game == "Morrowind") {
-            /* Init Morrowind settings. */
-
-            settings.group.type = "";
-            settings.group.type_len = 0;
-            settings.group.size_len = 0;
-            settings.group.label_len = 0;
-            settings.group.groupType_len = 0;
-            settings.group.stamp_len = 0;
-            settings.group.unk1_len = 0;
-            settings.group.ver_len = 0;
-            settings.group.unk2_len = 0;
-
-            settings.record.comp_flag = 0;
-            settings.record.mast_flag = 0;
-            settings.record.type_len = 4;
-            settings.record.size_len = 4;
-            settings.record.unk1_len = 4;
-            settings.record.flags_len = 4;
-            settings.record.id_len = 0;
-            settings.record.rev_len = 0;
-            settings.record.ver_len = 0;
-            settings.record.unk2_len = 0;
-
-            settings.field.type_len = 4;
-            settings.field.size_len = 4;
-        } else if (game == "Oblivion") {
-            /* Init Oblivion settings. */
-
-            settings.group.type = "GRUP";
-            settings.group.type_len = 4;
-            settings.group.size_len = 4;
-            settings.group.label_len = 4;
-            settings.group.groupType_len = 4;
-            settings.group.stamp_len = 4;
-            settings.group.unk1_len = 0;
-            settings.group.ver_len = 0;
-            settings.group.unk2_len = 0;
-
-            settings.record.comp_flag = 0x00040000;
-            settings.record.mast_flag = 0x00000001;
-            settings.record.type_len = 4;
-            settings.record.size_len = 4;
-            settings.record.unk1_len = 0;
-            settings.record.flags_len = 4;
-            settings.record.id_len = 4;
-            settings.record.rev_len = 4;
-            settings.record.ver_len = 0;
-            settings.record.unk2_len = 0;
-
-            settings.field.type_len = 4;
-            settings.field.size_len = 2;
-        } else if (game == "Skyrim" || game == "Fallout3" || game == "FalloutNV") {
-            /* Init Skyrim settings. */
-
-            settings.group.type = "GRUP";
-            settings.group.type_len = 4;
-            settings.group.size_len = 4;
-            settings.group.label_len = 4;
-            settings.group.groupType_len = 4;
-            settings.group.stamp_len = 2;
-            settings.group.unk1_len = 2;
-            settings.group.ver_len = 2;
-            settings.group.unk2_len = 2;
-
-            settings.record.comp_flag = 0x00040000;
-            settings.record.mast_flag = 0x00000001;
-            settings.record.type_len = 4;
-            settings.record.size_len = 4;
-            settings.record.unk1_len = 0;
-            settings.record.flags_len = 4;
-            settings.record.id_len = 4;
-            settings.record.rev_len = 4;
-            settings.record.ver_len = 2;
-            settings.record.unk2_len = 2;
-
-            settings.field.type_len = 4;
-            settings.field.size_len = 2;
-        }
-    }
 }
 
 #endif

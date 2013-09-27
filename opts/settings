@@ -1,0 +1,69 @@
+# Morrowind
+tes3.group.type =
+tes3.group.type_len = 0
+tes3.group.size_len = 0
+tes3.group.label_len = 0
+tes3.group.groupType_len = 0
+tes3.group.stamp_len = 0
+tes3.group.unk1_len = 0
+tes3.group.ver_len = 0
+tes3.group.unk2_len = 0
+tes3.record.comp_flag = 0
+tes3.record.mast_flag = 0
+tes3.record.type_len = 4
+tes3.record.size_len = 4
+tes3.record.unk1_len = 4
+tes3.record.flags_len = 4
+tes3.record.id_len = 0
+tes3.record.rev_len = 0
+tes3.record.ver_len = 0
+tes3.record.unk2_len = 0
+tes3.field.type_len = 4
+tes3.field.size_len = 4
+
+# Oblivion
+tes4.group.type = GRUP
+tes4.group.type_len = 4
+tes4.group.size_len = 4
+tes4.group.label_len = 4
+tes4.group.groupType_len = 4
+tes4.group.stamp_len = 4
+tes4.group.unk1_len = 0
+tes4.group.ver_len = 0
+tes4.group.unk2_len = 0
+tes4.record.comp_flag = 0x00040000
+tes4.record.mast_flag = 0x00000001
+tes4.record.type_len = 4
+tes4.record.size_len = 4
+tes4.record.unk1_len = 0
+tes4.record.flags_len = 4
+tes4.record.id_len = 4
+tes4.record.rev_len = 4
+tes4.record.ver_len = 0
+tes4.record.unk2_len = 0
+tes4.field.type_len = 4
+tes4.field.size_len = 2
+
+# Skyrim, Fallout 3 and Fallout: New Vegas
+tes5.group.type = GRUP
+tes5.group.type_len = 4
+tes5.group.size_len = 4
+tes5.group.label_len = 4
+tes5.group.groupType_len = 4
+tes5.group.stamp_len = 2
+tes5.group.unk1_len = 2
+tes5.group.ver_len = 2
+tes5.group.unk2_len = 2
+tes5.record.comp_flag = 0x00040000
+tes5.record.mast_flag = 0x00000001
+tes5.record.type_len = 4
+tes5.record.size_len = 4
+tes5.record.unk1_len = 0
+tes5.record.flags_len = 4
+tes5.record.id_len = 4
+tes5.record.rev_len = 2
+tes5.record.ver_len = 2
+tes5.record.unk2_len = 2
+tes5.field.type_len = 4
+tes5.field.size_len = 2
+
