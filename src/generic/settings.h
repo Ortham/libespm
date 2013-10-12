@@ -29,7 +29,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include "boost/lexical_cast.hpp"
+#include <boost/lexical_cast.hpp>
 
 namespace espm {
 
@@ -57,10 +57,6 @@ namespace espm {
                     std::string key = boost::trim_copy(line.substr(pos1 + 1, pos2 - pos1 - 1));
                     std::string value = boost::trim_copy(line.substr(pos2 + 1));
 
-                    //If the value is in hex, chop the 0x off so that it doesn't confuse lexical_cast.
-                    if (boost::starts_with(value, "0x"))
-                        value = value.substr(2);
-
                     if (key == "group.type") {
                        group.type = boost::lexical_cast<unsigned int>(value);
                     } else if (key == "group.type_len") {
@@ -80,9 +76,9 @@ namespace espm {
                     } else if (key == "group.unk2_len") {
                        group.unk2_len = boost::lexical_cast<unsigned int>(value);
                     } else if (key == "record.comp_flag") {
-                       record.comp_flag = boost::lexical_cast<uint32_t>(value);
+                        record.comp_flag = strtoul(value.c_str(), NULL, 16);
                     } else if (key == "record.mast_flag") {
-                       record.mast_flag = boost::lexical_cast<uint32_t>(value);
+                        record.mast_flag = strtoul(value.c_str(), NULL, 16);
                     } else if (key == "record.type_len") {
                        record.type_len = boost::lexical_cast<unsigned int>(value);
                     } else if (key == "record.size_len") {
