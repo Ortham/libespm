@@ -33,15 +33,24 @@ namespace espm { namespace tes4 {
         // The TES4 record is the file header, and so its data is also file metadata.
 
         bool isMaster(const Settings& settings) const {
-            return (records.at(0).flags & settings.record.mast_flag);
+            if (!records.empty())
+                return (records.at(0).flags & settings.record.mast_flag);
+            else
+                false;
         }
 
         std::vector<std::string> getMasters() const {
-            return TES4::Record(records.at(0)).getMasters();
+            if (!records.empty())
+                return TES4::Record(records.at(0)).getMasters();
+            else
+                return std::vector<std::string>();
         }
 
         std::string getDescription() const {
-            return TES4::Record(records.at(0)).getDescription();
+            if (!records.empty())
+                return TES4::Record(records.at(0)).getDescription();
+            else
+                return std::string();
         }
     };
 

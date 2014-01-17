@@ -49,11 +49,15 @@ namespace espm {
                 return;
 
             ifstream input(filepath, std::ios::binary);
-            input.exceptions(std::ios_base::badbit);
+            input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
             if (headerOnly) {
                 Record header;
-                header.read(input, settings, true);
+                try {
+                    header.read(input, settings, true);
+                } catch (std::exception& e) {
+                    return;
+                }
                 records.push_back(header);
 
                 input.close();
@@ -73,7 +77,11 @@ namespace espm {
             }
 
             //Read whole file in.
-            input.read(buffer, length);
+            try {
+                input.read(buffer, length);
+            } catch (std::exception& e) {
+                return;
+            }
 
             input.close();
 
