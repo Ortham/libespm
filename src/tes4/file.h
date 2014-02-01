@@ -36,7 +36,7 @@ namespace espm { namespace tes4 {
             if (!records.empty())
                 return (records.at(0).flags & settings.record.mast_flag);
             else
-                false;
+                return false;
         }
 
         std::vector<std::string> getMasters() const {
