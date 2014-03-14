@@ -44,7 +44,7 @@ namespace espm {
         std::vector<Record> records;
         std::vector<Group> subgroups;
 
-        uint32_t readHeader(char * buffer, const Settings& settings) {
+        uint32_t readHeader(char * buffer, size_t length, const Settings& settings) {
             uint32_t headerSize =
                 settings.group.type_len +
                 settings.group.size_len +
@@ -54,6 +54,9 @@ namespace espm {
                 settings.group.unk1_len +
                 settings.group.ver_len +
                 settings.group.unk2_len;
+
+            if (length < headerSize)
+                throw std::runtime_error("File shorter than expected.");
 
             memcpy(type, buffer, settings.group.type_len);
             buffer += settings.group.type_len;
@@ -83,21 +86,21 @@ namespace espm {
             return headerSize;
         }
 
-        uint32_t read(char * buffer, const Settings& settings, bool readFields) {
+        uint32_t read(char * buffer, size_t length, const Settings& settings, bool readFields) {
 
-            uint32_t count = readHeader(buffer, settings);
+            uint32_t count = readHeader(buffer, length, settings);
 
-            while (count < groupSize) {
+            while (count + 4 < groupSize) {
                 char temp[4];
                 memcpy(temp, buffer + count, sizeof(temp));
 
                 if (strncmp(temp, settings.group.type.data(), settings.group.type_len) == 0) {
                     Group subgroup;
-                    count += subgroup.read(buffer + count, settings, readFields);
+                    count += subgroup.read(buffer + count, length - count, settings, readFields);
                     subgroups.push_back(subgroup);
                 } else {
                     Record record;
-                    count += record.read(buffer + count, settings, readFields);
+                    count += record.read(buffer + count, length - count, settings, readFields);
                     records.push_back(record);
                 }
             }

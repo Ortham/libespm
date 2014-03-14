@@ -50,7 +50,7 @@ namespace espm {
             return flags & settings.record.comp_flag;
         }
 
-        uint32_t readHeader(char * buffer, const Settings& settings) {
+        uint32_t readHeader(char * buffer, size_t length, const Settings& settings) {
             uint32_t headerSize =
                 settings.record.type_len +
                 settings.record.size_len +
@@ -60,6 +60,9 @@ namespace espm {
                 settings.record.rev_len +
                 settings.record.ver_len +
                 settings.record.unk2_len;
+
+            if (length < headerSize)
+                throw std::runtime_error("File shorter than expected.");
 
             memcpy(type, buffer, settings.record.type_len);
             buffer += settings.record.type_len;
@@ -89,7 +92,10 @@ namespace espm {
             return headerSize;
         }
 
-        uint32_t readFields(char * buffer, const Settings& settings) {
+        uint32_t readFields(char * buffer, size_t length, const Settings& settings) {
+
+            if (length < dataSize)
+                throw std::runtime_error("File shorter than expected.");
 
             char * trueData = buffer;
             uint32_t trueDataSize = dataSize;
@@ -122,11 +128,11 @@ namespace espm {
             return dataSize;
         }
 
-        uint32_t read(char * buffer, const Settings& settings, bool doReadFields) {
-            uint32_t count = readHeader(buffer, settings);
+        uint32_t read(char * buffer, size_t length, const Settings& settings, bool doReadFields) {
+            uint32_t count = readHeader(buffer, length, settings);
 
             if (doReadFields)
-                readFields(buffer + count, settings);
+                readFields(buffer + count, length - count, settings);
 
             return count + dataSize;
         }
@@ -154,7 +160,7 @@ namespace espm {
             in.read(buffer, headerSize);
 
             //Now extract info from buffer.
-            uint32_t count = readHeader(buffer, settings);
+            uint32_t count = readHeader(buffer, headerSize, settings);
 
             //Reallocate the buffer for the fields.
             delete [] buffer;
@@ -168,7 +174,7 @@ namespace espm {
             in.read(buffer, dataSize);
 
             if (doReadFields)
-                readFields(buffer, settings);
+                readFields(buffer, dataSize, settings);
 
             delete [] buffer;
 

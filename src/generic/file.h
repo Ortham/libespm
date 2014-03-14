@@ -40,12 +40,13 @@ namespace espm {
         std::vector<Record> records;
         uint32_t crc;
 
-        File() {}
+        File() : crc(0) {}
 
         // If headerOnly is true, a side effect is that the CRC is not calculated.
+        // Can throw exceptions.
         File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
 
-            if (!boost::filesystem::exists(filepath))
+            if (!boost::filesystem::exists(filepath) || boost::filesystem::file_size(filepath) == 0)
                 return;
 
             ifstream input(filepath, std::ios::binary);
@@ -53,11 +54,7 @@ namespace espm {
 
             if (headerOnly) {
                 Record header;
-                try {
-                    header.read(input, settings, true);
-                } catch (std::exception& e) {
-                    return;
-                }
+                header.read(input, settings, true);
                 records.push_back(header);
 
                 input.close();
@@ -70,19 +67,10 @@ namespace espm {
 
             //Allocate memory for file contents.
             char * buffer;
-            try {
-                buffer = new char[length];
-            } catch (std::bad_alloc& e) {
-                return;
-            }
+            buffer = new char[length];
 
             //Read whole file in.
-            try {
-                input.read(buffer, length);
-            } catch (std::exception& e) {
-                return;
-            }
-
+            input.read(buffer, length);
             input.close();
 
             //Calculate the file CRC.
@@ -92,20 +80,20 @@ namespace espm {
 
             //First read the TES4/TES3 header.
             Record header;
-            uint32_t count = header.read(buffer, settings, true);
+            uint32_t count = header.read(buffer, length, settings, true);
             records.push_back(header);
 
             if (!headerOnly) {
                 if (settings.group.type.empty()) {  //Morrowind.
                     while (count < length) {
                         Record record;
-                        count += record.read(buffer + count, settings, readFields);
+                        count += record.read(buffer + count, length - count, settings, readFields);
                         records.push_back(record);
                     }
                 } else {
                     while (count < length) {
                         Group group;
-                        count += group.read(buffer + count, settings, readFields);
+                        count += group.read(buffer + count, length - count, settings, readFields);
                         groups.push_back(group);
                     }
                 }
