@@ -34,7 +34,7 @@ namespace espm { namespace tes4 {
 
         bool isMaster(const Settings& settings) const {
             if (!records.empty())
-                return (records.at(0).flags & settings.record.mast_flag);
+                return (records.at(0).flags & settings.record.mast_flag) == settings.record.mast_flag;
             else
                 return false;
         }

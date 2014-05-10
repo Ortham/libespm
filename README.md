@@ -14,14 +14,16 @@ Libespm can currently read data from plugins for the following games:
 
 Libespm was first created by deaths_soul (AKA MCP), then forked by myself (WrinklyNinja) and pretty much rewritten, though the structure of the library has only changed a little.
 
-Libespm requires zlib and the following Boost libraries:
+Libespm requires the following Boost libraries:
 
 * Filesystem (built)
 * Iostreams
 * String Algorithms
 * Lexical Cast
 
-At the moment the library is header-only, so just make sure that those libraries are accessible in your project build settings.
+At the moment the libespm itself is header-only, so just make sure that those libraries are accessible in your project build settings.
+
+Support for compressed record fields requires zlib to be accessible in your project build settings, and the `USING_ZLIB` preprocessor definition.
 
 ## Design Notes
 

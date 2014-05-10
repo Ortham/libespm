@@ -103,7 +103,7 @@ namespace espm {
                 }
 
                 input.close();
-            } catch (std::exception& e) {
+            } catch (std::exception& /*e*/) {
             }
         }
         Settings(const std::string& game) : progressCallback(NULL), progressObject(NULL) {

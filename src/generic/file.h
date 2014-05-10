@@ -29,7 +29,6 @@
 #include <vector>
 #include <stdint.h>
 
-#include <zlib.h>
 #include <boost/crc.hpp>
 
 namespace espm {
@@ -62,7 +61,7 @@ namespace espm {
             }
 
             input.seekg(0, input.end);
-            unsigned int length = input.tellg();
+            size_t length = input.tellg();
             input.seekg(0, input.beg);
 
             //Allocate memory for file contents.

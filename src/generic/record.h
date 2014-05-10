@@ -28,7 +28,9 @@
 #include <string>
 #include <stdint.h>
 
+#ifdef USING_ZLIB
 #include <zlib.h>
+#endif
 
 namespace espm {
 
@@ -47,7 +49,7 @@ namespace espm {
         std::vector<Field> fields;
 
         bool isCompressed(const Settings& settings) const {
-            return flags & settings.record.comp_flag;
+            return (flags & settings.record.comp_flag) == settings.record.comp_flag;
         }
 
         uint32_t readHeader(char * buffer, size_t length, const Settings& settings) {
@@ -99,6 +101,7 @@ namespace espm {
 
             char * trueData = buffer;
             uint32_t trueDataSize = dataSize;
+#ifdef USING_ZLIB
             if (isCompressed(settings)) {
                 //Need to uncompress the data.
                 uint32_t compSize = dataSize - 4;
@@ -111,20 +114,25 @@ namespace espm {
 
                 trueData = decompData;
             }
+#else
+            if (!isCompressed(settings)) {
+#endif
 
-            uint32_t count = 0;
-            while (count < trueDataSize) {
-                Field field;
-                if (fields.empty())
-                    count += field.read(trueData + count, settings);
-                else
-                    count += field.read(trueData + count, settings, fields.back());
-                fields.push_back(field);
+                uint32_t count = 0;
+                while (count < trueDataSize) {
+                    Field field;
+                    if (fields.empty())
+                        count += field.read(trueData + count, settings);
+                    else
+                        count += field.read(trueData + count, settings, fields.back());
+                    fields.push_back(field);
+                }
+#ifndef USING_ZLIB
             }
-
+#else
             if (isCompressed(settings))
                 delete [] trueData;  //Free what was allocated as decompData.
-
+#endif
             return dataSize;
         }
 
@@ -152,7 +160,7 @@ namespace espm {
             char * buffer;
             try {
                 buffer = new char[headerSize];
-            } catch (std::bad_alloc& e) {
+            } catch (std::bad_alloc& /*e*/) {
                 return 0;
             }
 
@@ -166,7 +174,7 @@ namespace espm {
             delete [] buffer;
             try {
                 buffer = new char[dataSize];
-            } catch (std::bad_alloc& e) {
+            } catch (std::bad_alloc& /*e*/) {
                 return headerSize;
             }
 
