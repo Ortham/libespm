@@ -25,7 +25,7 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
@@ -58,47 +58,47 @@ namespace espm {
                     std::string value = boost::trim_copy(line.substr(pos2 + 1));
 
                     if (key == "group.type") {
-                       group.type = boost::lexical_cast<unsigned int>(value);
+                       group.type = std::stoul(value);
                     } else if (key == "group.type_len") {
-                       group.type_len = boost::lexical_cast<unsigned int>(value);
+                       group.type_len = std::stoul(value);
                     } else if (key == "group.size_len") {
-                       group.size_len = boost::lexical_cast<unsigned int>(value);
+                       group.size_len = std::stoul(value);
                     } else if (key == "group.label_len") {
-                       group.label_len = boost::lexical_cast<unsigned int>(value);
+                       group.label_len = std::stoul(value);
                     } else if (key == "group.groupType_len") {
-                       group.groupType_len = boost::lexical_cast<unsigned int>(value);
+                       group.groupType_len = std::stoul(value);
                     } else if (key == "group.stamp_len") {
-                       group.stamp_len = boost::lexical_cast<unsigned int>(value);
+                       group.stamp_len = std::stoul(value);
                     } else if (key == "group.unk1_len") {
-                       group.unk1_len = boost::lexical_cast<unsigned int>(value);
+                       group.unk1_len = std::stoul(value);
                     } else if (key == "group.ver_len") {
-                       group.ver_len = boost::lexical_cast<unsigned int>(value);
+                       group.ver_len = std::stoul(value);
                     } else if (key == "group.unk2_len") {
-                       group.unk2_len = boost::lexical_cast<unsigned int>(value);
+                       group.unk2_len = std::stoul(value);
                     } else if (key == "record.comp_flag") {
-                        record.comp_flag = strtoul(value.c_str(), NULL, 16);
+                        record.comp_flag = std::stoul(value, NULL, 16);
                     } else if (key == "record.mast_flag") {
-                        record.mast_flag = strtoul(value.c_str(), NULL, 16);
+                        record.mast_flag = std::stoul(value, NULL, 16);
                     } else if (key == "record.type_len") {
-                       record.type_len = boost::lexical_cast<unsigned int>(value);
+                       record.type_len = std::stoul(value);
                     } else if (key == "record.size_len") {
-                       record.size_len = boost::lexical_cast<unsigned int>(value);
+                       record.size_len = std::stoul(value);
                     } else if (key == "record.unk1_len") {
-                       record.unk1_len = boost::lexical_cast<unsigned int>(value);
+                       record.unk1_len = std::stoul(value);
                     } else if (key == "record.flags_len") {
-                       record.flags_len = boost::lexical_cast<unsigned int>(value);
+                       record.flags_len = std::stoul(value);
                     } else if (key == "record.id_len") {
-                       record.id_len = boost::lexical_cast<unsigned int>(value);
+                       record.id_len = std::stoul(value);
                     } else if (key == "record.rev_len") {
-                       record.rev_len = boost::lexical_cast<unsigned int>(value);
+                       record.rev_len = std::stoul(value);
                     } else if (key == "record.ver_len") {
-                       record.ver_len = boost::lexical_cast<unsigned int>(value);
+                       record.ver_len = std::stoul(value);
                     } else if (key == "record.unk2_len") {
-                       record.unk2_len = boost::lexical_cast<unsigned int>(value);
+                       record.unk2_len = std::stoul(value);
                     } else if (key == "field.type_len") {
-                       field.type_len = boost::lexical_cast<unsigned int>(value);
+                       field.type_len = std::stoul(value);
                     } else if (key == "field.size_len") {
-                       field.size_len = boost::lexical_cast<unsigned int>(value);
+                       field.size_len = std::stoul(value);
                     }
                 }
 

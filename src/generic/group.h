@@ -25,7 +25,7 @@
 #include "record.h"
 
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 
 namespace espm {
 

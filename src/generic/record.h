@@ -26,7 +26,7 @@
 #include "field.h"
 
 #include <string>
-#include <stdint.h>
+#include <cstdint>
 
 #ifdef USING_ZLIB
 #include <zlib.h>
