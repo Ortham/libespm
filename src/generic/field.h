@@ -29,7 +29,7 @@
 namespace espm {
 
     struct Field {
-        Field() : data(NULL), dataSize(0) {}
+        Field() : data(nullptr), dataSize(0) {}
         Field(const Field& field) {
             dataSize = field.dataSize;
             data = new char[dataSize];

@@ -46,17 +46,17 @@ namespace espm { namespace tes3 { namespace TES3 {
 
         std::vector<std::string> getMasters() const {
             std::vector<std::string> masters;
-            for(size_t i=0,max=fields.size(); i < max; ++i){
-                if (strncmp(fields[i].type,"MAST", 4) == 0)
-                    masters.push_back(MAST(fields[i]).getString());
+            for (const auto &field: fields) {
+                if (strncmp(field.type,"MAST", 4) == 0)
+                    masters.push_back(MAST(field).getString());
             }
             return masters;
         }
 
         std::string getDescription() const {
-            for(size_t i=0,max=fields.size(); i < max; ++i){
-                if (strncmp(fields[i].type,"HEDR", 4) == 0) {
-                    return HEDR(fields[i]).getDescription();
+            for (const auto &field: fields) {
+                if (strncmp(field.type,"HEDR", 4) == 0) {
+                    return HEDR(field).getDescription();
                 }
             }
             return "";

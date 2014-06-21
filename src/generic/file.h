@@ -61,7 +61,10 @@ namespace espm {
             }
 
             input.seekg(0, input.end);
-            size_t length = input.tellg();
+            std::streamoff offset = input.tellg();
+            if (offset < 0)
+                throw std::runtime_error("File stream offset is negative.");
+            size_t length = size_t(offset);
             input.seekg(0, input.beg);
 
             //Allocate memory for file contents.
@@ -109,27 +112,27 @@ namespace espm {
 
         std::vector<uint32_t> getFormIDs() {
             std::vector<uint32_t> formids;
-            for (int i=0,max=groups.size(); i < max; ++i) {
-                std::vector<uint32_t> fids = groups[i].getFormIDs();
+            for (const auto &group: groups) {
+                std::vector<uint32_t> fids = group.getFormIDs();
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
-            for (int i=1,max=records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).
+            for (size_t i=1,max=records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).
                 formids.push_back(records[i].id);
             }
             return formids;
         }
 
-        bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& record, const Settings& settings) const {
-            for (int i=0,max=groups.size(); i < max; ++i) {
-                if (groups[i].getRecordByFieldData(type, data, dataSize, record, settings))
+        bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& outRecord, const Settings& settings) const {
+            for (const auto &group: groups) {
+                if (group.getRecordByFieldData(type, data, dataSize, outRecord, settings))
                     return true;
             }
-            for (std::vector<Record>::const_iterator it=records.begin(),endIt=records.end(); it != endIt; ++it) {
-                for (std::vector<Field>::const_iterator jt=it->fields.begin(), endjt=it->fields.end(); jt != endjt; ++jt) {
-                    if (jt->dataSize == dataSize
-                     && strncmp(jt->type, type, settings.group.type_len) == 0
-                     && memcmp(jt->data, data, dataSize) == 0) {
-                        record = *it;
+            for (const auto &record: records) {
+                for (const auto &field: record.fields) {
+                    if (field.dataSize == dataSize
+                     && strncmp(field.type, type, settings.group.type_len) == 0
+                     && memcmp(field.data, data, dataSize) == 0) {
+                        outRecord = record;
                         return true;
                     }
                 }
@@ -138,32 +141,32 @@ namespace espm {
         }
 
         std::vector<Record> getRecords() const {
-            std::vector<Record> recs = records;
-            for (int i=0,max=groups.size(); i < max; ++i) {
-                std::vector<Record> g_recs = groups[i].getRecords();
+            std::vector<Record> recs(records);
+            for (const auto &group: groups) {
+                std::vector<Record> g_recs(group.getRecords());
                 recs.insert(recs.end(), g_recs.begin(), g_recs.end());
             }
             return records;
         }
 
-        bool getRecordByID(uint32_t id, Record& record) const {
-            for (int i=0,max=groups.size(); i < max; ++i) {
-                if (groups[i].getRecordByID(id, record))
+        bool getRecordByID(uint32_t id, Record& outRecord) const {
+            for (const auto &group: groups) {
+                if (group.getRecordByID(id, outRecord))
                     return true;
             }
-            for (std::vector<Record>::const_iterator it=records.begin(),endIt=records.end(); it != endIt; ++it) {
-                if (it->id == id) {
-                    record = *it;
+            for (const auto &record: records) {
+                if (record.id == id) {
+                    outRecord = record;
                     return true;
                 }
             }
             return false;
         }
 
-        bool getGroupByType(char * type, Group& group, const Settings& settings) const {
-            for (int i=0,max=groups.size(); i < max; ++i) {
-                if (strncmp(type, groups[i].type, settings.group.type_len) == 0) {
-                    group = groups[i];
+        bool getGroupByType(char * type, Group& outGroup, const Settings& settings) const {
+            for (const auto &group: groups) {
+                if (strncmp(type, group.type, settings.group.type_len) == 0) {
+                    outGroup = group;
                     return true;
                 }
             }

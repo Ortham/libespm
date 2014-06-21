@@ -34,8 +34,8 @@
 namespace espm {
 
     struct Settings {
-        Settings() : progressCallback(NULL), progressObject(NULL) {}
-        Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(NULL), progressObject(NULL) {
+        Settings() : progressCallback(nullptr), progressObject(nullptr) {}
+        Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
 
             if (!boost::filesystem::exists(filepath))
                 return;
@@ -58,7 +58,7 @@ namespace espm {
                     std::string value = boost::trim_copy(line.substr(pos2 + 1));
 
                     if (key == "group.type") {
-                       group.type = std::stoul(value);
+                       group.type = value;
                     } else if (key == "group.type_len") {
                        group.type_len = std::stoul(value);
                     } else if (key == "group.size_len") {
@@ -76,9 +76,9 @@ namespace espm {
                     } else if (key == "group.unk2_len") {
                        group.unk2_len = std::stoul(value);
                     } else if (key == "record.comp_flag") {
-                        record.comp_flag = std::stoul(value, NULL, 16);
+                        record.comp_flag = std::stoul(value, nullptr, 16);
                     } else if (key == "record.mast_flag") {
-                        record.mast_flag = std::stoul(value, NULL, 16);
+                        record.mast_flag = std::stoul(value, nullptr, 16);
                     } else if (key == "record.type_len") {
                        record.type_len = std::stoul(value);
                     } else if (key == "record.size_len") {
@@ -106,7 +106,7 @@ namespace espm {
             } catch (std::exception& /*e*/) {
             }
         }
-        Settings(const std::string& game) : progressCallback(NULL), progressObject(NULL) {
+        Settings(const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
             if (game == "tes3") {
                 /* Init Morrowind settings. */
 

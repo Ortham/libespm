@@ -49,17 +49,17 @@ namespace espm { namespace tes4 { namespace TES4 {
 
         std::vector<std::string> getMasters() const {
             std::vector<std::string> masters;
-            for(size_t i=0,max=fields.size(); i < max; ++i) {
-                if (strncmp(fields[i].type,"MAST", 4) == 0)
-                    masters.push_back(MAST(fields[i]).getString());
+            for (const auto &field: fields) {
+                if (strncmp(field.type,"MAST", 4) == 0)
+                    masters.push_back(MAST(field).getString());
             }
             return masters;
         }
 
         std::string getDescription() const {
-            for(size_t i=0,max=fields.size(); i < max; ++i){
-                if (strncmp(fields[i].type,"SNAM", 4) == 0)
-                    return SNAM(fields[i]).getString();
+            for (const auto &field: fields) {
+                if (strncmp(field.type,"SNAM", 4) == 0)
+                    return SNAM(field).getString();
             }
             return "";
         }
