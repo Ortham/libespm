@@ -30,11 +30,20 @@ namespace espm {
 
     struct Field {
         Field() : data(nullptr), dataSize(0) {}
-        Field(const Field& field) {
-            dataSize = field.dataSize;
-            data = new char[dataSize];
+        Field(const Field& field) : 
+            dataSize(field.dataSize), 
+            data(new char[dataSize])
+        {
             memcpy(type, field.type, 4);
             memcpy(data, field.data, dataSize);
+        }
+        Field(Field&& field) :
+            dataSize(field.dataSize),
+            data(field.data)
+        {
+            field.dataSize = 0;
+            field.data = nullptr;
+            memcpy(type, field.type, 4);
         }
 
         ~Field() {
@@ -52,6 +61,17 @@ namespace espm {
             }
 
             return *this;
+        }
+
+        Field& operator = (Field&& rhs) {
+            delete[] data;
+
+            dataSize = rhs.dataSize;
+            data = rhs.data;
+            memcpy(type, rhs.type, 4);
+
+            rhs.dataSize = 0;
+            rhs.data = nullptr;
         }
 
         char type[4];
