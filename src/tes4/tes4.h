@@ -25,19 +25,23 @@
 
 namespace espm { namespace tes4 { namespace TES4 {
 
-    struct MAST : public espm::Field {
-        MAST(const espm::Field& field) : espm::Field(field) {}
+    struct MAST {
+        const Field &_field;
+
+        MAST(const Field& field) : _field(field) {}
 
         std::string getString() const {
-            return std::string(data, dataSize - 1);  //Data should be null terminated.
+            return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
         }
     };
 
-    struct SNAM : public espm::Field {
-        SNAM(const espm::Field& field) : espm::Field(field) {}
+    struct SNAM {
+        const Field &_field;
+
+        SNAM(const Field& field) : _field(field) {}
 
         std::string getString() const {
-            return std::string(data, dataSize - 1);  //Data should be null terminated.
+            return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
         }
     };
 
