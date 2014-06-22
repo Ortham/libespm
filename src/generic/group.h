@@ -114,7 +114,7 @@ namespace espm {
         std::vector<uint32_t> getFormIDs() const {
             std::vector<uint32_t> formids;
             for (const auto &subgroup: subgroups) {
-                std::vector<uint32_t> fids = subgroup.getFormIDs();
+                std::vector<uint32_t> fids(subgroup.getFormIDs());
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
             for (const auto &record: records) {

@@ -43,7 +43,7 @@ namespace espm {
 
         // If headerOnly is true, a side effect is that the CRC is not calculated.
         // Can throw exceptions.
-        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
+        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
 
             if (!boost::filesystem::exists(filepath) || boost::filesystem::file_size(filepath) == 0)
                 return;
@@ -113,7 +113,7 @@ namespace espm {
         std::vector<uint32_t> getFormIDs() {
             std::vector<uint32_t> formids;
             for (const auto &group: groups) {
-                std::vector<uint32_t> fids = group.getFormIDs();
+                std::vector<uint32_t> fids(group.getFormIDs());
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
             for (size_t i=1,max=records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).

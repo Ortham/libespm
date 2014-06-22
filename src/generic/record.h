@@ -99,8 +99,8 @@ namespace espm {
             if (length < dataSize)
                 throw std::runtime_error("File shorter than expected.");
 
-            char * trueData = buffer;
-            uint32_t trueDataSize = dataSize;
+            char * trueData(buffer);
+            uint32_t trueDataSize(dataSize);
 #ifdef USING_ZLIB
             if (isCompressed(settings)) {
                 //Need to uncompress the data.
@@ -118,7 +118,7 @@ namespace espm {
             if (!isCompressed(settings)) {
 #endif
 
-                uint32_t count = 0;
+                uint32_t count(0);
                 while (count < trueDataSize) {
                     Field field;
                     if (fields.empty())

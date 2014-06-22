@@ -28,7 +28,7 @@ namespace espm { namespace tes4 {
 
     struct File : public espm::File {
 
-        File(const boost::filesystem::path filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
+        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
 
         // The TES4 record is the file header, and so its data is also file metadata.
 
