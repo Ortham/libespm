@@ -88,8 +88,6 @@ namespace espm {
             buffer += settings.record.ver_len;
 
             unknown2 = *reinterpret_cast<uint16_t*>(buffer);
-            buffer += settings.record.unk2_len;
-            buffer -= headerSize;
 
             return headerSize;
         }
@@ -111,6 +109,9 @@ namespace espm {
                 char * decompData = new char[trueDataSize];
 
                 int ret = uncompress((Bytef*)decompData, (uLongf*)&trueDataSize, (Bytef*)trueData, (uLong)compSize);
+
+                if (ret != Z_OK)
+                    throw std::runtime_error("Uncompress of data failed.");
 
                 trueData = decompData;
             }

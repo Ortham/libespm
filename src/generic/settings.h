@@ -34,7 +34,7 @@
 namespace espm {
 
     struct Settings {
-        Settings() : progressCallback(nullptr), progressObject(nullptr) {}
+        Settings() : progressCallback(nullptr), progressObject(nullptr), group({0}), record({0}), field({0}) {}
         Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
 
             if (!boost::filesystem::exists(filepath))

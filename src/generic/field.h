@@ -64,14 +64,18 @@ namespace espm {
         }
 
         Field& operator = (Field&& rhs) {
-            delete[] data;
+            if (this != &rhs) {
+                delete[] data;
 
-            dataSize = rhs.dataSize;
-            data = rhs.data;
-            memcpy(type, rhs.type, 4);
+                dataSize = rhs.dataSize;
+                data = rhs.data;
+                memcpy(type, rhs.type, 4);
 
-            rhs.dataSize = 0;
-            rhs.data = nullptr;
+                rhs.dataSize = 0;
+                rhs.data = nullptr;
+            }
+
+            return *this;
         }
 
         char type[4];

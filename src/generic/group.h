@@ -80,8 +80,6 @@ namespace espm {
             buffer += settings.group.ver_len;
 
             unknown2 = *reinterpret_cast<uint16_t*>(buffer);
-            buffer += settings.group.unk2_len;
-            buffer -= headerSize;
 
             return headerSize;
         }
