@@ -34,7 +34,28 @@
 namespace espm {
 
     struct Settings {
-        Settings() : progressCallback(nullptr), progressObject(nullptr), group({0}), record({0}), field({0}) {}
+        Settings() : progressCallback(nullptr), progressObject(nullptr) {
+            group.groupType_len = 0;
+            group.label_len = 0;
+            group.size_len = 0;
+            group.stamp_len = 0;
+            group.type_len = 0;
+            group.unk1_len = 0;
+            group.unk2_len = 0;
+            group.ver_len = 0;
+
+            record.type_len = 0;
+            record.size_len = 0;
+            record.unk1_len = 0;
+            record.flags_len = 0;
+            record.id_len = 0;
+            record.rev_len = 0;
+            record.ver_len = 0;
+            record.unk2_len = 0;
+
+            field.type_len = 0;
+            field.size_len = 0;
+        }
         Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
 
             if (!boost::filesystem::exists(filepath))
