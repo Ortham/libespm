@@ -45,8 +45,10 @@ namespace espm {
         // Can throw exceptions.
         File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
 
-            if (!boost::filesystem::exists(filepath) || boost::filesystem::file_size(filepath) == 0)
-                return;
+            if (!boost::filesystem::exists(filepath))
+                throw std::runtime_error("File doesn't exist.");
+            else if (boost::filesystem::file_size(filepath) == 0)
+                throw std::runtime_error("File is empty.");
 
             ifstream input(filepath, std::ios::binary);
             input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
