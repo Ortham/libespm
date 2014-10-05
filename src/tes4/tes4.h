@@ -46,10 +46,7 @@ namespace espm { namespace tes4 { namespace TES4 {
     };
 
     struct Record : public espm::Record {
-        Record(const espm::Record& record) : espm::Record(record) {
-            if (fields.empty())
-                throw std::runtime_error("ERROR: TES4 record contains no fields. Probably a sign that the fields were compressed and zlib support was not enabled.");
-        }
+        Record(const espm::Record& record) : espm::Record(record) {}
 
         std::vector<std::string> getMasters() const {
             std::vector<std::string> masters;
