@@ -46,6 +46,13 @@ namespace espm {
         uint16_t unknown2;
 
         std::vector<Field> fields;
+        char * tempBuffer;
+
+        Record() : tempBuffer(nullptr) {}
+        ~Record() {
+            delete[] tempBuffer;
+            tempBuffer = nullptr;
+        }
 
         bool isCompressed(const Settings& settings) const {
             return (flags & settings.record.comp_flag) == settings.record.comp_flag;
@@ -95,100 +102,97 @@ namespace espm {
             if (length < dataSize)
                 throw std::runtime_error("File shorter than expected.");
 
-            char * trueData(buffer);
-            uint32_t trueDataSize(dataSize);
-#ifdef USING_ZLIB
+            char * trueData;
+            uint32_t trueDataSize;
             if (isCompressed(settings)) {
+#ifdef USING_ZLIB
                 //Need to uncompress the data.
-                uint32_t compSize = dataSize - 4;
-                uint32_t trueDataSize = *reinterpret_cast<uint32_t*>(trueData);
-                trueData += 4;
+                trueDataSize = *reinterpret_cast<uint32_t*>(buffer);
+                buffer += 4;
+                dataSize -= 4;
 
-                char * decompData = new char[trueDataSize];
+                tempBuffer = new char[trueDataSize];
 
-                int ret = uncompress((Bytef*)decompData, (uLongf*)&trueDataSize, (Bytef*)trueData, (uLong)compSize);
+                int ret = uncompress((Bytef*)tempBuffer, (uLongf*)&trueDataSize, (Bytef*)trueData, (uLong)dataSize);
 
                 if (ret != Z_OK)
                     throw std::runtime_error("Uncompress of data failed.");
 
-                trueData = decompData;
-            }
+                trueData = tempBuffer;
 #else
-            if (!isCompressed(settings)) {
+                return dataSize;
+#endif
+            }
+            else {
+                trueData = buffer;
+                trueDataSize = dataSize;
+            }
+
+            uint32_t count(0);
+            while (count < trueDataSize) {
+                Field field;
+                if (fields.empty())
+                    count += field.read(trueData + count, settings);
+                else
+                    count += field.read(trueData + count, settings, fields.back());
+                fields.push_back(field);
+            }
+
+#ifdef USING_ZLIB
+            if (isCompressed(settings)) {
+                delete[] tempBuffer;  //Free what was allocated as decompData.
+                tempBuffer = nullptr;
+            }
 #endif
 
-                uint32_t count(0);
-                while (count < trueDataSize) {
-                    Field field;
-                    if (fields.empty())
-                        count += field.read(trueData + count, settings);
-                    else
-                        count += field.read(trueData + count, settings, fields.back());
-                    fields.push_back(field);
-                }
-#ifndef USING_ZLIB
-            }
-#else
-                if (isCompressed(settings))
-                    delete [] trueData;  //Free what was allocated as decompData.
-#endif
-                return dataSize;
+            return dataSize;
         }
 
-            uint32_t read(char * buffer, size_t length, const Settings& settings, bool doReadFields) {
-                uint32_t count = readHeader(buffer, length, settings);
+        uint32_t read(char * buffer, size_t length, const Settings& settings, bool doReadFields) {
+            uint32_t count = readHeader(buffer, length, settings);
 
-                if (doReadFields)
-                    readFields(buffer + count, length - count, settings);
+            if (doReadFields)
+                readFields(buffer + count, length - count, settings);
 
-                return count + dataSize;
-            }
+            return count + dataSize;
+        }
 
-            uint32_t read(ifstream& in, const Settings& settings, bool doReadFields) {
-                uint32_t headerSize =
-                    settings.record.type_len +
-                    settings.record.size_len +
-                    settings.record.unk1_len +
-                    settings.record.flags_len +
-                    settings.record.id_len +
-                    settings.record.rev_len +
-                    settings.record.ver_len +
-                    settings.record.unk2_len;
+        uint32_t read(ifstream& in, const Settings& settings, bool doReadFields) {
+            uint32_t headerSize =
+                settings.record.type_len +
+                settings.record.size_len +
+                settings.record.unk1_len +
+                settings.record.flags_len +
+                settings.record.id_len +
+                settings.record.rev_len +
+                settings.record.ver_len +
+                settings.record.unk2_len;
 
-                //Allocate memory for record contents.
-                char * buffer;
-                try {
-                    buffer = new char[headerSize];
-                }
-                catch (std::bad_alloc& /*e*/) {
-                    return 0;
-                }
+            //Allocate memory for record contents.
+            tempBuffer = new char[headerSize];
 
-                //Read header in.
-                in.read(buffer, headerSize);
+            //Read header in.
+            in.read(tempBuffer, headerSize);
 
-                //Now extract info from buffer.
-                uint32_t count = readHeader(buffer, headerSize, settings);
+            //Now extract info from buffer.
+            uint32_t count = readHeader(tempBuffer, headerSize, settings);
 
-                //Reallocate the buffer for the fields.
-                delete[] buffer;
-                try {
-                    buffer = new char[dataSize];
-                }
-                catch (std::bad_alloc& /*e*/) {
-                    return headerSize;
-                }
+            //Reallocate the buffer for the fields.
+            delete[] tempBuffer;
+            tempBuffer = nullptr;
+            tempBuffer = new char[dataSize];
 
-                //Read fields in.
-                in.read(buffer, dataSize);
+            //Read fields in.
+            in.read(tempBuffer, dataSize);
 
-                if (doReadFields)
-                    readFields(buffer, dataSize, settings);
+            if (doReadFields)
+                readFields(tempBuffer, dataSize, settings);
 
-                delete[] buffer;
+            delete[] tempBuffer;
+            tempBuffer = nullptr;
 
-                return count + dataSize;
-            }
+            return count + dataSize;
+        }
     };
 }
 

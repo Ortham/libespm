@@ -37,12 +37,13 @@ namespace espm {
         std::vector<Group> groups;
         std::vector<Record> records;
         uint32_t crc;
+        char * buffer;
 
-        File() : crc(0) {}
+        File() : crc(0), buffer(nullptr) {}
 
         // If headerOnly is true, a side effect is that the CRC is not calculated.
         // Can throw exceptions.
-        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
+        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0), buffer(nullptr) {
             if (!boost::filesystem::exists(filepath))
                 throw std::runtime_error("File doesn't exist.");
             else if (boost::filesystem::file_size(filepath) == 0)
@@ -68,7 +69,6 @@ namespace espm {
             input.seekg(0, input.beg);
 
             //Allocate memory for file contents.
-            char * buffer;
             buffer = new char[length];
 
             //Read whole file in.
@@ -103,6 +103,12 @@ namespace espm {
             }
 
             delete[] buffer;
+            buffer = nullptr;
+        }
+
+        ~File() {
+            delete[] buffer;
+            buffer = nullptr;
         }
 
         virtual bool isMaster(const Settings& settings) const = 0;
