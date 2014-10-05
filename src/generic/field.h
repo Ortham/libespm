@@ -27,32 +27,29 @@
 #include <cstdint>
 
 namespace espm {
-
     struct Field {
         Field() : data(nullptr), dataSize(0) {}
-        Field(const Field& field) : 
-            dataSize(field.dataSize), 
-            data(new char[dataSize])
-        {
+        Field(const Field& field) :
+            dataSize(field.dataSize),
+            data(new char[dataSize]) {
             memcpy(type, field.type, 4);
             memcpy(data, field.data, dataSize);
         }
         Field(Field&& field) :
             dataSize(field.dataSize),
-            data(field.data)
-        {
+            data(field.data) {
             field.dataSize = 0;
             field.data = nullptr;
             memcpy(type, field.type, 4);
         }
 
         ~Field() {
-            delete [] data;
+            delete[] data;
         }
 
         Field& operator = (const Field& rhs) {
             if (this != &rhs) {
-                delete [] data;
+                delete[] data;
 
                 dataSize = rhs.dataSize;
                 data = new char[dataSize];
@@ -83,7 +80,6 @@ namespace espm {
         char * data;
 
         uint32_t read(char * buffer, const Settings& settings) {
-
             memcpy(type, buffer, settings.field.type_len);
             memcpy(&dataSize, buffer + settings.field.type_len, settings.field.size_len);
 
@@ -94,17 +90,15 @@ namespace espm {
         }
 
         uint32_t read(char * buffer, const Settings& settings, const Field& lastField) {
-
             memcpy(type, buffer, settings.field.type_len);
 
-            if (strncmp(lastField.type,"XXXX", 4) == 0)
+            if (strncmp(lastField.type, "XXXX", 4) == 0)
                 memcpy(&dataSize, lastField.data, 4);
             else
                 memcpy(&dataSize, buffer + settings.field.type_len, settings.field.size_len);
 
             data = new char[dataSize];
             memcpy(data, buffer + settings.field.type_len + settings.field.size_len, dataSize);
-
 
             return (uint32_t)settings.field.type_len + settings.field.size_len + dataSize;
         }

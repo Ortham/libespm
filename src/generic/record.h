@@ -33,7 +33,6 @@
 #endif
 
 namespace espm {
-
     struct Record {
         char type[4];
 
@@ -93,7 +92,6 @@ namespace espm {
         }
 
         uint32_t readFields(char * buffer, size_t length, const Settings& settings) {
-
             if (length < dataSize)
                 throw std::runtime_error("File shorter than expected.");
 
@@ -131,64 +129,66 @@ namespace espm {
 #ifndef USING_ZLIB
             }
 #else
-            if (isCompressed(settings))
-                delete [] trueData;  //Free what was allocated as decompData.
+                if (isCompressed(settings))
+                    delete [] trueData;  //Free what was allocated as decompData.
 #endif
-            return dataSize;
+                return dataSize;
         }
 
-        uint32_t read(char * buffer, size_t length, const Settings& settings, bool doReadFields) {
-            uint32_t count = readHeader(buffer, length, settings);
+            uint32_t read(char * buffer, size_t length, const Settings& settings, bool doReadFields) {
+                uint32_t count = readHeader(buffer, length, settings);
 
-            if (doReadFields)
-                readFields(buffer + count, length - count, settings);
+                if (doReadFields)
+                    readFields(buffer + count, length - count, settings);
 
-            return count + dataSize;
-        }
-
-        uint32_t read(ifstream& in, const Settings& settings, bool doReadFields) {
-            uint32_t headerSize =
-                settings.record.type_len +
-                settings.record.size_len +
-                settings.record.unk1_len +
-                settings.record.flags_len +
-                settings.record.id_len +
-                settings.record.rev_len +
-                settings.record.ver_len +
-                settings.record.unk2_len;
-
-            //Allocate memory for record contents.
-            char * buffer;
-            try {
-                buffer = new char[headerSize];
-            } catch (std::bad_alloc& /*e*/) {
-                return 0;
+                return count + dataSize;
             }
 
-            //Read header in.
-            in.read(buffer, headerSize);
+            uint32_t read(ifstream& in, const Settings& settings, bool doReadFields) {
+                uint32_t headerSize =
+                    settings.record.type_len +
+                    settings.record.size_len +
+                    settings.record.unk1_len +
+                    settings.record.flags_len +
+                    settings.record.id_len +
+                    settings.record.rev_len +
+                    settings.record.ver_len +
+                    settings.record.unk2_len;
 
-            //Now extract info from buffer.
-            uint32_t count = readHeader(buffer, headerSize, settings);
+                //Allocate memory for record contents.
+                char * buffer;
+                try {
+                    buffer = new char[headerSize];
+                }
+                catch (std::bad_alloc& /*e*/) {
+                    return 0;
+                }
 
-            //Reallocate the buffer for the fields.
-            delete [] buffer;
-            try {
-                buffer = new char[dataSize];
-            } catch (std::bad_alloc& /*e*/) {
-                return headerSize;
+                //Read header in.
+                in.read(buffer, headerSize);
+
+                //Now extract info from buffer.
+                uint32_t count = readHeader(buffer, headerSize, settings);
+
+                //Reallocate the buffer for the fields.
+                delete[] buffer;
+                try {
+                    buffer = new char[dataSize];
+                }
+                catch (std::bad_alloc& /*e*/) {
+                    return headerSize;
+                }
+
+                //Read fields in.
+                in.read(buffer, dataSize);
+
+                if (doReadFields)
+                    readFields(buffer, dataSize, settings);
+
+                delete[] buffer;
+
+                return count + dataSize;
             }
-
-            //Read fields in.
-            in.read(buffer, dataSize);
-
-            if (doReadFields)
-                readFields(buffer, dataSize, settings);
-
-            delete [] buffer;
-
-            return count + dataSize;
-        }
     };
 }
 

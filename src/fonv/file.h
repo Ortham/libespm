@@ -23,10 +23,10 @@
 
 #include "../tes4/file.h"
 
-namespace espm { namespace fonv {
-
-    using espm::tes4::File;
-
-} }
+namespace espm {
+    namespace fonv {
+        using espm::tes4::File;
+    }
+}
 
 #endif

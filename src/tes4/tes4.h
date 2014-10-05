@@ -23,49 +23,51 @@
 
 #include "../generic/record.h"
 
-namespace espm { namespace tes4 { namespace TES4 {
+namespace espm {
+    namespace tes4 {
+        namespace TES4 {
+            struct MAST {
+                const Field &_field;
 
-    struct MAST {
-        const Field &_field;
+                MAST(const Field& field) : _field(field) {}
 
-        MAST(const Field& field) : _field(field) {}
+                std::string getString() const {
+                    return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
+                }
+            };
 
-        std::string getString() const {
-            return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
+            struct SNAM {
+                const Field &_field;
+
+                SNAM(const Field& field) : _field(field) {}
+
+                std::string getString() const {
+                    return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
+                }
+            };
+
+            struct Record : public espm::Record {
+                Record(const espm::Record& record) : espm::Record(record) {}
+
+                std::vector<std::string> getMasters() const {
+                    std::vector<std::string> masters;
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "MAST", 4) == 0)
+                            masters.push_back(MAST(field).getString());
+                    }
+                    return masters;
+                }
+
+                std::string getDescription() const {
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "SNAM", 4) == 0)
+                            return SNAM(field).getString();
+                    }
+                    return "";
+                }
+            };
         }
-    };
-
-    struct SNAM {
-        const Field &_field;
-
-        SNAM(const Field& field) : _field(field) {}
-
-        std::string getString() const {
-            return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
-        }
-    };
-
-    struct Record : public espm::Record {
-        Record(const espm::Record& record) : espm::Record(record) {}
-
-        std::vector<std::string> getMasters() const {
-            std::vector<std::string> masters;
-            for (const auto &field: fields) {
-                if (strncmp(field.type,"MAST", 4) == 0)
-                    masters.push_back(MAST(field).getString());
-            }
-            return masters;
-        }
-
-        std::string getDescription() const {
-            for (const auto &field: fields) {
-                if (strncmp(field.type,"SNAM", 4) == 0)
-                    return SNAM(field).getString();
-            }
-            return "";
-        }
-    };
-
-} } }
+    }
+}
 
 #endif

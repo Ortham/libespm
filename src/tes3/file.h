@@ -24,27 +24,26 @@
 #include "../generic/file.h"
 #include "tes3.h"
 
-namespace espm { namespace tes3 {
+namespace espm {
+    namespace tes3 {
+        struct File : public espm::File {
+            File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
 
-    struct File : public espm::File {
+            // The TES4 record is the file header, and so its data is also file metadata.
 
-        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
+            bool isMaster(const Settings& settings) const {
+                return false;
+            }
 
-        // The TES4 record is the file header, and so its data is also file metadata.
+            std::vector<std::string> getMasters() const {
+                return TES3::Record(records.at(0)).getMasters();
+            }
 
-        bool isMaster(const Settings& settings) const {
-            return false;
-        }
-
-        std::vector<std::string> getMasters() const {
-            return TES3::Record(records.at(0)).getMasters();
-        }
-
-        std::string getDescription() const {
-            return TES3::Record(records.at(0)).getDescription();
-        }
-    };
-
-} }
+            std::string getDescription() const {
+                return TES3::Record(records.at(0)).getDescription();
+            }
+        };
+    }
+}
 
 #endif

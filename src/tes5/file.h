@@ -23,10 +23,10 @@
 
 #include "../tes4/file.h"
 
-namespace espm { namespace tes5 {
-
-    using espm::tes4::File;
-
-} }
+namespace espm {
+    namespace tes5 {
+        using espm::tes4::File;
+    }
+}
 
 #endif

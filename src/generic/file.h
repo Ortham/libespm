@@ -32,7 +32,6 @@
 #include <boost/crc.hpp>
 
 namespace espm {
-
     //Abstract base class.
     struct File {
         std::vector<Group> groups;
@@ -44,7 +43,6 @@ namespace espm {
         // If headerOnly is true, a side effect is that the CRC is not calculated.
         // Can throw exceptions.
         File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : crc(0) {
-
             if (!boost::filesystem::exists(filepath))
                 throw std::runtime_error("File doesn't exist.");
             else if (boost::filesystem::file_size(filepath) == 0)
@@ -94,7 +92,8 @@ namespace espm {
                         count += record.read(buffer + count, length - count, settings, readFields);
                         records.push_back(record);
                     }
-                } else {
+                }
+                else {
                     while (count < length) {
                         Group group;
                         count += group.read(buffer + count, length - count, settings, readFields);
@@ -103,7 +102,7 @@ namespace espm {
                 }
             }
 
-            delete [] buffer;
+            delete[] buffer;
         }
 
         virtual bool isMaster(const Settings& settings) const = 0;
@@ -114,26 +113,26 @@ namespace espm {
 
         std::vector<uint32_t> getFormIDs() {
             std::vector<uint32_t> formids;
-            for (const auto &group: groups) {
+            for (const auto &group : groups) {
                 std::vector<uint32_t> fids(group.getFormIDs());
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
-            for (size_t i=1,max=records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).
+            for (size_t i = 1, max = records.size(); i < max; ++i) {  //Skip the first record, since it has a FormID of zero (it's the TES4 record).
                 formids.push_back(records[i].id);
             }
             return formids;
         }
 
         bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& outRecord, const Settings& settings) const {
-            for (const auto &group: groups) {
+            for (const auto &group : groups) {
                 if (group.getRecordByFieldData(type, data, dataSize, outRecord, settings))
                     return true;
             }
-            for (const auto &record: records) {
-                for (const auto &field: record.fields) {
+            for (const auto &record : records) {
+                for (const auto &field : record.fields) {
                     if (field.dataSize == dataSize
-                     && strncmp(field.type, type, settings.group.type_len) == 0
-                     && memcmp(field.data, data, dataSize) == 0) {
+                        && strncmp(field.type, type, settings.group.type_len) == 0
+                        && memcmp(field.data, data, dataSize) == 0) {
                         outRecord = record;
                         return true;
                     }
@@ -144,7 +143,7 @@ namespace espm {
 
         std::vector<Record> getRecords() const {
             std::vector<Record> recs(records);
-            for (const auto &group: groups) {
+            for (const auto &group : groups) {
                 std::vector<Record> g_recs(group.getRecords());
                 recs.insert(recs.end(), g_recs.begin(), g_recs.end());
             }
@@ -152,11 +151,11 @@ namespace espm {
         }
 
         bool getRecordByID(uint32_t id, Record& outRecord) const {
-            for (const auto &group: groups) {
+            for (const auto &group : groups) {
                 if (group.getRecordByID(id, outRecord))
                     return true;
             }
-            for (const auto &record: records) {
+            for (const auto &record : records) {
                 if (record.id == id) {
                     outRecord = record;
                     return true;
@@ -166,7 +165,7 @@ namespace espm {
         }
 
         bool getGroupByType(char * type, Group& outGroup, const Settings& settings) const {
-            for (const auto &group: groups) {
+            for (const auto &group : groups) {
                 if (strncmp(type, group.type, settings.group.type_len) == 0) {
                     outGroup = group;
                     return true;
@@ -179,7 +178,6 @@ namespace espm {
             return groups;
         }
     };
-
 }
 
 #endif

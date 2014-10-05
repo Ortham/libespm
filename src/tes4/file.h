@@ -24,36 +24,35 @@
 #include "../generic/file.h"
 #include "tes4.h"
 
-namespace espm { namespace tes4 {
+namespace espm {
+    namespace tes4 {
+        struct File : public espm::File {
+            File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
 
-    struct File : public espm::File {
+            // The TES4 record is the file header, and so its data is also file metadata.
 
-        File(const boost::filesystem::path& filepath, const Settings& settings, bool readFields, bool headerOnly) : espm::File(filepath, settings, readFields, headerOnly) {}
+            bool isMaster(const Settings& settings) const {
+                if (!records.empty())
+                    return (records.at(0).flags & settings.record.mast_flag) == settings.record.mast_flag;
+                else
+                    return false;
+            }
 
-        // The TES4 record is the file header, and so its data is also file metadata.
+            std::vector<std::string> getMasters() const {
+                if (!records.empty())
+                    return TES4::Record(records.at(0)).getMasters();
+                else
+                    return std::vector<std::string>();
+            }
 
-        bool isMaster(const Settings& settings) const {
-            if (!records.empty())
-                return (records.at(0).flags & settings.record.mast_flag) == settings.record.mast_flag;
-            else
-                return false;
-        }
-
-        std::vector<std::string> getMasters() const {
-            if (!records.empty())
-                return TES4::Record(records.at(0)).getMasters();
-            else
-                return std::vector<std::string>();
-        }
-
-        std::string getDescription() const {
-            if (!records.empty())
-                return TES4::Record(records.at(0)).getDescription();
-            else
-                return std::string();
-        }
-    };
-
-} }
+            std::string getDescription() const {
+                if (!records.empty())
+                    return TES4::Record(records.at(0)).getDescription();
+                else
+                    return std::string();
+            }
+        };
+    }
+}
 
 #endif

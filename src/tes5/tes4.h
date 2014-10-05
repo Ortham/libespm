@@ -23,12 +23,14 @@
 
 #include "../tes4/tes4.h"
 
-namespace espm { namespace tes5 { namespace TES4 {
-
-    using espm::tes4::TES4::Record;
-    using espm::tes4::TES4::SNAM;
-    using espm::tes4::TES4::CNAM;
-
-} } }
+namespace espm {
+    namespace tes5 {
+        namespace TES4 {
+            using espm::tes4::TES4::Record;
+            using espm::tes4::TES4::SNAM;
+            using espm::tes4::TES4::CNAM;
+        }
+    }
+}
 
 #endif

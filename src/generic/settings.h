@@ -32,7 +32,6 @@
 #include <boost/lexical_cast.hpp>
 
 namespace espm {
-
     struct Settings {
         Settings() : progressCallback(nullptr), progressObject(nullptr) {
             group.groupType_len = 0;
@@ -57,7 +56,6 @@ namespace espm {
             field.size_len = 0;
         }
         Settings(const boost::filesystem::path& filepath, const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
-
             if (!boost::filesystem::exists(filepath))
                 return;
 
@@ -79,52 +77,73 @@ namespace espm {
                     std::string value = boost::trim_copy(line.substr(pos2 + 1));
 
                     if (key == "group.type") {
-                       group.type = value;
-                    } else if (key == "group.type_len") {
-                       group.type_len = std::stoul(value);
-                    } else if (key == "group.size_len") {
-                       group.size_len = std::stoul(value);
-                    } else if (key == "group.label_len") {
-                       group.label_len = std::stoul(value);
-                    } else if (key == "group.groupType_len") {
-                       group.groupType_len = std::stoul(value);
-                    } else if (key == "group.stamp_len") {
-                       group.stamp_len = std::stoul(value);
-                    } else if (key == "group.unk1_len") {
-                       group.unk1_len = std::stoul(value);
-                    } else if (key == "group.ver_len") {
-                       group.ver_len = std::stoul(value);
-                    } else if (key == "group.unk2_len") {
-                       group.unk2_len = std::stoul(value);
-                    } else if (key == "record.comp_flag") {
+                        group.type = value;
+                    }
+                    else if (key == "group.type_len") {
+                        group.type_len = std::stoul(value);
+                    }
+                    else if (key == "group.size_len") {
+                        group.size_len = std::stoul(value);
+                    }
+                    else if (key == "group.label_len") {
+                        group.label_len = std::stoul(value);
+                    }
+                    else if (key == "group.groupType_len") {
+                        group.groupType_len = std::stoul(value);
+                    }
+                    else if (key == "group.stamp_len") {
+                        group.stamp_len = std::stoul(value);
+                    }
+                    else if (key == "group.unk1_len") {
+                        group.unk1_len = std::stoul(value);
+                    }
+                    else if (key == "group.ver_len") {
+                        group.ver_len = std::stoul(value);
+                    }
+                    else if (key == "group.unk2_len") {
+                        group.unk2_len = std::stoul(value);
+                    }
+                    else if (key == "record.comp_flag") {
                         record.comp_flag = std::stoul(value, nullptr, 16);
-                    } else if (key == "record.mast_flag") {
+                    }
+                    else if (key == "record.mast_flag") {
                         record.mast_flag = std::stoul(value, nullptr, 16);
-                    } else if (key == "record.type_len") {
-                       record.type_len = std::stoul(value);
-                    } else if (key == "record.size_len") {
-                       record.size_len = std::stoul(value);
-                    } else if (key == "record.unk1_len") {
-                       record.unk1_len = std::stoul(value);
-                    } else if (key == "record.flags_len") {
-                       record.flags_len = std::stoul(value);
-                    } else if (key == "record.id_len") {
-                       record.id_len = std::stoul(value);
-                    } else if (key == "record.rev_len") {
-                       record.rev_len = std::stoul(value);
-                    } else if (key == "record.ver_len") {
-                       record.ver_len = std::stoul(value);
-                    } else if (key == "record.unk2_len") {
-                       record.unk2_len = std::stoul(value);
-                    } else if (key == "field.type_len") {
-                       field.type_len = std::stoul(value);
-                    } else if (key == "field.size_len") {
-                       field.size_len = std::stoul(value);
+                    }
+                    else if (key == "record.type_len") {
+                        record.type_len = std::stoul(value);
+                    }
+                    else if (key == "record.size_len") {
+                        record.size_len = std::stoul(value);
+                    }
+                    else if (key == "record.unk1_len") {
+                        record.unk1_len = std::stoul(value);
+                    }
+                    else if (key == "record.flags_len") {
+                        record.flags_len = std::stoul(value);
+                    }
+                    else if (key == "record.id_len") {
+                        record.id_len = std::stoul(value);
+                    }
+                    else if (key == "record.rev_len") {
+                        record.rev_len = std::stoul(value);
+                    }
+                    else if (key == "record.ver_len") {
+                        record.ver_len = std::stoul(value);
+                    }
+                    else if (key == "record.unk2_len") {
+                        record.unk2_len = std::stoul(value);
+                    }
+                    else if (key == "field.type_len") {
+                        field.type_len = std::stoul(value);
+                    }
+                    else if (key == "field.size_len") {
+                        field.size_len = std::stoul(value);
                     }
                 }
 
                 input.close();
-            } catch (std::exception& /*e*/) {
+            }
+            catch (std::exception& /*e*/) {
             }
         }
         Settings(const std::string& game) : progressCallback(nullptr), progressObject(nullptr) {
@@ -154,7 +173,8 @@ namespace espm {
 
                 field.type_len = 4;
                 field.size_len = 4;
-            } else if (game == "tes4") {
+            }
+            else if (game == "tes4") {
                 /* Init Oblivion settings. */
 
                 group.type = "GRUP";
@@ -180,7 +200,8 @@ namespace espm {
 
                 field.type_len = 4;
                 field.size_len = 2;
-            } else if (game == "tes5" || game == "fo3" || game == "fonv") {
+            }
+            else if (game == "tes5" || game == "fo3" || game == "fonv") {
                 /* Init Skyrim settings. */
 
                 group.type = "GRUP";
@@ -208,7 +229,7 @@ namespace espm {
                 field.size_len = 2;
             }
         }
-        void (*progressCallback)(void * pointer);
+        void(*progressCallback)(void * pointer);
         void * progressObject;
 
         struct {

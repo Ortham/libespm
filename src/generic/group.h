@@ -28,7 +28,6 @@
 #include <cstdint>
 
 namespace espm {
-
     struct Group {
         char type[4];
         char label[4];
@@ -85,7 +84,6 @@ namespace espm {
         }
 
         uint32_t read(char * buffer, size_t length, const Settings& settings, bool readFields) {
-
             uint32_t count = readHeader(buffer, length, settings);
 
             while (count + 4 < groupSize) {
@@ -96,7 +94,8 @@ namespace espm {
                     Group subgroup;
                     count += subgroup.read(buffer + count, length - count, settings, readFields);
                     subgroups.push_back(subgroup);
-                } else {
+                }
+                else {
                     Record record;
                     count += record.read(buffer + count, length - count, settings, readFields);
                     records.push_back(record);
@@ -111,11 +110,11 @@ namespace espm {
 
         std::vector<uint32_t> getFormIDs() const {
             std::vector<uint32_t> formids;
-            for (const auto &subgroup: subgroups) {
+            for (const auto &subgroup : subgroups) {
                 std::vector<uint32_t> fids(subgroup.getFormIDs());
                 formids.insert(formids.end(), fids.begin(), fids.end());
             }
-            for (const auto &record: records) {
+            for (const auto &record : records) {
                 formids.push_back(record.id);
             }
             return formids;
@@ -123,11 +122,11 @@ namespace espm {
 
         bool getRecordByFieldData(char * type, char * data, uint32_t dataSize, Record& outRecord, const Settings& settings) const {
             std::vector<Record> recs(getRecords());
-            for (const auto &record: recs) {
-                for (const auto &field: record.fields) {
+            for (const auto &record : recs) {
+                for (const auto &field : record.fields) {
                     if (field.dataSize == dataSize
-                     && strncmp(field.type, type, settings.group.type_len) == 0
-                     && memcmp(field.data, data, dataSize) == 0) {
+                        && strncmp(field.type, type, settings.group.type_len) == 0
+                        && memcmp(field.data, data, dataSize) == 0) {
                         outRecord = record;
                         return true;
                     }
@@ -138,7 +137,7 @@ namespace espm {
 
         std::vector<Record> getRecords() const {
             std::vector<Record> recs(records);
-            for (const auto &subgroup: subgroups) {
+            for (const auto &subgroup : subgroups) {
                 std::vector<Record> g_recs(subgroup.getRecords());
                 recs.insert(recs.end(), g_recs.begin(), g_recs.end());
             }
@@ -147,7 +146,7 @@ namespace espm {
 
         bool getRecordByID(uint32_t id, Record& outRecord) const {
             std::vector<Record> recs(getRecords());
-            for (const auto &record: recs) {
+            for (const auto &record : recs) {
                 if (record.id == id) {
                     outRecord = record;
                     return true;
@@ -156,7 +155,6 @@ namespace espm {
             return false;
         }
     };
-
 }
 
 #endif

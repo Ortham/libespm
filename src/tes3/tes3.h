@@ -23,46 +23,48 @@
 
 #include "../generic/record.h"
 
-namespace espm { namespace tes3 { namespace TES3 {
+namespace espm {
+    namespace tes3 {
+        namespace TES3 {
+            struct MAST : public espm::Field {
+                MAST(const espm::Field& field) : espm::Field(field) {}
 
-    struct MAST : public espm::Field {
-        MAST(const espm::Field& field) : espm::Field(field) {}
-
-        std::string getString() const {
-            return std::string(data, dataSize - 1);  //Data should be null terminated.
-        }
-    };
-
-    struct HEDR : public espm::Field {
-        HEDR(const espm::Field& field) : espm::Field(field) {}
-
-        std::string getDescription() const {
-            return std::string(data + 40, dataSize - 44);
-        }
-    };
-
-    struct Record : public espm::Record {
-        Record(const espm::Record& record) : espm::Record(record) {}
-
-        std::vector<std::string> getMasters() const {
-            std::vector<std::string> masters;
-            for (const auto &field: fields) {
-                if (strncmp(field.type,"MAST", 4) == 0)
-                    masters.push_back(MAST(field).getString());
-            }
-            return masters;
-        }
-
-        std::string getDescription() const {
-            for (const auto &field: fields) {
-                if (strncmp(field.type,"HEDR", 4) == 0) {
-                    return HEDR(field).getDescription();
+                std::string getString() const {
+                    return std::string(data, dataSize - 1);  //Data should be null terminated.
                 }
-            }
-            return "";
-        }
-    };
+            };
 
-} } }
+            struct HEDR : public espm::Field {
+                HEDR(const espm::Field& field) : espm::Field(field) {}
+
+                std::string getDescription() const {
+                    return std::string(data + 40, dataSize - 44);
+                }
+            };
+
+            struct Record : public espm::Record {
+                Record(const espm::Record& record) : espm::Record(record) {}
+
+                std::vector<std::string> getMasters() const {
+                    std::vector<std::string> masters;
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "MAST", 4) == 0)
+                            masters.push_back(MAST(field).getString());
+                    }
+                    return masters;
+                }
+
+                std::string getDescription() const {
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "HEDR", 4) == 0) {
+                            return HEDR(field).getDescription();
+                        }
+                    }
+                    return "";
+                }
+            };
+        }
+    }
+}
 
 #endif
