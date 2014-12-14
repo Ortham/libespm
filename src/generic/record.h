@@ -48,7 +48,15 @@ namespace espm {
         std::vector<Field> fields;
         char * tempBuffer;
 
-        Record() : tempBuffer(nullptr) {}
+        Record() :
+            tempBuffer(nullptr),
+            dataSize(0),
+            unknown1(0),
+            flags(0),
+            id(0),
+            revision(0),
+            version(0),
+            unknown2(0) {}
         ~Record() {
             delete[] tempBuffer;
             tempBuffer = nullptr;
