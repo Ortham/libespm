@@ -42,6 +42,10 @@ namespace espm {
             std::string getDescription() const {
                 return TES3::Record(records.at(0)).getDescription();
             }
+
+            uint32_t getNumRecords() const {
+                return TES3::Record(records.at(0)).getNumRecords();
+            }
         };
     }
 }

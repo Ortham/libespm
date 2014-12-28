@@ -40,6 +40,10 @@ namespace espm {
                 std::string getDescription() const {
                     return std::string(data + 40, dataSize - 44);
                 }
+
+                uint32_t getNumRecords() const {
+                    return *(uint32_t*)(data + 296);
+                }
             };
 
             struct Record : public espm::Record {
@@ -61,6 +65,15 @@ namespace espm {
                         }
                     }
                     return "";
+                }
+
+                uint32_t getNumRecords() const {
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "HEDR", 4) == 0) {
+                            return HEDR(field).getNumRecords();
+                        }
+                    }
+                    return 0;
                 }
             };
         }
