@@ -51,6 +51,13 @@ namespace espm {
                 else
                     return std::string();
             }
+
+            uint32_t getNumRecords() const {
+                if (!records.empty())
+                    return TES4::Record(records.at(0)).getNumRecords();
+                else
+                    return 0;
+            }
         };
     }
 }

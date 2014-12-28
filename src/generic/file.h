@@ -117,6 +117,8 @@ namespace espm {
 
         virtual std::string getDescription() const = 0;
 
+        virtual uint32_t getNumRecords() const = 0;
+
         std::vector<uint32_t> getFormIDs() {
             std::vector<uint32_t> formids;
             for (const auto &group : groups) {

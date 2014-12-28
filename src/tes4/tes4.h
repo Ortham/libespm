@@ -44,6 +44,24 @@ namespace espm {
                 std::string getString() const {
                     return std::string(_field.data, _field.dataSize - 1);  //Data should be null terminated.
                 }
+            }; 
+            
+            struct HEDR {
+                const Field& _field;
+
+                HEDR(const Field& field) : _field(field) {}
+
+                float getVersion() const {
+                    return *(float*)(_field.data);
+                }
+
+                uint32_t getNumRecords() const {
+                    return *(uint32_t*)(_field.data + 4);
+                }
+
+                uint32_t getNextObjectID() const {
+                    return *(uint32_t*)(_field.data + 8);
+                }
             };
 
             struct Record : public espm::Record {
@@ -64,6 +82,14 @@ namespace espm {
                             return SNAM(field).getString();
                     }
                     return "";
+                }
+
+                uint32_t getNumRecords() const {
+                    for (const auto &field : fields) {
+                        if (strncmp(field.type, "HEDR", 4) == 0)
+                            return HEDR(field).getNumRecords();
+                    }
+                    return 0;
                 }
             };
         }
