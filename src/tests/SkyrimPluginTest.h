@@ -134,5 +134,17 @@ namespace libespm2 {
       EXPECT_EQ(1, masters.size());
       EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
+
+    TEST_F(SkyrimPluginTest, blankEsmShouldHaveVersionInDescriptionField) {
+      ASSERT_NO_THROW(plugin.load(blankEsm));
+
+      EXPECT_EQ("v5.0", plugin.getDescription());
+    }
+
+    TEST_F(SkyrimPluginTest, blankEspShouldHaveEmptyDescriptionField) {
+      ASSERT_NO_THROW(plugin.load(blankEsp));
+
+      EXPECT_TRUE(plugin.getDescription().empty());
+    }
   }
 }

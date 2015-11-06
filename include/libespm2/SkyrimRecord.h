@@ -28,6 +28,7 @@ namespace libespm2 {
     uint32_t totalFieldsSize;
 
     std::vector<std::string> masterFilenames;
+    std::string description;
 
     static const int typeLength = 4;
   public:
@@ -70,18 +71,30 @@ namespace libespm2 {
         input.read(type, typeLength);
         bytesRead += typeLength;
 
+        uint16_t dataLength = 0;
+        input.read(reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
+        bytesRead += sizeof(dataLength);
+
         if (memcmp(type, "MAST", 4) == 0) {
           // A master filename, store it.
-          uint16_t dataLength = 0;
-          input.read(reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
-          bytesRead += sizeof(dataLength);
-
           std::string masterFilename;
+          masterFilename.resize(dataLength);
+          input.read(reinterpret_cast<char*>(&masterFilename[0]), dataLength);
           masterFilename.resize(dataLength - 1);
-          input.read(reinterpret_cast<char*>(&masterFilename[0]), dataLength - 1);
           bytesRead += dataLength;
 
           masterFilenames.push_back(masterFilename);
+        }
+        else if (memcmp(type, "SNAM", 4) == 0) {
+          // The description field, store it.
+          description.resize(dataLength);
+          input.read(reinterpret_cast<char*>(&description[0]), dataLength);
+          description.resize(dataLength - 1);
+          bytesRead += dataLength;
+        }
+        else {
+          input.seekg(dataLength, std::ios_base::cur);
+          bytesRead += dataLength;
         }
       }
     }
@@ -103,6 +116,10 @@ namespace libespm2 {
       input.seekg(currentPos);
 
       return (endPos - currentPos) >= expectedMinimumRelativeLength;
+    }
+
+    inline std::string getDescription() const {
+      return description;
     }
   };
 }

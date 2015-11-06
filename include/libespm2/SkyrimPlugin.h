@@ -31,6 +31,7 @@ namespace libespm2 {
     std::string name;
     bool _isMasterFile;
     std::vector<std::string> _masters;
+    std::string _description;
 
   public:
     inline SkyrimPlugin() : _isMasterFile(false) {}
@@ -49,6 +50,7 @@ namespace libespm2 {
       tes4Record.read(input);
       _isMasterFile = tes4Record.isMasterFlagSet();
       _masters = tes4Record.getMasters();
+      _description = tes4Record.getDescription();
 
       input.close();
     }
@@ -74,6 +76,10 @@ namespace libespm2 {
 
     inline std::vector<std::string> getMasters() const {
       return _masters;
+    }
+
+    inline std::string getDescription() const {
+      return _description;
     }
   };
 }
