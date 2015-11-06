@@ -25,14 +25,13 @@
 namespace libespm2 {
   namespace tests {
 
-    using libespm2::SkyrimPlugin;
-
     class SkyrimPluginTest : public ::testing::Test {
       protected:
       SkyrimPluginTest() :
         dataPath("./Skyrim/Data"),
         missingPlugin(dataPath / "Blank.missing.esm"),
         emptyFile(dataPath / "EmptyFile.esm"),
+        invalidPlugin(dataPath / "NotAPlugin.esm"),
         blankEsm(dataPath / "Blank.esm"),
         blankEsp(dataPath / "Blank.esp")
         {}
@@ -47,15 +46,23 @@ namespace libespm2 {
         std::ofstream out(emptyFile.string());
         out.close();
         ASSERT_TRUE(boost::filesystem::exists(emptyFile));
+
+        // Write out an non-empty, non-plugin file.
+        out.open(invalidPlugin.string());
+        out << "This isn't a valid plugin file.";
+        out.close();
+        ASSERT_TRUE(boost::filesystem::exists(invalidPlugin));
       }
 
       inline virtual void TearDown() {
         boost::filesystem::remove(emptyFile);
+        boost::filesystem::remove(invalidPlugin);
       }
 
       const boost::filesystem::path dataPath;
       const boost::filesystem::path missingPlugin;
       const boost::filesystem::path emptyFile;
+      const boost::filesystem::path invalidPlugin;
       const boost::filesystem::path blankEsm;
       const boost::filesystem::path blankEsp;
     };
@@ -65,7 +72,7 @@ namespace libespm2 {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));
     }
 
-    TEST_F(SkyrimPluginTest, loadShouldNotThrowIfPluginExists) {
+    TEST_F(SkyrimPluginTest, loadShouldNotThrowIfValidPluginExists) {
       SkyrimPlugin plugin;
       EXPECT_NO_THROW(plugin.load(blankEsm));
     }
@@ -73,6 +80,11 @@ namespace libespm2 {
     TEST_F(SkyrimPluginTest, loadingAnEmptyFileShouldThrow) {
       SkyrimPlugin plugin;
       EXPECT_ANY_THROW(plugin.load(emptyFile));
+    }
+
+    TEST_F(SkyrimPluginTest, loadingAnInvalidPluginShouldThrow) {
+      SkyrimPlugin plugin;
+      EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
     TEST_F(SkyrimPluginTest, loadedBlankDotEsmShouldHaveCorrectName) {

@@ -20,35 +20,19 @@
 #include <string>
 #include <fstream>
 
-#include <boost/filesystem.hpp>
-
-#include "SkyrimRecord.h"
-
 namespace libespm2 {
 
-  class SkyrimPlugin {
-    private:
-    std::string name;
-
-    public:
-    inline void load(const boost::filesystem::path& filepath) {
-
-      std::ifstream input(filepath.string(), std::ios::binary);
-      if (!input.good())
-        throw std::runtime_error("Cannot open plugin file at " + filepath.string());
-
-      name = filepath.filename().string();
-
-      if (boost::filesystem::file_size(filepath) == 0)
-        throw std::runtime_error("File at " + filepath.string() + " is empty.");
-
-      SkyrimRecord tes4Record;
-      tes4Record.read(input);
+  class SkyrimRecord {
+  public:
+    void read(std::istream& input) {
+      readHeader(input);
     }
 
-    inline std::string getName() const {
-      return name;
+    void readHeader(std::istream& input) {
+      char type[4];
+      input.read(type, 4);
+      if (memcmp(type, "TES4", 4) != 0)
+        throw std::runtime_error("Not a valid plugin file.");
     }
   };
-
 }

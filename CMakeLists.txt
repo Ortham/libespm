@@ -14,7 +14,8 @@ set (Boost_USE_STATIC_RUNTIME ${PROJECT_STATIC_RUNTIME})
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
-set(PROJECT_HEADERS "")
+set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/src/tests/SkyrimPlugin.h"
+                    "${CMAKE_SOURCE_DIR}/src/tests/SkyrimRecord.h")
 
 set(TESTER_SRC "${CMAKE_SOURCE_DIR}/src/tests/main.cpp")
 
