@@ -88,6 +88,14 @@ namespace libespm2 {
       EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
+    TEST_F(SkyrimPluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
+      EXPECT_TRUE(SkyrimPlugin::isValid(blankEsm));
+    }
+
+    TEST_F(SkyrimPluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
+      EXPECT_FALSE(SkyrimPlugin::isValid(invalidPlugin));
+    }
+
     TEST_F(SkyrimPluginTest, loadedBlankDotEsmShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 

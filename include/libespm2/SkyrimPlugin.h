@@ -59,6 +59,17 @@ namespace libespm2 {
     inline bool isMasterFile() const {
       return _isMasterFile;
     }
+
+    inline static bool isValid(const boost::filesystem::path& filepath) {
+      SkyrimPlugin plugin;
+      try {
+        plugin.load(filepath);
+        return true;
+      }
+      catch (std::exception&) {
+        return false;
+      }
+    }
   };
 
 }
