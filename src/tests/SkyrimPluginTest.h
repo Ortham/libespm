@@ -32,6 +32,7 @@ namespace libespm2 {
       SkyrimPluginTest() :
         dataPath("./Skyrim/Data"),
         missingPlugin(dataPath / "Blank.missing.esm"),
+        emptyFile(dataPath / "EmptyFile.esm"),
         blankEsm(dataPath / "Blank.esm"),
         blankEsp(dataPath / "Blank.esp")
         {}
@@ -41,10 +42,20 @@ namespace libespm2 {
 
         ASSERT_TRUE(boost::filesystem::exists(blankEsm));
         ASSERT_TRUE(boost::filesystem::exists(blankEsp));
+
+        // Write out an empty file.
+        std::ofstream out(emptyFile.string());
+        out.close();
+        ASSERT_TRUE(boost::filesystem::exists(emptyFile));
+      }
+
+      inline virtual void TearDown() {
+        boost::filesystem::remove(emptyFile);
       }
 
       const boost::filesystem::path dataPath;
       const boost::filesystem::path missingPlugin;
+      const boost::filesystem::path emptyFile;
       const boost::filesystem::path blankEsm;
       const boost::filesystem::path blankEsp;
     };
@@ -57,6 +68,11 @@ namespace libespm2 {
     TEST_F(SkyrimPluginTest, loadShouldNotThrowIfPluginExists) {
       SkyrimPlugin plugin;
       EXPECT_NO_THROW(plugin.load(blankEsm));
+    }
+
+    TEST_F(SkyrimPluginTest, loadingAnEmptyFileShouldThrow) {
+      SkyrimPlugin plugin;
+      EXPECT_ANY_THROW(plugin.load(emptyFile));
     }
 
     TEST_F(SkyrimPluginTest, loadedBlankDotEsmShouldHaveCorrectName) {

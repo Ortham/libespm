@@ -36,10 +36,14 @@ namespace libespm2 {
         throw std::runtime_error("Cannot open plugin file at " + filepath.string());
 
       name = filepath.filename().string();
+
+      if (boost::filesystem::file_size(filepath) == 0)
+        throw std::runtime_error("File at " + filepath.string() + " is empty.");
     }
 
     inline std::string getName() const {
       return name;
     }
   };
+
 }
