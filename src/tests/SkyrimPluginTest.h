@@ -52,6 +52,9 @@ namespace libespm2 {
         out << "This isn't a valid plugin file.";
         out.close();
         ASSERT_TRUE(boost::filesystem::exists(invalidPlugin));
+
+        // Make sure each test starts with a new Plugin object.
+        plugin = Plugin();
       }
 
       inline virtual void TearDown() {
@@ -65,37 +68,33 @@ namespace libespm2 {
       const boost::filesystem::path invalidPlugin;
       const boost::filesystem::path blankEsm;
       const boost::filesystem::path blankEsp;
+
+      SkyrimPlugin plugin;
     };
 
     TEST_F(SkyrimPluginTest, loadShouldThrowIfPluginDoesNotExist) {
-      SkyrimPlugin plugin;
       EXPECT_ANY_THROW(plugin.load(missingPlugin));
     }
 
     TEST_F(SkyrimPluginTest, loadShouldNotThrowIfValidPluginExists) {
-      SkyrimPlugin plugin;
       EXPECT_NO_THROW(plugin.load(blankEsm));
     }
 
     TEST_F(SkyrimPluginTest, loadingAnEmptyFileShouldThrow) {
-      SkyrimPlugin plugin;
       EXPECT_ANY_THROW(plugin.load(emptyFile));
     }
 
     TEST_F(SkyrimPluginTest, loadingAnInvalidPluginShouldThrow) {
-      SkyrimPlugin plugin;
       EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
     TEST_F(SkyrimPluginTest, loadedBlankDotEsmShouldHaveCorrectName) {
-      SkyrimPlugin plugin;
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ(blankEsm.filename().string(), plugin.getName());
     }
 
     TEST_F(SkyrimPluginTest, loadedBlankDotEspShouldHaveCorrectName) {
-      SkyrimPlugin plugin;
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_EQ(blankEsp.filename().string(), plugin.getName());
