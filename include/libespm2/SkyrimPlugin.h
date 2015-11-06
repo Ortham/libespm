@@ -29,8 +29,11 @@ namespace libespm2 {
   class SkyrimPlugin {
     private:
     std::string name;
+    bool _isMasterFile;
 
     public:
+    inline SkyrimPlugin() : _isMasterFile(false) {}
+
     inline void load(const boost::filesystem::path& filepath) {
 
       std::ifstream input(filepath.string(), std::ios::binary);
@@ -44,10 +47,17 @@ namespace libespm2 {
 
       SkyrimRecord tes4Record;
       tes4Record.read(input);
+      _isMasterFile = tes4Record.isMasterFlagSet();
+
+      input.close();
     }
 
     inline std::string getName() const {
       return name;
+    }
+
+    inline bool isMasterFile() const {
+      return _isMasterFile;
     }
   };
 

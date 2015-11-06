@@ -19,20 +19,34 @@
 
 #include <string>
 #include <fstream>
+#include <cstdint>
 
 namespace libespm2 {
 
   class SkyrimRecord {
+  private:
+    uint32_t flags;
   public:
-    void read(std::istream& input) {
+    inline void read(std::istream& input) {
       readHeader(input);
     }
 
-    void readHeader(std::istream& input) {
+    inline void readHeader(std::istream& input) {
+      // Read in the record type.
       char type[4];
       input.read(type, 4);
       if (memcmp(type, "TES4", 4) != 0)
         throw std::runtime_error("Not a valid plugin file.");
+
+      // Skip a field.
+      input.seekg(4, std::ios_base::cur);
+
+      // Read the record flags.
+      input.read(reinterpret_cast<char*>(&flags), 4);
+    }
+
+    inline bool isMasterFlagSet() const {
+      return (flags & 0x00000001) != 0;
     }
   };
 }

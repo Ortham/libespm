@@ -100,5 +100,17 @@ namespace libespm2 {
       EXPECT_EQ(blankEsp.filename().string(), plugin.getName());
     }
 
+    TEST_F(SkyrimPluginTest, loadedBlankDotEsmShouldBeAMaster) {
+      ASSERT_NO_THROW(plugin.load(blankEsm));
+
+      EXPECT_TRUE(plugin.isMasterFile());
+    }
+
+    TEST_F(SkyrimPluginTest, loadedBlankDotEspShouldNotBeAMaster) {
+      ASSERT_NO_THROW(plugin.load(blankEsp));
+
+      EXPECT_FALSE(plugin.isMasterFile());
+    }
+
   }
 }
