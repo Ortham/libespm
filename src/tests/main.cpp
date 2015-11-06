@@ -17,9 +17,9 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
- #include "SkyrimPluginTest.h"
+#include "SkyrimPluginTest.h"
 
 int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
 }

@@ -22,7 +22,6 @@
 #include <cstdint>
 
 namespace libespm2 {
-
   class SkyrimRecord {
   private:
     uint32_t flags;

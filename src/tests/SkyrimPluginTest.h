@@ -24,9 +24,8 @@
 
 namespace libespm2 {
   namespace tests {
-
     class SkyrimPluginTest : public ::testing::Test {
-      protected:
+    protected:
       SkyrimPluginTest() :
         dataPath("./Skyrim/Data"),
         missingPlugin(dataPath / "Blank.missing.esm"),
@@ -34,8 +33,7 @@ namespace libespm2 {
         invalidPlugin(dataPath / "NotAPlugin.esm"),
         blankEsm(dataPath / "Blank.esm"),
         blankMasterDependentEsm(dataPath / "Blank - Master Dependent.esm"),
-        blankEsp(dataPath / "Blank.esp")
-        {}
+        blankEsp(dataPath / "Blank.esp") {}
 
       inline virtual void SetUp() {
         ASSERT_FALSE(boost::filesystem::exists(missingPlugin));
@@ -136,6 +134,5 @@ namespace libespm2 {
       EXPECT_EQ(1, masters.size());
       EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
-
   }
 }

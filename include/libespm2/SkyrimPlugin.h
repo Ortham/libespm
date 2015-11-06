@@ -26,18 +26,16 @@
 #include "SkyrimRecord.h"
 
 namespace libespm2 {
-
   class SkyrimPlugin {
-    private:
+  private:
     std::string name;
     bool _isMasterFile;
     std::vector<std::string> _masters;
 
-    public:
+  public:
     inline SkyrimPlugin() : _isMasterFile(false) {}
 
     inline void load(const boost::filesystem::path& filepath) {
-
       std::ifstream input(filepath.string(), std::ios::binary);
       if (!input.good())
         throw std::runtime_error("Cannot open plugin file at " + filepath.string());
@@ -78,5 +76,4 @@ namespace libespm2 {
       return _masters;
     }
   };
-
 }
