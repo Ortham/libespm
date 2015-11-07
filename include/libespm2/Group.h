@@ -28,7 +28,7 @@
 namespace libespm2 {
   class Group {
   private:
-    std::set<uint32_t> _formIds;
+    std::set<uint32_t> formIds;
 
     static const std::string groupType;
     static const int typeLength = 4;
@@ -39,7 +39,7 @@ namespace libespm2 {
     }
 
     inline std::set<uint32_t> getRecordFormIds() const {
-      return _formIds;
+      return formIds;
     }
 
   private:
@@ -75,7 +75,7 @@ namespace libespm2 {
       while (input.tellg() - startingInputPos < totalRecordsSize) {
         Record record;
         record.read(input);
-        _formIds.insert(record.getFormId());
+        formIds.insert(record.getFormId());
       }
     }
   };

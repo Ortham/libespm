@@ -35,7 +35,7 @@ namespace libespm2 {
   private:
     std::string name;
     Record tes4Record;
-    std::set<FormId> _formIds;
+    std::set<FormId> formIds;
 
   public:
     inline void load(const boost::filesystem::path& filepath) {
@@ -54,7 +54,7 @@ namespace libespm2 {
         group.read(input);
         std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
         for (auto formId : groupRecordFormIds) {
-          _formIds.insert(FormId(name, masters, formId));
+          formIds.insert(FormId(name, masters, formId));
         }
       }
 
@@ -89,7 +89,7 @@ namespace libespm2 {
     }
 
     inline std::set<FormId> getFormIds() const {
-      return _formIds;
+      return formIds;
     }
   };
 }
