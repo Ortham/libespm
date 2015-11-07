@@ -39,11 +39,16 @@ namespace libespm2 {
     std::set<FormId> formIds;
 
   public:
-    inline void load(const boost::filesystem::path& filepath) {
+    inline void load(const boost::filesystem::path& filepath, bool loadHeaderOnly = false) {
       name = filepath.filename().string();
 
       std::ifstream input(filepath.string(), std::ios::binary);
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
+
+      if (loadHeaderOnly) {
+        tes4Record.read(input, false);
+        return;
+      }
 
       // Read the whole file in at once.
       std::stringstream bufferStream;

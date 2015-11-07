@@ -180,5 +180,35 @@ namespace libespm2 {
         FormId(plugin.getName(), masters, 0x01000CED),
       }), plugin.getFormIds());
     }
+
+    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsFilenameAsBlankEsm) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      EXPECT_EQ(blankEsm.filename().string(), plugin.getName());
+    }
+
+    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItBeingAMaster) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      EXPECT_TRUE(plugin.isMasterFile());
+    }
+
+    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsHavingNoMasters) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      EXPECT_TRUE(plugin.getMasters().empty());
+    }
+
+    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadAVersionInItsDescriptionField) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      EXPECT_EQ("v5.0", plugin.getDescription());
+    }
+
+    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldSkipItsOtherRecords) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      EXPECT_TRUE(plugin.getFormIds().empty());
+    }
   }
 }
