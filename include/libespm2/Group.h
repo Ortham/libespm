@@ -33,9 +33,9 @@ namespace libespm2 {
     static const std::string groupType;
     static const int typeLength = 4;
   public:
-    inline void read(std::istream& input) {
+    inline void read(std::istream& input, bool skipRecordFields) {
       uint32_t totalRecordsSize = readHeader(input);
-      readRecords(input, totalRecordsSize);
+      readRecords(input, totalRecordsSize, skipRecordFields);
     }
 
     inline std::set<uint32_t> getRecordFormIds() const {
@@ -61,11 +61,11 @@ namespace libespm2 {
       return groupSize - 24;
     }
 
-    inline void readRecords(std::istream& input, uint32_t totalRecordsSize) {
+    inline void readRecords(std::istream& input, uint32_t totalRecordsSize, bool skipRecordFields) {
       std::streampos startingInputPos = input.tellg();
       while (input.tellg() - startingInputPos < totalRecordsSize) {
         Record record;
-        record.read(input);
+        record.read(input, skipRecordFields);
         formIds.insert(record.getFormId());
       }
     }

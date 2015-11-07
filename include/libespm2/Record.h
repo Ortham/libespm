@@ -39,9 +39,12 @@ namespace libespm2 {
   public:
     Record() : flags(0), formId(0) {}
 
-    inline void read(std::istream& input) {
+    inline void read(std::istream& input, bool skipFields) {
       uint32_t totalFieldsSize = readHeader(input);
-      readFields(input, totalFieldsSize);
+      if (skipFields)
+        input.ignore(totalFieldsSize);
+      else
+        readFields(input, totalFieldsSize);
     }
 
     inline bool isMasterFlagSet() const {

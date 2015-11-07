@@ -50,13 +50,13 @@ namespace libespm2 {
       bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
       bufferStream << input.rdbuf();
 
-      tes4Record.read(bufferStream);
+      tes4Record.read(bufferStream, false);
 
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
       while (bufferStream.tellg() < fileSize) {
         Group group;
-        group.read(bufferStream);
+        group.read(bufferStream, true);
         std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
         for (auto formId : groupRecordFormIds) {
           formIds.insert(FormId(name, masters, formId));
