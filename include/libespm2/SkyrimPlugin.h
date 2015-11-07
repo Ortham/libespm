@@ -51,9 +51,6 @@ namespace libespm2 {
 
       size_t fileSize = boost::filesystem::file_size(filepath);
 
-      if (fileSize == 0)
-        throw std::runtime_error("File at " + filepath.string() + " is empty.");
-
       SkyrimRecord tes4Record;
       tes4Record.read(input);
       _isMasterFile = tes4Record.isMasterFlagSet();
