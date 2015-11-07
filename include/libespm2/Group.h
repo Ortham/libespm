@@ -48,15 +48,9 @@ namespace libespm2 {
 
       // Check the input stream is large enough.
       size_t totalHeaderLength = typeLength + sizeof(groupSize) + 16;
-      if (!isStreamLongEnough(input, totalHeaderLength))
-        throw std::runtime_error("Invalid plugin: incomplete group header found at offset " + std::to_string(input.tellg()));
 
-      // Read in the record type.
-      std::string type;
-      type.resize(typeLength);
-      input.read(reinterpret_cast<char*>(&type[0]), typeLength);
-      if (type != groupType)
-        throw std::runtime_error("Invalid plugin: group with type \"" + type + "\" found at offset " + std::to_string(input.tellg()));
+      // Ignore the group type.
+      input.ignore(typeLength);
 
       // Read the total group size.
       input.read(reinterpret_cast<char*>(&groupSize), sizeof(groupSize));
@@ -68,9 +62,6 @@ namespace libespm2 {
     }
 
     inline void readRecords(std::istream& input, uint32_t totalRecordsSize) {
-      if (!isStreamLongEnough(input, totalRecordsSize))
-        throw std::runtime_error("Invalid plugin: incomplete group records found at offset " + std::to_string(input.tellg()));
-
       std::streampos startingInputPos = input.tellg();
       while (input.tellg() - startingInputPos < totalRecordsSize) {
         Record record;

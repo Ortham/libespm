@@ -42,8 +42,7 @@ namespace libespm2 {
       name = filepath.filename().string();
 
       std::ifstream input(filepath.string(), std::ios::binary);
-      if (!input.good())
-        throw std::runtime_error("Cannot open plugin file at " + filepath.string());
+      input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       tes4Record.read(input);
 

@@ -27,17 +27,6 @@
 #include "Field.h"
 
 namespace libespm2 {
-  bool isStreamLongEnough(std::istream& input, size_t minimumLengthRemaining) {
-    std::streampos currentPos = input.tellg();
-
-    input.seekg(0, std::ios_base::end);
-    std::streampos endPos = input.tellg();
-
-    input.seekg(currentPos);
-
-    return (endPos - currentPos) >= minimumLengthRemaining;
-  }
-
   class Record {
   private:
     uint32_t flags;
@@ -77,8 +66,6 @@ namespace libespm2 {
 
       // Check the input stream is large enough.
       size_t totalHeaderLength = typeLength + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
-      if (!isStreamLongEnough(input, totalHeaderLength))
-        throw std::runtime_error("Invalid plugin: incomplete record header found at offset " + std::to_string(input.tellg()));
 
       // Skip the record type.
       input.ignore(typeLength);
@@ -99,9 +86,6 @@ namespace libespm2 {
     }
 
     inline void readFields(std::istream& input, uint32_t totalFieldsSize) {
-      if (!isStreamLongEnough(input, totalFieldsSize))
-        throw std::runtime_error("Invalid plugin: incomplete record fields found in record with FormID " + std::to_string(formId) + " at offset " + std::to_string(input.tellg()));
-
       std::streampos startingInputPos = input.tellg();
       while ((input.tellg() - startingInputPos) < totalFieldsSize) {
         Field field;
