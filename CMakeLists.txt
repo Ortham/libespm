@@ -16,12 +16,12 @@ find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Group.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/SkyrimPlugin.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/SkyrimRecord.h")
+                    "${CMAKE_SOURCE_DIR}/include/libespm2/Plugin.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm2/Record.h")
 
 set(TESTER_SRC "${CMAKE_SOURCE_DIR}/src/tests/main.cpp")
 
-set(TESTER_HEADERS "${CMAKE_SOURCE_DIR}/src/tests/SkyrimPluginTest.h"
+set(TESTER_HEADERS "${CMAKE_SOURCE_DIR}/src/tests/PluginTest.h"
                    "${CMAKE_SOURCE_DIR}/src/tests/FormIdTest.h")
 
 source_group("Header Files" FILES ${PROJECT_HEADERS} ${TESTER_HEADERS})

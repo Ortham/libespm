@@ -17,8 +17,8 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBESPM2_SKYRIM_PLUGIN
-#define LIBESPM2_SKYRIM_PLUGIN
+#ifndef LIBESPM2_PLUGIN
+#define LIBESPM2_PLUGIN
 
 #include <string>
 #include <fstream>
@@ -28,10 +28,10 @@
 
 #include "FormId.h"
 #include "Group.h"
-#include "SkyrimRecord.h"
+#include "Record.h"
 
 namespace libespm2 {
-  class SkyrimPlugin {
+  class Plugin {
   private:
     std::string name;
     bool _isMasterFile;
@@ -40,7 +40,7 @@ namespace libespm2 {
     std::set<FormId> _formIds;
 
   public:
-    inline SkyrimPlugin() : _isMasterFile(false) {}
+    inline Plugin() : _isMasterFile(false) {}
 
     inline void load(const boost::filesystem::path& filepath) {
       std::ifstream input(filepath.string(), std::ios::binary);
@@ -51,7 +51,7 @@ namespace libespm2 {
 
       size_t fileSize = boost::filesystem::file_size(filepath);
 
-      SkyrimRecord tes4Record;
+      Record tes4Record;
       tes4Record.read(input);
       _isMasterFile = tes4Record.isMasterFlagSet();
       _masters = tes4Record.getMasters();
@@ -79,7 +79,7 @@ namespace libespm2 {
     }
 
     inline static bool isValid(const boost::filesystem::path& filepath) {
-      SkyrimPlugin plugin;
+      Plugin plugin;
       try {
         plugin.load(filepath);
         return true;

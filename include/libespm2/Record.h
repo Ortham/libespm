@@ -17,15 +17,15 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBESPM2_SKYRIM_RECORD
-#define LIBESPM2_SKYRIM_RECORD
+#ifndef LIBESPM2_RECORD
+#define LIBESPM2_RECORD
 
 #include <string>
 #include <fstream>
 #include <cstdint>
 
 namespace libespm2 {
-  class SkyrimRecord {
+  class Record {
   private:
     uint32_t flags;
     uint32_t totalFieldsSize;
@@ -36,7 +36,7 @@ namespace libespm2 {
 
     static const int typeLength = 4;
   public:
-    SkyrimRecord() : flags(0), totalFieldsSize(0), formId(0) {}
+    Record() : flags(0), totalFieldsSize(0), formId(0) {}
 
     inline void read(std::istream& input) {
       readHeader(input);

@@ -23,7 +23,7 @@
 #include <cstdint>
 #include <fstream>
 
-#include "SkyrimRecord.h"
+#include "Record.h"
 
 namespace libespm2 {
   class Group {
@@ -66,7 +66,7 @@ namespace libespm2 {
 
       size_t bytesRead = 0;
       while (bytesRead < totalRecordsSize) {
-        SkyrimRecord record;
+        Record record;
         std::streampos beforePos = input.tellg();
         record.read(input);
         _formIds.insert(record.getFormId());

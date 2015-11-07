@@ -17,7 +17,7 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "SkyrimPluginTest.h"
+#include "PluginTest.h"
 #include "FormIdTest.h"
 
 namespace libespm2 {

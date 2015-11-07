@@ -20,13 +20,13 @@
 #include <gtest/gtest.h>
 #include <boost/filesystem.hpp>
 
-#include "libespm2/SkyrimPlugin.h"
+#include "libespm2/Plugin.h"
 
 namespace libespm2 {
   namespace tests {
-    class SkyrimPluginTest : public ::testing::Test {
+    class PluginTest : public ::testing::Test {
     protected:
-      SkyrimPluginTest() :
+      PluginTest() :
         dataPath("./Skyrim/Data"),
         missingPlugin(dataPath / "Blank.missing.esm"),
         emptyFile(dataPath / "EmptyFile.esm"),
@@ -70,64 +70,64 @@ namespace libespm2 {
       const boost::filesystem::path blankMasterDependentEsm;
       const boost::filesystem::path blankEsp;
 
-      SkyrimPlugin plugin;
+      Plugin plugin;
     };
 
-    TEST_F(SkyrimPluginTest, loadShouldThrowIfPluginDoesNotExist) {
+    TEST_F(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));
     }
 
-    TEST_F(SkyrimPluginTest, loadShouldNotThrowIfValidPluginExists) {
+    TEST_F(PluginTest, loadShouldNotThrowIfValidPluginExists) {
       EXPECT_NO_THROW(plugin.load(blankEsm));
     }
 
-    TEST_F(SkyrimPluginTest, loadingAnEmptyFileShouldThrow) {
+    TEST_F(PluginTest, loadingAnEmptyFileShouldThrow) {
       EXPECT_ANY_THROW(plugin.load(emptyFile));
     }
 
-    TEST_F(SkyrimPluginTest, loadingAnInvalidPluginShouldThrow) {
+    TEST_F(PluginTest, loadingAnInvalidPluginShouldThrow) {
       EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
-    TEST_F(SkyrimPluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
-      EXPECT_TRUE(SkyrimPlugin::isValid(blankEsm));
+    TEST_F(PluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
+      EXPECT_TRUE(Plugin::isValid(blankEsm));
     }
 
-    TEST_F(SkyrimPluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
-      EXPECT_FALSE(SkyrimPlugin::isValid(invalidPlugin));
+    TEST_F(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
+      EXPECT_FALSE(Plugin::isValid(invalidPlugin));
     }
 
-    TEST_F(SkyrimPluginTest, blankDotEsmShouldHaveCorrectName) {
+    TEST_F(PluginTest, blankDotEsmShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ(blankEsm.filename().string(), plugin.getName());
     }
 
-    TEST_F(SkyrimPluginTest, blankDotEspShouldHaveCorrectName) {
+    TEST_F(PluginTest, blankDotEspShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_EQ(blankEsp.filename().string(), plugin.getName());
     }
 
-    TEST_F(SkyrimPluginTest, blankDotEsmShouldBeAMaster) {
+    TEST_F(PluginTest, blankDotEsmShouldBeAMaster) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_TRUE(plugin.isMasterFile());
     }
 
-    TEST_F(SkyrimPluginTest, blankDotEspShouldNotBeAMaster) {
+    TEST_F(PluginTest, blankDotEspShouldNotBeAMaster) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_FALSE(plugin.isMasterFile());
     }
 
-    TEST_F(SkyrimPluginTest, blankDotEsmShouldHaveNoMasters) {
+    TEST_F(PluginTest, blankDotEsmShouldHaveNoMasters) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_TRUE(plugin.getMasters().empty());
     }
 
-    TEST_F(SkyrimPluginTest, blankMasterDependentEsmShouldHaveBlankEsmAsAMaster) {
+    TEST_F(PluginTest, blankMasterDependentEsmShouldHaveBlankEsmAsAMaster) {
       ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -135,19 +135,19 @@ namespace libespm2 {
       EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
 
-    TEST_F(SkyrimPluginTest, blankEsmShouldHaveVersionInDescriptionField) {
+    TEST_F(PluginTest, blankEsmShouldHaveVersionInDescriptionField) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ("v5.0", plugin.getDescription());
     }
 
-    TEST_F(SkyrimPluginTest, blankEspShouldHaveEmptyDescriptionField) {
+    TEST_F(PluginTest, blankEspShouldHaveEmptyDescriptionField) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_TRUE(plugin.getDescription().empty());
     }
 
-    TEST_F(SkyrimPluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
+    TEST_F(PluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -165,7 +165,7 @@ namespace libespm2 {
       }), plugin.getFormIds());
     }
 
-    TEST_F(SkyrimPluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
+    TEST_F(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
       ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
