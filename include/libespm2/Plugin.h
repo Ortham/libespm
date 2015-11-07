@@ -23,6 +23,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -44,13 +45,18 @@ namespace libespm2 {
       std::ifstream input(filepath.string(), std::ios::binary);
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
-      tes4Record.read(input);
+      // Read the whole file in at once.
+      std::stringstream bufferStream;
+      bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
+      bufferStream << input.rdbuf();
+
+      tes4Record.read(bufferStream);
 
       std::vector<std::string> masters = getMasters();
-      size_t fileSize = boost::filesystem::file_size(filepath);
-      while (input.tellg() < fileSize) {
+      uintmax_t fileSize = boost::filesystem::file_size(filepath);
+      while (bufferStream.tellg() < fileSize) {
         Group group;
-        group.read(input);
+        group.read(bufferStream);
         std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
         for (auto formId : groupRecordFormIds) {
           formIds.insert(FormId(name, masters, formId));
