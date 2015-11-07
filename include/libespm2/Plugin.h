@@ -39,11 +39,11 @@ namespace libespm2 {
 
   public:
     inline void load(const boost::filesystem::path& filepath) {
+      name = filepath.filename().string();
+
       std::ifstream input(filepath.string(), std::ios::binary);
       if (!input.good())
         throw std::runtime_error("Cannot open plugin file at " + filepath.string());
-
-      name = filepath.filename().string();
 
       tes4Record.read(input);
 
@@ -57,8 +57,6 @@ namespace libespm2 {
           formIds.insert(FormId(name, masters, formId));
         }
       }
-
-      input.close();
     }
 
     inline std::string getName() const {
