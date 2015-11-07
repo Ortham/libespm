@@ -28,7 +28,6 @@ namespace libespm2 {
   class Record {
   private:
     uint32_t flags;
-    uint32_t totalFieldsSize;
     uint32_t formId;
 
     std::vector<std::string> masterFilenames;
@@ -36,22 +35,40 @@ namespace libespm2 {
 
     static const int typeLength = 4;
   public:
-    Record() : flags(0), totalFieldsSize(0), formId(0) {}
+    Record() : flags(0), formId(0) {}
 
     inline void read(std::istream& input) {
-      readHeader(input);
-      readFields(input);
+      uint32_t totalFieldsSize = readHeader(input);
+      readFields(input, totalFieldsSize);
     }
 
-    inline void readHeader(std::istream& input) {
+    inline bool isMasterFlagSet() const {
+      return (flags & 0x00000001) != 0;
+    }
+
+    inline std::vector<std::string> getMasters() const {
+      return masterFilenames;
+    }
+
+    inline std::string getDescription() const {
+      return description;
+    }
+
+    inline uint32_t getFormId() const {
+      return formId;
+    }
+
+  private:
+    inline uint32_t readHeader(std::istream& input) {
+      uint32_t totalFieldsSize = 0;
+
       // Check the input stream is large enough.
-      size_t totalHeaderLength = 4 + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
+      size_t totalHeaderLength = typeLength + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
       if (!streamIsLongEnough(input, totalHeaderLength))
         throw std::runtime_error("File is not large enough to be a valid plugin.");
 
-      // Read in the record type.
-      char type[typeLength];
-      input.read(type, typeLength);
+      // Skip the record type.
+      input.seekg(typeLength, std::ios_base::cur);
 
       // Read the total fields size.
       input.read(reinterpret_cast<char*>(&totalFieldsSize), sizeof(totalFieldsSize));
@@ -64,52 +81,46 @@ namespace libespm2 {
 
       // Skip to the end of the header.
       input.seekg(8, std::ios_base::cur);
+
+      return totalFieldsSize;
     }
 
-    inline void readFields(std::istream& input) {
+    inline void readFields(std::istream& input, uint32_t totalFieldsSize) {
       if (!streamIsLongEnough(input, totalFieldsSize))
         throw std::runtime_error("File is not large enough to be a valid plugin.");
 
-      uint32_t bytesRead = 0;
-      while (bytesRead < totalFieldsSize) {
-        char type[typeLength];
-        input.read(type, typeLength);
-        bytesRead += typeLength;
-
-        uint16_t dataLength = 0;
-        input.read(reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
-        bytesRead += sizeof(dataLength);
-
-        if (memcmp(type, "MAST", 4) == 0) {
-          // A master filename, store it.
-          std::string masterFilename;
-          masterFilename.resize(dataLength);
-          input.read(reinterpret_cast<char*>(&masterFilename[0]), dataLength);
-          masterFilename.resize(dataLength - 1);
-          bytesRead += dataLength;
-
-          masterFilenames.push_back(masterFilename);
-        }
-        else if (memcmp(type, "SNAM", 4) == 0) {
-          // The description field, store it.
-          description.resize(dataLength);
-          input.read(reinterpret_cast<char*>(&description[0]), dataLength);
-          description.resize(dataLength - 1);
-          bytesRead += dataLength;
-        }
-        else {
-          input.seekg(dataLength, std::ios_base::cur);
-          bytesRead += dataLength;
-        }
+      std::streampos startingInputPos = input.tellg();
+      while ((input.tellg() - startingInputPos) < totalFieldsSize) {
+        readField(input);
       }
     }
 
-    inline bool isMasterFlagSet() const {
-      return (flags & 0x00000001) != 0;
-    }
+    inline void readField(std::istream& input) {
+      std::string type;
+      type.resize(typeLength);
+      input.read(reinterpret_cast<char*>(&type[0]), typeLength);
 
-    inline std::vector<std::string> getMasters() const {
-      return masterFilenames;
+      uint16_t dataLength = 0;
+      input.read(reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
+
+      if (type == "MAST") {
+        // A master filename, store it.
+        std::string masterFilename;
+        masterFilename.resize(dataLength);
+        input.read(reinterpret_cast<char*>(&masterFilename[0]), dataLength);
+        masterFilename.resize(dataLength - 1);
+
+        masterFilenames.push_back(masterFilename);
+      }
+      else if (type == "SNAM") {
+        // The description field, store it.
+        description.resize(dataLength);
+        input.read(reinterpret_cast<char*>(&description[0]), dataLength);
+        description.resize(dataLength - 1);
+      }
+      else {
+        input.seekg(dataLength, std::ios_base::cur);
+      }
     }
 
     inline bool streamIsLongEnough(std::istream& input, size_t expectedMinimumRelativeLength) {
@@ -121,14 +132,6 @@ namespace libespm2 {
       input.seekg(currentPos);
 
       return (endPos - currentPos) >= expectedMinimumRelativeLength;
-    }
-
-    inline std::string getDescription() const {
-      return description;
-    }
-
-    inline uint32_t getFormId() const {
-      return formId;
     }
   };
 }
