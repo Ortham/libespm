@@ -24,6 +24,8 @@
 #include <fstream>
 #include <cstdint>
 
+#include "Field.h"
+
 namespace libespm2 {
   class Record {
   private:
@@ -91,35 +93,18 @@ namespace libespm2 {
 
       std::streampos startingInputPos = input.tellg();
       while ((input.tellg() - startingInputPos) < totalFieldsSize) {
-        readField(input);
-      }
-    }
+        Field field;
+        field.read(input);
 
-    inline void readField(std::istream& input) {
-      std::string type;
-      type.resize(typeLength);
-      input.read(reinterpret_cast<char*>(&type[0]), typeLength);
-
-      uint16_t dataLength = 0;
-      input.read(reinterpret_cast<char*>(&dataLength), sizeof(dataLength));
-
-      if (type == "MAST") {
-        // A master filename, store it.
-        std::string masterFilename;
-        masterFilename.resize(dataLength);
-        input.read(reinterpret_cast<char*>(&masterFilename[0]), dataLength);
-        masterFilename.resize(dataLength - 1);
-
-        masterFilenames.push_back(masterFilename);
-      }
-      else if (type == "SNAM") {
-        // The description field, store it.
-        description.resize(dataLength);
-        input.read(reinterpret_cast<char*>(&description[0]), dataLength);
-        description.resize(dataLength - 1);
-      }
-      else {
-        input.seekg(dataLength, std::ios_base::cur);
+        if (field.getType() == "MAST") {
+          auto rawData = field.getRawData();
+          std::string masterFilename(rawData.first.get(), rawData.second - 1);
+          masterFilenames.push_back(masterFilename);
+        }
+        else if (field.getType() == "SNAM") {
+          auto rawData = field.getRawData();
+          description = std::string(rawData.first.get(), rawData.second - 1);
+        }
       }
     }
 

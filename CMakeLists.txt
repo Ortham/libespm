@@ -14,7 +14,8 @@ set (Boost_USE_STATIC_RUNTIME ${PROJECT_STATIC_RUNTIME})
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem system)
 
-set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
+set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/Field.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Group.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Plugin.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Record.h")
