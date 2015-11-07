@@ -34,14 +34,10 @@ namespace libespm2 {
   class Plugin {
   private:
     std::string name;
-    bool _isMasterFile;
-    std::vector<std::string> _masters;
-    std::string _description;
+    Record tes4Record;
     std::set<FormId> _formIds;
 
   public:
-    inline Plugin() : _isMasterFile(false) {}
-
     inline void load(const boost::filesystem::path& filepath) {
       std::ifstream input(filepath.string(), std::ios::binary);
       if (!input.good())
@@ -49,15 +45,10 @@ namespace libespm2 {
 
       name = filepath.filename().string();
 
-      size_t fileSize = boost::filesystem::file_size(filepath);
-
-      Record tes4Record;
       tes4Record.read(input);
-      _isMasterFile = tes4Record.isMasterFlagSet();
-      _masters = tes4Record.getMasters();
-      _description = tes4Record.getDescription();
 
       std::vector<std::string> masters = getMasters();
+      size_t fileSize = boost::filesystem::file_size(filepath);
       while (input.tellg() < fileSize) {
         Group group;
         group.read(input);
@@ -75,7 +66,7 @@ namespace libespm2 {
     }
 
     inline bool isMasterFile() const {
-      return _isMasterFile;
+      return tes4Record.isMasterFlagSet();
     }
 
     inline static bool isValid(const boost::filesystem::path& filepath) {
@@ -90,11 +81,11 @@ namespace libespm2 {
     }
 
     inline std::vector<std::string> getMasters() const {
-      return _masters;
+      return tes4Record.getMasters();
     }
 
     inline std::string getDescription() const {
-      return _description;
+      return tes4Record.getDescription();
     }
 
     inline std::set<FormId> getFormIds() const {
