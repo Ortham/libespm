@@ -18,6 +18,17 @@
  */
 
 #include "SkyrimPluginTest.h"
+#include "FormIdTest.h"
+
+namespace libespm2 {
+  void PrintTo(const FormId& value, ::std::ostream* os) {
+    *os << "libespm2::FormId(\"" << value.getPluginName() << "\", 0x"
+      << std::hex << std::uppercase
+      << value.getObjectIndex()
+      << std::nouppercase << std::dec
+      << ")";
+  }
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

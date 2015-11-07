@@ -17,12 +17,17 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef LIBESPM2_SKYRIM_PLUGIN
+#define LIBESPM2_SKYRIM_PLUGIN
+
 #include <string>
 #include <fstream>
 #include <vector>
 
 #include <boost/filesystem.hpp>
 
+#include "FormId.h"
+#include "Group.h"
 #include "SkyrimRecord.h"
 
 namespace libespm2 {
@@ -32,6 +37,7 @@ namespace libespm2 {
     bool _isMasterFile;
     std::vector<std::string> _masters;
     std::string _description;
+    std::set<FormId> _formIds;
 
   public:
     inline SkyrimPlugin() : _isMasterFile(false) {}
@@ -43,7 +49,9 @@ namespace libespm2 {
 
       name = filepath.filename().string();
 
-      if (boost::filesystem::file_size(filepath) == 0)
+      size_t fileSize = boost::filesystem::file_size(filepath);
+
+      if (fileSize == 0)
         throw std::runtime_error("File at " + filepath.string() + " is empty.");
 
       SkyrimRecord tes4Record;
@@ -51,6 +59,16 @@ namespace libespm2 {
       _isMasterFile = tes4Record.isMasterFlagSet();
       _masters = tes4Record.getMasters();
       _description = tes4Record.getDescription();
+
+      std::vector<std::string> masters = getMasters();
+      while (input.tellg() < fileSize) {
+        Group group;
+        group.read(input);
+        std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
+        for (auto formId : groupRecordFormIds) {
+          _formIds.insert(FormId(name, masters, formId));
+        }
+      }
 
       input.close();
     }
@@ -81,5 +99,11 @@ namespace libespm2 {
     inline std::string getDescription() const {
       return _description;
     }
+
+    inline std::set<FormId> getFormIds() const {
+      return _formIds;
+    }
   };
 }
+
+#endif

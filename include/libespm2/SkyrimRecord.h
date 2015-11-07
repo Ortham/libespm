@@ -17,6 +17,9 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef LIBESPM2_SKYRIM_RECORD
+#define LIBESPM2_SKYRIM_RECORD
+
 #include <string>
 #include <fstream>
 #include <cstdint>
@@ -26,13 +29,14 @@ namespace libespm2 {
   private:
     uint32_t flags;
     uint32_t totalFieldsSize;
+    uint32_t formId;
 
     std::vector<std::string> masterFilenames;
     std::string description;
 
     static const int typeLength = 4;
   public:
-    SkyrimRecord() : flags(0), totalFieldsSize(0) {}
+    SkyrimRecord() : flags(0), totalFieldsSize(0), formId(0) {}
 
     inline void read(std::istream& input) {
       readHeader(input);
@@ -41,15 +45,13 @@ namespace libespm2 {
 
     inline void readHeader(std::istream& input) {
       // Check the input stream is large enough.
-      size_t totalHeaderLength = 4 + sizeof(totalFieldsSize) + sizeof(flags) + 12;
+      size_t totalHeaderLength = 4 + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
       if (!streamIsLongEnough(input, totalHeaderLength))
         throw std::runtime_error("File is not large enough to be a valid plugin.");
 
       // Read in the record type.
       char type[typeLength];
       input.read(type, typeLength);
-      if (memcmp(type, "TES4", typeLength) != 0)
-        throw std::runtime_error("Not a valid plugin file.");
 
       // Read the total fields size.
       input.read(reinterpret_cast<char*>(&totalFieldsSize), sizeof(totalFieldsSize));
@@ -57,8 +59,11 @@ namespace libespm2 {
       // Read the record flags.
       input.read(reinterpret_cast<char*>(&flags), sizeof(flags));
 
+      // Read the record FormID.
+      input.read(reinterpret_cast<char*>(&formId), sizeof(formId));
+
       // Skip to the end of the header.
-      input.seekg(12, std::ios_base::cur);
+      input.seekg(8, std::ios_base::cur);
     }
 
     inline void readFields(std::istream& input) {
@@ -121,5 +126,11 @@ namespace libespm2 {
     inline std::string getDescription() const {
       return description;
     }
+
+    inline uint32_t getFormId() const {
+      return formId;
+    }
   };
 }
+
+#endif

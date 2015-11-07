@@ -146,5 +146,39 @@ namespace libespm2 {
 
       EXPECT_TRUE(plugin.getDescription().empty());
     }
+
+    TEST_F(SkyrimPluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
+      ASSERT_NO_THROW(plugin.load(blankEsm));
+
+      std::vector<std::string> masters = plugin.getMasters();
+      EXPECT_EQ(std::set<FormId>({
+        FormId(plugin.getName(), masters, 0xCF0),
+        FormId(plugin.getName(), masters, 0xCF1),
+        FormId(plugin.getName(), masters, 0xCF2),
+        FormId(plugin.getName(), masters, 0xCF3),
+        FormId(plugin.getName(), masters, 0xCF4),
+        FormId(plugin.getName(), masters, 0xCF5),
+        FormId(plugin.getName(), masters, 0xCF6),
+        FormId(plugin.getName(), masters, 0xCF7),
+        FormId(plugin.getName(), masters, 0xCF8),
+        FormId(plugin.getName(), masters, 0xCF9),
+      }), plugin.getFormIds());
+    }
+
+    TEST_F(SkyrimPluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
+      ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
+
+      std::vector<std::string> masters = plugin.getMasters();
+      EXPECT_EQ(std::set<FormId>({
+        FormId(plugin.getName(), masters, 0xCF0),
+        FormId(plugin.getName(), masters, 0xCF1),
+        FormId(plugin.getName(), masters, 0xCF2),
+        FormId(plugin.getName(), masters, 0xCF3),
+        FormId(plugin.getName(), masters, 0x01000CEA),
+        FormId(plugin.getName(), masters, 0x01000CEB),
+        FormId(plugin.getName(), masters, 0x01000CEC),
+        FormId(plugin.getName(), masters, 0x01000CED),
+      }), plugin.getFormIds());
+    }
   }
 }
