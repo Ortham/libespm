@@ -27,6 +27,17 @@
 #include "Field.h"
 
 namespace libespm2 {
+  bool isStreamLongEnough(std::istream& input, size_t minimumLengthRemaining) {
+    std::streampos currentPos = input.tellg();
+
+    input.seekg(0, std::ios_base::end);
+    std::streampos endPos = input.tellg();
+
+    input.seekg(currentPos);
+
+    return (endPos - currentPos) >= minimumLengthRemaining;
+  }
+
   class Record {
   private:
     uint32_t flags;
@@ -66,7 +77,7 @@ namespace libespm2 {
 
       // Check the input stream is large enough.
       size_t totalHeaderLength = typeLength + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
-      if (!streamIsLongEnough(input, totalHeaderLength))
+      if (!isStreamLongEnough(input, totalHeaderLength))
         throw std::runtime_error("File is not large enough to be a valid plugin.");
 
       // Skip the record type.
@@ -88,7 +99,7 @@ namespace libespm2 {
     }
 
     inline void readFields(std::istream& input, uint32_t totalFieldsSize) {
-      if (!streamIsLongEnough(input, totalFieldsSize))
+      if (!isStreamLongEnough(input, totalFieldsSize))
         throw std::runtime_error("File is not large enough to be a valid plugin.");
 
       std::streampos startingInputPos = input.tellg();
@@ -106,17 +117,6 @@ namespace libespm2 {
           description = std::string(rawData.first.get(), rawData.second - 1);
         }
       }
-    }
-
-    inline bool streamIsLongEnough(std::istream& input, size_t expectedMinimumRelativeLength) {
-      std::streampos currentPos = input.tellg();
-
-      input.seekg(0, std::ios_base::end);
-      std::streampos endPos = input.tellg();
-
-      input.seekg(currentPos);
-
-      return (endPos - currentPos) >= expectedMinimumRelativeLength;
     }
   };
 }

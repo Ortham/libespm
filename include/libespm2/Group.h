@@ -43,7 +43,7 @@ namespace libespm2 {
     inline void readHeader(std::istream& input) {
       // Check the input stream is large enough.
       size_t totalHeaderLength = 4 + sizeof(groupSize) + 16;
-      if (!streamIsLongEnough(input, totalHeaderLength))
+      if (!isStreamLongEnough(input, totalHeaderLength))
         throw std::runtime_error("Invalid plugin: incomplete group header found.");
 
       // Read in the record type.
@@ -61,7 +61,7 @@ namespace libespm2 {
 
     inline void readRecords(std::istream& input) {
       uint32_t totalRecordsSize = groupSize - 24;
-      if (!streamIsLongEnough(input, totalRecordsSize))
+      if (!isStreamLongEnough(input, totalRecordsSize))
         throw std::runtime_error("Invalid plugin: incomplete group records found.");
 
       size_t bytesRead = 0;
@@ -76,17 +76,6 @@ namespace libespm2 {
 
     inline std::set<uint32_t> getRecordFormIds() const {
       return _formIds;
-    }
-
-    inline bool streamIsLongEnough(std::istream& input, size_t expectedMinimumRelativeLength) {
-      std::streampos currentPos = input.tellg();
-
-      input.seekg(0, std::ios_base::end);
-      std::streampos endPos = input.tellg();
-
-      input.seekg(currentPos);
-
-      return (endPos - currentPos - expectedMinimumRelativeLength) >= 0;
     }
   };
 }
