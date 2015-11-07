@@ -63,7 +63,7 @@ namespace libespm2 {
 
     inline void readRecords(std::istream& input, uint32_t totalRecordsSize, bool skipRecordFields) {
       std::streampos startingInputPos = input.tellg();
-      while (input.tellg() - startingInputPos < totalRecordsSize) {
+      while (input.good() && input.tellg() - startingInputPos < totalRecordsSize) {
         Record record;
         record.read(input, skipRecordFields);
         formIds.insert(record.getFormId());

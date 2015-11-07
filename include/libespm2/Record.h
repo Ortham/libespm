@@ -90,7 +90,7 @@ namespace libespm2 {
 
     inline void readFields(std::istream& input, uint32_t totalFieldsSize) {
       std::streampos startingInputPos = input.tellg();
-      while ((input.tellg() - startingInputPos) < totalFieldsSize) {
+      while (input.good() && input.tellg() - startingInputPos < totalFieldsSize) {
         Field field;
         field.read(input);
 

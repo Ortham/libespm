@@ -59,7 +59,7 @@ namespace libespm2 {
 
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
-      while (bufferStream.tellg() < fileSize) {
+      while (bufferStream.good() && bufferStream.tellg() < fileSize) {
         Group group;
         group.read(bufferStream, true);
         std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
