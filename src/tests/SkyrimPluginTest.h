@@ -33,6 +33,7 @@ namespace libespm2 {
         emptyFile(dataPath / "EmptyFile.esm"),
         invalidPlugin(dataPath / "NotAPlugin.esm"),
         blankEsm(dataPath / "Blank.esm"),
+        blankMasterDependentEsm(dataPath / "Blank - Master Dependent.esm"),
         blankEsp(dataPath / "Blank.esp")
         {}
 
@@ -40,6 +41,7 @@ namespace libespm2 {
         ASSERT_FALSE(boost::filesystem::exists(missingPlugin));
 
         ASSERT_TRUE(boost::filesystem::exists(blankEsm));
+        ASSERT_TRUE(boost::filesystem::exists(blankMasterDependentEsm));
         ASSERT_TRUE(boost::filesystem::exists(blankEsp));
 
         // Write out an empty file.
@@ -67,6 +69,7 @@ namespace libespm2 {
       const boost::filesystem::path emptyFile;
       const boost::filesystem::path invalidPlugin;
       const boost::filesystem::path blankEsm;
+      const boost::filesystem::path blankMasterDependentEsm;
       const boost::filesystem::path blankEsp;
 
       SkyrimPlugin plugin;
@@ -118,6 +121,20 @@ namespace libespm2 {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_FALSE(plugin.isMasterFile());
+    }
+
+    TEST_F(SkyrimPluginTest, blankDotEsmShouldHaveNoMasters) {
+      ASSERT_NO_THROW(plugin.load(blankEsm));
+
+      EXPECT_TRUE(plugin.getMasters().empty());
+    }
+
+    TEST_F(SkyrimPluginTest, blankMasterDependentEsmShouldHaveBlankEsmAsAMaster) {
+      ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
+
+      std::vector<std::string> masters = plugin.getMasters();
+      EXPECT_EQ(1, masters.size());
+      EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
 
   }

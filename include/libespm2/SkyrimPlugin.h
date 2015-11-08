@@ -19,6 +19,7 @@
 
 #include <string>
 #include <fstream>
+#include <vector>
 
 #include <boost/filesystem.hpp>
 
@@ -30,6 +31,7 @@ namespace libespm2 {
     private:
     std::string name;
     bool _isMasterFile;
+    std::vector<std::string> _masters;
 
     public:
     inline SkyrimPlugin() : _isMasterFile(false) {}
@@ -48,6 +50,7 @@ namespace libespm2 {
       SkyrimRecord tes4Record;
       tes4Record.read(input);
       _isMasterFile = tes4Record.isMasterFlagSet();
+      _masters = tes4Record.getMasters();
 
       input.close();
     }
@@ -69,6 +72,10 @@ namespace libespm2 {
       catch (std::exception&) {
         return false;
       }
+    }
+
+    inline std::vector<std::string> getMasters() const {
+      return _masters;
     }
   };
 
