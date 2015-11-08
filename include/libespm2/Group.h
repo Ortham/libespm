@@ -62,7 +62,7 @@ namespace libespm2 {
       input.read(reinterpret_cast<char*>(&groupSize), sizeof(groupSize));
 
       // Skip to the end of the header.
-      input.seekg(16, std::ios_base::cur);
+      input.ignore(16);
 
       return groupSize - 24;
     }

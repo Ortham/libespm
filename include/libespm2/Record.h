@@ -81,7 +81,7 @@ namespace libespm2 {
         throw std::runtime_error("Invalid plugin: incomplete record header found at offset " + std::to_string(input.tellg()));
 
       // Skip the record type.
-      input.seekg(typeLength, std::ios_base::cur);
+      input.ignore(typeLength);
 
       // Read the total fields size.
       input.read(reinterpret_cast<char*>(&totalFieldsSize), sizeof(totalFieldsSize));
@@ -93,7 +93,7 @@ namespace libespm2 {
       input.read(reinterpret_cast<char*>(&formId), sizeof(formId));
 
       // Skip to the end of the header.
-      input.seekg(8, std::ios_base::cur);
+      input.ignore(8);
 
       return totalFieldsSize;
     }
