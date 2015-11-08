@@ -49,9 +49,6 @@ namespace libespm2 {
     inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
       uint32_t groupSize = 0;
 
-      // Check the input stream is large enough.
-      size_t totalHeaderLength = typeLength + sizeof(groupSize) + headerLengthToSkip;
-
       // Ignore the group type.
       input.ignore(typeLength);
 

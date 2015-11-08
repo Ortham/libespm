@@ -71,14 +71,6 @@ namespace libespm2 {
     inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
       uint32_t totalSubrecordsSize = 0;
 
-      // Check the input stream is large enough.
-      size_t totalHeaderLength =
-        typeLength +
-        sizeof(totalSubrecordsSize) +
-        sizeof(flags) +
-        sizeof(formId) +
-        headerLengthToSkip;
-
       // Skip the record type.
       input.ignore(typeLength);
 
