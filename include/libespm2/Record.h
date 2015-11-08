@@ -25,6 +25,7 @@
 #include <cstdint>
 
 #include "Field.h"
+#include "GameId.h"
 
 namespace libespm2 {
   class Record {
@@ -39,8 +40,11 @@ namespace libespm2 {
   public:
     Record() : flags(0), formId(0) {}
 
-    inline void read(std::istream& input, bool skipFields) {
-      uint32_t totalFieldsSize = readHeader(input);
+    inline void read(std::istream& input, GameId gameId, bool skipFields) {
+      // Header length varies by game.
+      size_t headerLengthToSkip = getHeaderLengthToSkip(gameId);
+
+      uint32_t totalFieldsSize = readHeader(input, headerLengthToSkip);
       if (skipFields)
         input.ignore(totalFieldsSize);
       else
@@ -64,11 +68,16 @@ namespace libespm2 {
     }
 
   private:
-    inline uint32_t readHeader(std::istream& input) {
+    inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
       uint32_t totalFieldsSize = 0;
 
       // Check the input stream is large enough.
-      size_t totalHeaderLength = typeLength + sizeof(totalFieldsSize) + sizeof(flags) + sizeof(formId) + 8;
+      size_t totalHeaderLength =
+        typeLength +
+        sizeof(totalFieldsSize) +
+        sizeof(flags) +
+        sizeof(formId) +
+        headerLengthToSkip;
 
       // Skip the record type.
       input.ignore(typeLength);
@@ -83,7 +92,7 @@ namespace libespm2 {
       input.read(reinterpret_cast<char*>(&formId), sizeof(formId));
 
       // Skip to the end of the header.
-      input.ignore(8);
+      input.ignore(headerLengthToSkip);
 
       return totalFieldsSize;
     }
@@ -104,6 +113,13 @@ namespace libespm2 {
           description = std::string(rawData.first.get(), rawData.second - 1);
         }
       }
+    }
+
+    inline size_t getHeaderLengthToSkip(GameId game) const {
+      if (game == GameId::OBLIVION)
+        return 4;
+      else
+        return 8;
     }
   };
 }

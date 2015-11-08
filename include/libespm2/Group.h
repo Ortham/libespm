@@ -33,9 +33,12 @@ namespace libespm2 {
     static const std::string groupType;
     static const int typeLength = 4;
   public:
-    inline void read(std::istream& input, bool skipRecordFields) {
-      uint32_t totalRecordsSize = readHeader(input);
-      readRecords(input, totalRecordsSize, skipRecordFields);
+    inline void read(std::istream& input, GameId gameId, bool skipRecordFields) {
+      // Header length varies by game.
+      size_t headerLengthToSkip = getHeaderLengthToSkip(gameId);
+
+      uint32_t totalRecordsSize = readHeader(input, headerLengthToSkip);
+      readRecords(input, gameId, totalRecordsSize, skipRecordFields);
     }
 
     inline std::set<uint32_t> getRecordFormIds() const {
@@ -43,11 +46,11 @@ namespace libespm2 {
     }
 
   private:
-    inline uint32_t readHeader(std::istream& input) {
+    inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
       uint32_t groupSize = 0;
 
       // Check the input stream is large enough.
-      size_t totalHeaderLength = typeLength + sizeof(groupSize) + 16;
+      size_t totalHeaderLength = typeLength + sizeof(groupSize) + headerLengthToSkip;
 
       // Ignore the group type.
       input.ignore(typeLength);
@@ -56,24 +59,24 @@ namespace libespm2 {
       input.read(reinterpret_cast<char*>(&groupSize), sizeof(groupSize));
 
       // Skip to the end of the header.
-      input.ignore(16);
+      input.ignore(headerLengthToSkip);
 
       return groupSize - 24;
     }
 
-    inline void readRecords(std::istream& input, uint32_t totalRecordsSize, bool skipRecordFields) {
+    inline void readRecords(std::istream& input, GameId gameId, uint32_t totalRecordsSize, bool skipRecordFields) {
       std::streampos startingInputPos = input.tellg();
       while (input.good() && input.tellg() - startingInputPos < totalRecordsSize) {
         // Groups can contain records or subgroups.
         if (peekNextType(input) == groupType) {
           Group subGroup;
-          subGroup.read(input, skipRecordFields);
+          subGroup.read(input, gameId, skipRecordFields);
           std::set<uint32_t> subGroupFormIds = subGroup.getRecordFormIds();
           this->formIds.insert(begin(subGroupFormIds), end(subGroupFormIds));
         }
         else {
           Record record;
-          record.read(input, skipRecordFields);
+          record.read(input, gameId, skipRecordFields);
           formIds.insert(record.getFormId());
         }
       }
@@ -86,6 +89,13 @@ namespace libespm2 {
       input.seekg(-typeLength, std::ios_base::cur);
 
       return type;
+    }
+
+    inline size_t getHeaderLengthToSkip(GameId game) const {
+      if (game == GameId::OBLIVION)
+        return 12;
+      else
+        return 16;
     }
   };
 

@@ -24,10 +24,12 @@
 
 namespace libespm2 {
   namespace tests {
-    class PluginTest : public ::testing::TestWithParam<const char *> {
+    class PluginTest : public ::testing::TestWithParam<GameId> {
     protected:
       PluginTest() :
-        dataPath(GetParam()),
+        gameId(GetParam()),
+        plugin(GetParam()),
+        dataPath(getGamePath(GetParam())),
         missingPlugin(dataPath / "Blank.missing.esm"),
         emptyFile(dataPath / "EmptyFile.esm"),
         invalidPlugin(dataPath / "NotAPlugin.esm"),
@@ -54,12 +56,19 @@ namespace libespm2 {
         ASSERT_TRUE(boost::filesystem::exists(invalidPlugin));
 
         // Make sure each test starts with a new Plugin object.
-        plugin = Plugin();
+        plugin = Plugin(gameId);
       }
 
-      inline virtual void TearDown() {
+      inline virtual void TearDown() const {
         boost::filesystem::remove(emptyFile);
         boost::filesystem::remove(invalidPlugin);
+      }
+
+      inline boost::filesystem::path getGamePath(GameId game) const {
+        if (game == GameId::OBLIVION)
+          return "./Oblivion/Data";
+        else
+          return "./Skyrim/Data";
       }
 
       const boost::filesystem::path dataPath;
@@ -71,11 +80,14 @@ namespace libespm2 {
       const boost::filesystem::path blankEsp;
 
       Plugin plugin;
+      GameId gameId;
     };
 
+    // Pass an empty first argument, as it's a prefix for the test instantation,
+    // but we only have the one so no prefix is necessary.
     INSTANTIATE_TEST_CASE_P(,
                             PluginTest,
-                            ::testing::Values("./Skyrim/Data", "./Oblivion/Data"));
+                            ::testing::Values(GameId::SKYRIM, GameId::OBLIVION));
 
     TEST_P(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));
@@ -94,11 +106,11 @@ namespace libespm2 {
     }
 
     TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
-      EXPECT_TRUE(Plugin::isValid(blankEsm));
+      EXPECT_TRUE(Plugin::isValid(blankEsm, gameId));
     }
 
     TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
-      EXPECT_FALSE(Plugin::isValid(invalidPlugin));
+      EXPECT_FALSE(Plugin::isValid(invalidPlugin, gameId));
     }
 
     TEST_P(PluginTest, blankDotEsmShouldHaveCorrectName) {

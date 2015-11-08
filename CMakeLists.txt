@@ -16,6 +16,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem system)
 
 set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/Field.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm2/GameId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Group.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Plugin.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/Record.h")

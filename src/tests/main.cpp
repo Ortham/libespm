@@ -28,6 +28,13 @@ namespace libespm2 {
       << std::nouppercase << std::dec
       << ")";
   }
+
+  void PrintTo(GameId value, ::std::ostream* os) {
+    if (value == GameId::OBLIVION)
+      *os << "GameId::OBLIVION";
+    else
+      *os << "GameId::SKYRIM";
+  }
 }
 
 int main(int argc, char **argv) {

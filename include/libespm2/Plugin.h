@@ -34,11 +34,15 @@
 namespace libespm2 {
   class Plugin {
   private:
+    GameId gameId;
+
     std::string name;
     Record tes4Record;
     std::set<FormId> formIds;
 
   public:
+    inline Plugin(GameId gameId) : gameId(gameId) {}
+
     inline void load(const boost::filesystem::path& filepath, bool loadHeaderOnly = false) {
       name = filepath.filename().string();
 
@@ -46,7 +50,7 @@ namespace libespm2 {
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       if (loadHeaderOnly) {
-        tes4Record.read(input, false);
+        tes4Record.read(input, gameId, false);
         return;
       }
 
@@ -55,13 +59,13 @@ namespace libespm2 {
       bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
       bufferStream << input.rdbuf();
 
-      tes4Record.read(bufferStream, false);
+      tes4Record.read(bufferStream, gameId, false);
 
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
       while (bufferStream.good() && bufferStream.tellg() < fileSize) {
         Group group;
-        group.read(bufferStream, true);
+        group.read(bufferStream, gameId, true);
         std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
         for (auto formId : groupRecordFormIds) {
           formIds.insert(FormId(name, masters, formId));
@@ -77,8 +81,8 @@ namespace libespm2 {
       return tes4Record.isMasterFlagSet();
     }
 
-    inline static bool isValid(const boost::filesystem::path& filepath) {
-      Plugin plugin;
+    inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId) {
+      Plugin plugin(gameId);
       try {
         plugin.load(filepath);
         return true;
