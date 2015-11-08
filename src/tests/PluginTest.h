@@ -170,10 +170,10 @@ namespace libespm2 {
 
       std::vector<std::string> masters = plugin.getMasters();
       EXPECT_EQ(std::set<FormId>({
-        FormId(plugin.getName(), masters, 0xCF0),
-        FormId(plugin.getName(), masters, 0xCF1),
-        FormId(plugin.getName(), masters, 0xCF2),
-        FormId(plugin.getName(), masters, 0xCF3),
+        FormId(blankEsm.filename().string(), masters, 0xCF0),
+        FormId(blankEsm.filename().string(), masters, 0xCF1),
+        FormId(blankEsm.filename().string(), masters, 0xCF2),
+        FormId(blankEsm.filename().string(), masters, 0xCF3),
         FormId(plugin.getName(), masters, 0x01000CEA),
         FormId(plugin.getName(), masters, 0x01000CEB),
         FormId(plugin.getName(), masters, 0x01000CEC),

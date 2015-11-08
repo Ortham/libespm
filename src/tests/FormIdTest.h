@@ -50,19 +50,31 @@ namespace libespm2 {
       EXPECT_EQ(0x01, formId.getObjectIndex());
     }
 
-    TEST_F(FormIdTest, pluginForFormIdWithAZeroModIndexShouldBeTheParentPlugin) {
-      FormId formId(parentPluginName, masters, 0x01);
+    TEST_F(FormIdTest, zeroModIndexWithNoMastersShouldUseParentPluginAsPlugin) {
+      FormId formId(parentPluginName, std::vector<std::string>(), 0x05000001);
+
       EXPECT_EQ(parentPluginName, formId.getPluginName());
     }
 
-    TEST_F(FormIdTest, pluginForFormIdWithANonZeroModIndexShouldBeTheCorrectMaster) {
-      FormId formId(parentPluginName, masters, 0x01000001);
+    TEST_F(FormIdTest, nonZeroModIndexWithNoMastersShouldUseParentPluginAsPlugin) {
+      FormId formId(parentPluginName, std::vector<std::string>(), 0x05000001);
+
+      EXPECT_EQ(parentPluginName, formId.getPluginName());
+    }
+
+    TEST_F(FormIdTest, pluginForFormIdWithAZeroModIndexAndAtLeastOneMasterShouldBeTheFirstMaster) {
+      FormId formId(parentPluginName, masters, 0x01);
       EXPECT_EQ(masters[0], formId.getPluginName());
     }
 
-    TEST_F(FormIdTest, pluginForFormIdWithAModIndexGreaterThanTheNumberOfMastersShouldBeTheLastMaster) {
-      FormId formId(parentPluginName, masters, 0x05000001);
+    TEST_F(FormIdTest, pluginForFormIdWithAModIndexLessThanTheNumberOfMastersShouldBeTheMasterAtThatIndex) {
+      FormId formId(parentPluginName, masters, 0x01000001);
       EXPECT_EQ(masters[1], formId.getPluginName());
+    }
+
+    TEST_F(FormIdTest, pluginForFormIdWithAModIndexGreaterThanTheLastMastersIndexShouldBeTheParentPlugin) {
+      FormId formId(parentPluginName, masters, 0x02000001);
+      EXPECT_EQ(parentPluginName, formId.getPluginName());
     }
 
     TEST_F(FormIdTest, formIdsWithEqualObjectIndicesButDifferentModIndiciesShouldNotBeEqual) {
@@ -95,8 +107,8 @@ namespace libespm2 {
     }
 
     TEST_F(FormIdTest, formIdWithCaseInsensitiveLexicographicallyLowerPluginShouldBeLessThanAnotherWithTheSameObjectIndex) {
-      FormId formId("A", masters, 0x01);
-      FormId otherFormId("b", masters, 0x01);
+      FormId formId("A", std::vector<std::string>(), 0x01);
+      FormId otherFormId("b", std::vector<std::string>(), 0x01);
 
       EXPECT_LT(formId, otherFormId);
       EXPECT_FALSE(otherFormId < formId);
@@ -108,12 +120,6 @@ namespace libespm2 {
 
       EXPECT_FALSE(formId < otherFormId);
       EXPECT_FALSE(otherFormId < formId);
-    }
-
-    TEST_F(FormIdTest, nonZeroModIndexWithNoMastersShouldUseParentPluginAsPlugin) {
-      FormId formId(parentPluginName, std::vector<std::string>(), 0x05000001);
-
-      EXPECT_EQ(parentPluginName, formId.getPluginName());
     }
   }
 }

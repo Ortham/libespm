@@ -35,14 +35,10 @@ namespace libespm2 {
       unsigned int modIndex = formId >> 24;
       objectIndex = formId & ~((uint32_t)modIndex << 24);
 
-      if (modIndex == 0 || masters.empty())
+      if (modIndex >= masters.size())
         pluginName = parentPluginName;
-      else {
-        if (modIndex > masters.size())
-          modIndex = masters.size();
-
-        pluginName = masters[modIndex - 1];
-      }
+      else
+        pluginName = masters[modIndex];
     }
 
     inline uint32_t getObjectIndex() const {
