@@ -24,10 +24,10 @@
 
 namespace libespm2 {
   namespace tests {
-    class PluginTest : public ::testing::Test {
+    class PluginTest : public ::testing::TestWithParam<const char *> {
     protected:
       PluginTest() :
-        dataPath("./Skyrim/Data"),
+        dataPath(GetParam()),
         missingPlugin(dataPath / "Blank.missing.esm"),
         emptyFile(dataPath / "EmptyFile.esm"),
         invalidPlugin(dataPath / "NotAPlugin.esm"),
@@ -73,61 +73,65 @@ namespace libespm2 {
       Plugin plugin;
     };
 
-    TEST_F(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
+    INSTANTIATE_TEST_CASE_P(,
+                            PluginTest,
+                            ::testing::Values("./Skyrim/Data", "./Oblivion/Data"));
+
+    TEST_P(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));
     }
 
-    TEST_F(PluginTest, loadShouldNotThrowIfValidPluginExists) {
+    TEST_P(PluginTest, loadShouldNotThrowIfValidPluginExists) {
       EXPECT_NO_THROW(plugin.load(blankEsm));
     }
 
-    TEST_F(PluginTest, loadingAnEmptyFileShouldThrow) {
+    TEST_P(PluginTest, loadingAnEmptyFileShouldThrow) {
       EXPECT_ANY_THROW(plugin.load(emptyFile));
     }
 
-    TEST_F(PluginTest, loadingAnInvalidPluginShouldThrow) {
+    TEST_P(PluginTest, loadingAnInvalidPluginShouldThrow) {
       EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
-    TEST_F(PluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
       EXPECT_TRUE(Plugin::isValid(blankEsm));
     }
 
-    TEST_F(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
       EXPECT_FALSE(Plugin::isValid(invalidPlugin));
     }
 
-    TEST_F(PluginTest, blankDotEsmShouldHaveCorrectName) {
+    TEST_P(PluginTest, blankDotEsmShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ(blankEsm.filename().string(), plugin.getName());
     }
 
-    TEST_F(PluginTest, blankDotEspShouldHaveCorrectName) {
+    TEST_P(PluginTest, blankDotEspShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_EQ(blankEsp.filename().string(), plugin.getName());
     }
 
-    TEST_F(PluginTest, blankDotEsmShouldBeAMaster) {
+    TEST_P(PluginTest, blankDotEsmShouldBeAMaster) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_TRUE(plugin.isMasterFile());
     }
 
-    TEST_F(PluginTest, blankDotEspShouldNotBeAMaster) {
+    TEST_P(PluginTest, blankDotEspShouldNotBeAMaster) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_FALSE(plugin.isMasterFile());
     }
 
-    TEST_F(PluginTest, blankDotEsmShouldHaveNoMasters) {
+    TEST_P(PluginTest, blankDotEsmShouldHaveNoMasters) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_TRUE(plugin.getMasters().empty());
     }
 
-    TEST_F(PluginTest, blankMasterDependentEsmShouldHaveBlankEsmAsAMaster) {
+    TEST_P(PluginTest, blankMasterDependentEsmShouldHaveBlankEsmAsAMaster) {
       ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -135,19 +139,19 @@ namespace libespm2 {
       EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
 
-    TEST_F(PluginTest, blankEsmShouldHaveVersionInDescriptionField) {
+    TEST_P(PluginTest, blankEsmShouldHaveVersionInDescriptionField) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ("v5.0", plugin.getDescription());
     }
 
-    TEST_F(PluginTest, blankEspShouldHaveEmptyDescriptionField) {
+    TEST_P(PluginTest, blankEspShouldHaveEmptyDescriptionField) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_TRUE(plugin.getDescription().empty());
     }
 
-    TEST_F(PluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
+    TEST_P(PluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -165,7 +169,7 @@ namespace libespm2 {
       }), plugin.getFormIds());
     }
 
-    TEST_F(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
+    TEST_P(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
       ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -181,31 +185,31 @@ namespace libespm2 {
       }), plugin.getFormIds());
     }
 
-    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsFilenameAsBlankEsm) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsFilenameAsBlankEsm) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_EQ(blankEsm.filename().string(), plugin.getName());
     }
 
-    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItBeingAMaster) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItBeingAMaster) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_TRUE(plugin.isMasterFile());
     }
 
-    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsHavingNoMasters) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadItsHavingNoMasters) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_TRUE(plugin.getMasters().empty());
     }
 
-    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadAVersionInItsDescriptionField) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadAVersionInItsDescriptionField) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_EQ("v5.0", plugin.getDescription());
     }
 
-    TEST_F(PluginTest, loadingBlankEsmsHeaderOnlyShouldSkipItsOtherRecords) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldSkipItsOtherRecords) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_TRUE(plugin.getFormIds().empty());
