@@ -25,7 +25,6 @@
 #include <cstdint>
 
 #include "Subrecord.h"
-#include "GameId.h"
 
 namespace libespm2 {
   class Record {
@@ -41,14 +40,11 @@ namespace libespm2 {
     Record() : flags(0), formId(0) {}
 
     inline void read(std::istream& input, GameId gameId, bool skipSubrecords) {
-      // Header length varies by game.
-      size_t headerLengthToSkip = getHeaderLengthToSkip(gameId);
-
-      uint32_t totalSubrecordsSize = readHeader(input, headerLengthToSkip);
+      uint32_t totalSubrecordsSize = readHeader(input, gameId);
       if (skipSubrecords)
         input.ignore(totalSubrecordsSize);
       else
-        readSubrecords(input, totalSubrecordsSize);
+        readSubrecords(input, gameId, totalSubrecordsSize);
     }
 
     inline bool isMasterFlagSet() const {
@@ -68,7 +64,7 @@ namespace libespm2 {
     }
 
   private:
-    inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
+    inline uint32_t readHeader(std::istream& input, GameId gameId) {
       uint32_t totalSubrecordsSize = 0;
 
       // Skip the record type.
@@ -77,23 +73,28 @@ namespace libespm2 {
       // Read the total subrecords size.
       input.read(reinterpret_cast<char*>(&totalSubrecordsSize), sizeof(totalSubrecordsSize));
 
+      if (gameId == GameId::MORROWIND)
+        input.ignore(4);  // Skip the next 4 (unknown) bytes.
+
       // Read the record flags.
       input.read(reinterpret_cast<char*>(&flags), sizeof(flags));
 
-      // Read the record FormID.
-      input.read(reinterpret_cast<char*>(&formId), sizeof(formId));
+      // Read the record FormID. Morrowind doesn't have FormIDs.
+      if (gameId != GameId::MORROWIND) {
+        input.read(reinterpret_cast<char*>(&formId), sizeof(formId));
 
-      // Skip to the end of the header.
-      input.ignore(headerLengthToSkip);
+        // Skip to the end of the header. Header length varies by game.
+        input.ignore(getHeaderLengthToSkip(gameId));
+      }
 
       return totalSubrecordsSize;
     }
 
-    inline void readSubrecords(std::istream& input, uint32_t totalSubrecordsSize) {
+    inline void readSubrecords(std::istream& input, GameId gameId, uint32_t totalSubrecordsSize) {
       std::streampos startingInputPos = input.tellg();
       while (input.good() && input.tellg() - startingInputPos < totalSubrecordsSize) {
         Subrecord subrecord;
-        subrecord.read(input);
+        subrecord.read(input, gameId);
 
         if (subrecord.getType() == "MAST") {
           auto rawData = subrecord.getRawData();

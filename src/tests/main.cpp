@@ -36,8 +36,10 @@ namespace libespm2 {
       *os << "GameId::SKYRIM";
     else if (value == GameId::FALLOUT3)
       *os << "GameId::FALLOUT3";
-    else
+    else if (value == GameId::FALLOUTNV)
       *os << "GameId::FALLOUTNV";
+    else
+      *os << "GameId::MORROWIND";
   }
 }
 

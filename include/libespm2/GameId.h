@@ -26,6 +26,7 @@ namespace libespm2 {
     SKYRIM,
     FALLOUT3 = SKYRIM,
     FALLOUTNV = SKYRIM,
+    MORROWIND,
   };
 }
 

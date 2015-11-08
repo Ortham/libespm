@@ -37,7 +37,7 @@ namespace libespm2 {
     GameId gameId;
 
     std::string name;
-    Record tes4Record;
+    Record headerRecord;
     std::set<FormId> formIds;
 
   public:
@@ -50,7 +50,7 @@ namespace libespm2 {
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       if (loadHeaderOnly) {
-        tes4Record.read(input, gameId, false);
+        headerRecord.read(input, gameId, false);
         return;
       }
 
@@ -59,16 +59,25 @@ namespace libespm2 {
       bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
       bufferStream << input.rdbuf();
 
-      tes4Record.read(bufferStream, gameId, false);
+      headerRecord.read(bufferStream, gameId, false);
 
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
-      while (bufferStream.good() && bufferStream.tellg() < fileSize) {
-        Group group;
-        group.read(bufferStream, gameId, true);
-        std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
-        for (auto formId : groupRecordFormIds) {
-          formIds.insert(FormId(name, masters, formId));
+      if (gameId == GameId::MORROWIND) {
+        while (bufferStream.good() && bufferStream.tellg() < fileSize) {
+          Record record;
+          record.read(bufferStream, gameId, false);
+          formIds.insert(FormId(name, masters, record.getFormId()));
+        }
+      }
+      else {
+        while (bufferStream.good() && bufferStream.tellg() < fileSize) {
+          Group group;
+          group.read(bufferStream, gameId, true);
+          std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
+          for (auto formId : groupRecordFormIds) {
+            formIds.insert(FormId(name, masters, formId));
+          }
         }
       }
     }
@@ -78,7 +87,7 @@ namespace libespm2 {
     }
 
     inline bool isMasterFile() const {
-      return tes4Record.isMasterFlagSet();
+      return headerRecord.isMasterFlagSet();
     }
 
     inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId) {
@@ -93,11 +102,11 @@ namespace libespm2 {
     }
 
     inline std::vector<std::string> getMasters() const {
-      return tes4Record.getMasters();
+      return headerRecord.getMasters();
     }
 
     inline std::string getDescription() const {
-      return tes4Record.getDescription();
+      return headerRecord.getDescription();
     }
 
     inline std::set<FormId> getFormIds() const {

@@ -67,6 +67,8 @@ namespace libespm2 {
       inline boost::filesystem::path getGamePath(GameId game) const {
         if (game == GameId::OBLIVION)
           return "./Oblivion/Data";
+        else if (game == GameId::MORROWIND)
+          return "./Morrowind/Data";
         else
           return "./Skyrim/Data";
       }
@@ -91,7 +93,8 @@ namespace libespm2 {
                             GameId::SKYRIM,
                             GameId::OBLIVION,
                             GameId::FALLOUT3,
-                            GameId::FALLOUTNV));
+                            GameId::FALLOUTNV,
+                            GameId::MORROWIND));
 
     TEST_P(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));

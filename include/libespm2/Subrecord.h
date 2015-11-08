@@ -24,23 +24,29 @@
 #include <fstream>
 #include <cstdint>
 
+#include "GameId.h"
+
 namespace libespm2 {
   class Subrecord {
   private:
     std::string type;
     std::shared_ptr<char> rawData;
-    uint16_t rawDataLength;
+    uint32_t rawDataLength;
 
     static const int typeLength = 4;
+    static const int normalFieldSizeLength = 2;
   public:
     inline Subrecord() : rawDataLength(0) {
       type.resize(typeLength);
     }
 
-    inline void read(std::istream& input) {
+    inline void read(std::istream& input, GameId gameId) {
       input.read(reinterpret_cast<char*>(&type[0]), typeLength);
 
-      input.read(reinterpret_cast<char*>(&rawDataLength), sizeof(rawDataLength));
+      if (gameId == GameId::MORROWIND)
+        input.read(reinterpret_cast<char*>(&rawDataLength), sizeof(rawDataLength));
+      else
+        input.read(reinterpret_cast<char*>(&rawDataLength), normalFieldSizeLength);
 
       rawData = std::shared_ptr<char>(new char[rawDataLength]);
       input.read(rawData.get(), rawDataLength);
