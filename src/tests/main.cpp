@@ -32,8 +32,12 @@ namespace libespm2 {
   void PrintTo(GameId value, ::std::ostream* os) {
     if (value == GameId::OBLIVION)
       *os << "GameId::OBLIVION";
-    else
+    else if (value == GameId::SKYRIM)
       *os << "GameId::SKYRIM";
+    else if (value == GameId::FALLOUT3)
+      *os << "GameId::FALLOUT3";
+    else
+      *os << "GameId::FALLOUTNV";
   }
 }
 

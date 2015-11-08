@@ -87,7 +87,11 @@ namespace libespm2 {
     // but we only have the one so no prefix is necessary.
     INSTANTIATE_TEST_CASE_P(,
                             PluginTest,
-                            ::testing::Values(GameId::SKYRIM, GameId::OBLIVION));
+                            ::testing::Values(
+                            GameId::SKYRIM,
+                            GameId::OBLIVION,
+                            GameId::FALLOUT3,
+                            GameId::FALLOUTNV));
 
     TEST_P(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
       EXPECT_ANY_THROW(plugin.load(missingPlugin));

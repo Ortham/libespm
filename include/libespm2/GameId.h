@@ -24,6 +24,8 @@ namespace libespm2 {
   enum class GameId {
     OBLIVION,
     SKYRIM,
+    FALLOUT3 = SKYRIM,
+    FALLOUTNV = SKYRIM,
   };
 }
 
