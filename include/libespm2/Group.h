@@ -64,10 +64,28 @@ namespace libespm2 {
     inline void readRecords(std::istream& input, uint32_t totalRecordsSize, bool skipRecordFields) {
       std::streampos startingInputPos = input.tellg();
       while (input.good() && input.tellg() - startingInputPos < totalRecordsSize) {
-        Record record;
-        record.read(input, skipRecordFields);
-        formIds.insert(record.getFormId());
+        // Groups can contain records or subgroups.
+        if (peekNextType(input) == groupType) {
+          Group subGroup;
+          subGroup.read(input, skipRecordFields);
+          std::set<uint32_t> subGroupFormIds = subGroup.getRecordFormIds();
+          this->formIds.insert(begin(subGroupFormIds), end(subGroupFormIds));
+        }
+        else {
+          Record record;
+          record.read(input, skipRecordFields);
+          formIds.insert(record.getFormId());
+        }
       }
+    }
+
+    inline std::string peekNextType(std::istream& input) const {
+      std::string type;
+      type.resize(typeLength);
+      input.read(reinterpret_cast<char*>(&type[0]), typeLength);
+      input.seekg(-typeLength, std::ios_base::cur);
+
+      return type;
     }
   };
 
