@@ -98,12 +98,22 @@ namespace libespm2 {
 
         if (subrecord.getType() == "MAST") {
           auto rawData = subrecord.getRawData();
-          std::string masterFilename(rawData.first.get(), rawData.second - 1);
+          std::string masterFilename(rawData.first.get());
           masterFilenames.push_back(masterFilename);
         }
-        else if (subrecord.getType() == "SNAM") {
-          auto rawData = subrecord.getRawData();
-          description = std::string(rawData.first.get(), rawData.second - 1);
+        else {
+          if (gameId == GameId::MORROWIND) {
+            if (subrecord.getType() == "HEDR") {
+              auto rawData = subrecord.getRawData();
+              description = std::string(rawData.first.get() + 40);
+            }
+          }
+          else {
+            if (subrecord.getType() == "SNAM") {
+              auto rawData = subrecord.getRawData();
+              description = std::string(rawData.first.get());
+            }
+          }
         }
       }
     }

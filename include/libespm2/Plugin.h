@@ -87,7 +87,22 @@ namespace libespm2 {
     }
 
     inline bool isMasterFile() const {
-      return headerRecord.isMasterFlagSet();
+      if (gameId == GameId::MORROWIND) {
+        if (name.length() < 5)
+          return false;
+
+        const std::string masterFileExtension = ".esm";
+        std::string fileExtension = name.substr(name.length() - 4);
+
+        return std::equal(begin(fileExtension),
+                          end(fileExtension),
+                          begin(masterFileExtension),
+                          [](char lhs, char rhs) {
+          return tolower(lhs) == tolower(rhs);
+        });
+      }
+      else
+        return headerRecord.isMasterFlagSet();
     }
 
     inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId) {
@@ -110,6 +125,9 @@ namespace libespm2 {
     }
 
     inline std::set<FormId> getFormIds() const {
+      if (gameId == GameId::MORROWIND)
+        throw std::domain_error("Cannot get FormIDs for a Morrowind plugin: Morrowind does not use FormIDs.");
+
       return formIds;
     }
   };

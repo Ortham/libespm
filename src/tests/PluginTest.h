@@ -170,7 +170,18 @@ namespace libespm2 {
       EXPECT_TRUE(plugin.getDescription().empty());
     }
 
-    TEST_P(PluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIds) {
+    TEST_P(PluginTest, gettingFormIdsShouldThrowForMorrowindButNotForOtherGames) {
+      if (gameId == GameId::MORROWIND)
+        EXPECT_THROW(plugin.getFormIds(), std::domain_error);
+      else
+        EXPECT_NO_THROW(plugin.getFormIds());
+    }
+
+    TEST_P(PluginTest, blankEsmShouldHave10RecordsWithTheCorrectFormIdsForNonMorrowindGames) {
+      // No point testing for Morrowind, we know it throws from another test.
+      if (gameId == GameId::MORROWIND)
+        return;
+
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -188,7 +199,11 @@ namespace libespm2 {
       }), plugin.getFormIds());
     }
 
-    TEST_P(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIds) {
+    TEST_P(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIdsForNonMorrowindGames) {
+      // No point testing for Morrowind, we know it throws from another test.
+      if (gameId == GameId::MORROWIND)
+        return;
+
       ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       std::vector<std::string> masters = plugin.getMasters();
@@ -229,6 +244,10 @@ namespace libespm2 {
     }
 
     TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldSkipItsOtherRecords) {
+      // No point testing for Morrowind, we know it throws from another test.
+      if (gameId == GameId::MORROWIND)
+        return;
+
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_TRUE(plugin.getFormIds().empty());
