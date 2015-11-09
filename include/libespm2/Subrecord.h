@@ -17,15 +17,15 @@
  * along with libespm2. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LIBESPM2_SKYRIM_FIELD
-#define LIBESPM2_SKYRIM_FIELD
+#ifndef LIBESPM2_SUBRECORD
+#define LIBESPM2_SUBRECORD
 
 #include <string>
 #include <fstream>
 #include <cstdint>
 
 namespace libespm2 {
-  class Field {
+  class Subrecord {
   private:
     std::string type;
     std::shared_ptr<char> rawData;
@@ -33,7 +33,7 @@ namespace libespm2 {
 
     static const int typeLength = 4;
   public:
-    inline Field() : rawDataLength(0) {
+    inline Subrecord() : rawDataLength(0) {
       type.resize(typeLength);
     }
 

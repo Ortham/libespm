@@ -155,13 +155,13 @@ namespace libespm2 {
       EXPECT_EQ(blankEsm.filename().string(), masters[0]);
     }
 
-    TEST_P(PluginTest, blankEsmShouldHaveVersionInDescriptionField) {
+    TEST_P(PluginTest, blankEsmShouldHaveVersionInDescription) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
       EXPECT_EQ("v5.0", plugin.getDescription());
     }
 
-    TEST_P(PluginTest, blankEspShouldHaveEmptyDescriptionField) {
+    TEST_P(PluginTest, blankEspShouldHaveEmptyDescription) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
 
       EXPECT_TRUE(plugin.getDescription().empty());
@@ -219,7 +219,7 @@ namespace libespm2 {
       EXPECT_TRUE(plugin.getMasters().empty());
     }
 
-    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadAVersionInItsDescriptionField) {
+    TEST_P(PluginTest, loadingBlankEsmsHeaderOnlyShouldReadAVersionInItsDescription) {
       ASSERT_NO_THROW(plugin.load(blankEsm, true));
 
       EXPECT_EQ("v5.0", plugin.getDescription());

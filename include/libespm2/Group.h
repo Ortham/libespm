@@ -33,12 +33,12 @@ namespace libespm2 {
     static const std::string groupType;
     static const int typeLength = 4;
   public:
-    inline void read(std::istream& input, GameId gameId, bool skipRecordFields) {
+    inline void read(std::istream& input, GameId gameId, bool skipSubrecords) {
       // Header length varies by game.
       size_t headerLengthToSkip = getHeaderLengthToSkip(gameId);
 
       uint32_t totalRecordsSize = readHeader(input, headerLengthToSkip);
-      readRecords(input, gameId, totalRecordsSize, skipRecordFields);
+      readRecords(input, gameId, totalRecordsSize, skipSubrecords);
     }
 
     inline std::set<uint32_t> getRecordFormIds() const {
@@ -64,19 +64,19 @@ namespace libespm2 {
       return groupSize - 24;
     }
 
-    inline void readRecords(std::istream& input, GameId gameId, uint32_t totalRecordsSize, bool skipRecordFields) {
+    inline void readRecords(std::istream& input, GameId gameId, uint32_t totalRecordsSize, bool skipSubrecords) {
       std::streampos startingInputPos = input.tellg();
       while (input.good() && input.tellg() - startingInputPos < totalRecordsSize) {
         // Groups can contain records or subgroups.
         if (peekNextType(input) == groupType) {
           Group subGroup;
-          subGroup.read(input, gameId, skipRecordFields);
+          subGroup.read(input, gameId, skipSubrecords);
           std::set<uint32_t> subGroupFormIds = subGroup.getRecordFormIds();
           this->formIds.insert(begin(subGroupFormIds), end(subGroupFormIds));
         }
         else {
           Record record;
-          record.read(input, gameId, skipRecordFields);
+          record.read(input, gameId, skipSubrecords);
           formIds.insert(record.getFormId());
         }
       }

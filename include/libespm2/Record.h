@@ -24,7 +24,7 @@
 #include <fstream>
 #include <cstdint>
 
-#include "Field.h"
+#include "Subrecord.h"
 #include "GameId.h"
 
 namespace libespm2 {
@@ -40,15 +40,15 @@ namespace libespm2 {
   public:
     Record() : flags(0), formId(0) {}
 
-    inline void read(std::istream& input, GameId gameId, bool skipFields) {
+    inline void read(std::istream& input, GameId gameId, bool skipSubrecords) {
       // Header length varies by game.
       size_t headerLengthToSkip = getHeaderLengthToSkip(gameId);
 
-      uint32_t totalFieldsSize = readHeader(input, headerLengthToSkip);
-      if (skipFields)
-        input.ignore(totalFieldsSize);
+      uint32_t totalSubrecordsSize = readHeader(input, headerLengthToSkip);
+      if (skipSubrecords)
+        input.ignore(totalSubrecordsSize);
       else
-        readFields(input, totalFieldsSize);
+        readSubrecords(input, totalSubrecordsSize);
     }
 
     inline bool isMasterFlagSet() const {
@@ -69,12 +69,12 @@ namespace libespm2 {
 
   private:
     inline uint32_t readHeader(std::istream& input, size_t headerLengthToSkip) {
-      uint32_t totalFieldsSize = 0;
+      uint32_t totalSubrecordsSize = 0;
 
       // Check the input stream is large enough.
       size_t totalHeaderLength =
         typeLength +
-        sizeof(totalFieldsSize) +
+        sizeof(totalSubrecordsSize) +
         sizeof(flags) +
         sizeof(formId) +
         headerLengthToSkip;
@@ -82,8 +82,8 @@ namespace libespm2 {
       // Skip the record type.
       input.ignore(typeLength);
 
-      // Read the total fields size.
-      input.read(reinterpret_cast<char*>(&totalFieldsSize), sizeof(totalFieldsSize));
+      // Read the total subrecords size.
+      input.read(reinterpret_cast<char*>(&totalSubrecordsSize), sizeof(totalSubrecordsSize));
 
       // Read the record flags.
       input.read(reinterpret_cast<char*>(&flags), sizeof(flags));
@@ -94,22 +94,22 @@ namespace libespm2 {
       // Skip to the end of the header.
       input.ignore(headerLengthToSkip);
 
-      return totalFieldsSize;
+      return totalSubrecordsSize;
     }
 
-    inline void readFields(std::istream& input, uint32_t totalFieldsSize) {
+    inline void readSubrecords(std::istream& input, uint32_t totalSubrecordsSize) {
       std::streampos startingInputPos = input.tellg();
-      while (input.good() && input.tellg() - startingInputPos < totalFieldsSize) {
-        Field field;
-        field.read(input);
+      while (input.good() && input.tellg() - startingInputPos < totalSubrecordsSize) {
+        Subrecord subrecord;
+        subrecord.read(input);
 
-        if (field.getType() == "MAST") {
-          auto rawData = field.getRawData();
+        if (subrecord.getType() == "MAST") {
+          auto rawData = subrecord.getRawData();
           std::string masterFilename(rawData.first.get(), rawData.second - 1);
           masterFilenames.push_back(masterFilename);
         }
-        else if (field.getType() == "SNAM") {
-          auto rawData = field.getRawData();
+        else if (subrecord.getType() == "SNAM") {
+          auto rawData = subrecord.getRawData();
           description = std::string(rawData.first.get(), rawData.second - 1);
         }
       }
