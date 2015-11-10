@@ -19,6 +19,6 @@ Libespm2 is a test-driven development rewrite of [libespm](https://github.com/Wr
 
 ## Build Instructions
 
-Libespm2 itself is a header-only library, so if you want to use it, only Boost's Filesystem library needs to be built.
+Libespm2 itself is a header-only library, so if you want to use it, only the Boost libraries need to be built.
 
 Libespm2's test suite also requires [Google Test](https://github.com/google/googletest) (tested with v1.7.0), and build files can be generated using [CMake](http://cmake.org). The [Travis config file](.travis.yml) documents the process of building on Linux with GCC. The process on Windows with MSVC is equivalent.
