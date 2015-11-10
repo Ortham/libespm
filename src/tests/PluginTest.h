@@ -74,7 +74,7 @@ namespace libespm2 {
         if (game == GameId::OBLIVION)
           return "./Oblivion/Data";
         else if (game == GameId::MORROWIND)
-          return "./Morrowind/Data";
+          return "./Morrowind/Data Files";
         else
           return "./Skyrim/Data";
       }
