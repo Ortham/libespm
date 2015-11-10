@@ -175,8 +175,14 @@ namespace libespm2 {
       EXPECT_EQ("v5.0", plugin.getDescription());
     }
 
-    TEST_P(PluginTest, blankEspShouldHaveEmptyDescription) {
+    TEST_P(PluginTest, blankEspShouldHaveANonAsciiDescription) {
       ASSERT_NO_THROW(plugin.load(blankEsp));
+
+      EXPECT_EQ("€ƒŠ", plugin.getDescription());
+    }
+
+    TEST_P(PluginTest, blankMasterDependentEsmShouldHaveAnEmptyDescription) {
+      ASSERT_NO_THROW(plugin.load(blankMasterDependentEsm));
 
       EXPECT_TRUE(plugin.getDescription().empty());
     }

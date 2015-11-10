@@ -12,7 +12,7 @@ set (Boost_USE_MULTITHREADED ON)
 set (Boost_USE_STATIC_RUNTIME ${PROJECT_STATIC_RUNTIME})
 
 find_package(GTest REQUIRED)
-find_package(Boost REQUIRED COMPONENTS filesystem system)
+find_package(Boost REQUIRED COMPONENTS filesystem system locale)
 
 set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm2/GameId.h"

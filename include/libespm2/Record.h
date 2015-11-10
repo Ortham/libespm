@@ -24,6 +24,8 @@
 #include <fstream>
 #include <cstdint>
 
+#include <boost/locale/encoding.hpp>
+
 #include "Subrecord.h"
 
 namespace libespm2 {
@@ -99,19 +101,19 @@ namespace libespm2 {
         if (subrecord.getType() == "MAST") {
           auto rawData = subrecord.getRawData();
           std::string masterFilename(rawData.first.get());
-          masterFilenames.push_back(masterFilename);
+          masterFilenames.push_back(convertToUtf8(masterFilename));
         }
         else {
           if (gameId == GameId::MORROWIND) {
             if (subrecord.getType() == "HEDR") {
               auto rawData = subrecord.getRawData();
-              description = std::string(rawData.first.get() + 40);
+              description = convertToUtf8(std::string(rawData.first.get() + 40));
             }
           }
           else {
             if (subrecord.getType() == "SNAM") {
               auto rawData = subrecord.getRawData();
-              description = std::string(rawData.first.get());
+              description = convertToUtf8(std::string(rawData.first.get()));
             }
           }
         }
@@ -123,6 +125,10 @@ namespace libespm2 {
         return 4;
       else
         return 8;
+    }
+
+    inline std::string convertToUtf8(const std::string& windows1252String) {
+      return boost::locale::conv::to_utf<char>(windows1252String, "Windows-1252", boost::locale::conv::stop);
     }
   };
 }

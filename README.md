@@ -15,7 +15,7 @@ Libespm2 is a test-driven development rewrite of [libespm](https://github.com/Wr
 
 ## Requirements
 
-* [Boost](http://www.boost.org) Filesystem (tested with v1.55.0 and v1.59.0)
+* [Boost](http://www.boost.org) Filesystem and Locale libraries (tested with v1.55.0 and v1.59.0)
 
 ## Build Instructions
 
