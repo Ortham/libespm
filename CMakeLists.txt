@@ -38,6 +38,11 @@ include_directories("${CMAKE_SOURCE_DIR}/src"
 # Platform-Specific Settings
 ##############################
 
+# Fix codepage warnings.
+IF (CMAKE_SYSTEM_NAME MATCHES "Windows")
+    add_definitions (-DUNICODE -D_UNICODE)
+ENDIF ()
+
 # GCC and MinGW settings.
 if (CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_C_FLAGS "-O3 -std=c++11")

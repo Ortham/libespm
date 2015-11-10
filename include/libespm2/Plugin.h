@@ -26,10 +26,10 @@
 #include <sstream>
 
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
 #include "FormId.h"
 #include "Group.h"
-#include "Record.h"
 
 namespace libespm2 {
   class Plugin {
@@ -46,7 +46,7 @@ namespace libespm2 {
     inline void load(const boost::filesystem::path& filepath, bool loadHeaderOnly = false) {
       name = filepath.filename().string();
 
-      std::ifstream input(filepath.string(), std::ios::binary);
+      boost::filesystem::ifstream input(filepath, std::ios::binary);
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       if (loadHeaderOnly) {

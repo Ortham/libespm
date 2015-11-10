@@ -20,6 +20,8 @@
 #include "PluginTest.h"
 #include "FormIdTest.h"
 
+#include <codecvt>
+
 namespace libespm2 {
   void PrintTo(const FormId& value, ::std::ostream* os) {
     *os << "libespm2::FormId(\"" << value.getPluginName() << "\", 0x"
@@ -44,6 +46,10 @@ namespace libespm2 {
 }
 
 int main(int argc, char **argv) {
+  // Set the locale to get UTF-8 conversions working correctly.
+  std::locale::global(std::locale(std::locale(), new std::codecvt_utf8_utf16<wchar_t>));
+  boost::filesystem::path::imbue(std::locale());
+
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

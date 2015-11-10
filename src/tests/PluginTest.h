@@ -33,6 +33,7 @@ namespace libespm2 {
         missingPlugin(dataPath / "Blank.missing.esm"),
         emptyFile(dataPath / "EmptyFile.esm"),
         invalidPlugin(dataPath / "NotAPlugin.esm"),
+        nonAsciiPlugin(dataPath / "Русский.esm"),
         blankEsm(dataPath / "Blank.esm"),
         blankMasterDependentEsm(dataPath / "Blank - Master Dependent.esm"),
         blankEsp(dataPath / "Blank.esp") {}
@@ -45,7 +46,7 @@ namespace libespm2 {
         ASSERT_TRUE(boost::filesystem::exists(blankEsp));
 
         // Write out an empty file.
-        std::ofstream out(emptyFile.string());
+        boost::filesystem::ofstream out(emptyFile.string());
         out.close();
         ASSERT_TRUE(boost::filesystem::exists(emptyFile));
 
@@ -55,13 +56,18 @@ namespace libespm2 {
         out.close();
         ASSERT_TRUE(boost::filesystem::exists(invalidPlugin));
 
+        // Copy a valid plugin to be the non-ASCII plugin.
+        ASSERT_NO_THROW(boost::filesystem::copy(blankEsm, nonAsciiPlugin));
+        ASSERT_TRUE(boost::filesystem::exists(nonAsciiPlugin));
+
         // Make sure each test starts with a new Plugin object.
         plugin = Plugin(gameId);
       }
 
-      inline virtual void TearDown() const {
-        boost::filesystem::remove(emptyFile);
-        boost::filesystem::remove(invalidPlugin);
+      inline virtual void TearDown() {
+        ASSERT_NO_THROW(boost::filesystem::remove(emptyFile));
+        ASSERT_NO_THROW(boost::filesystem::remove(invalidPlugin));
+        ASSERT_NO_THROW(boost::filesystem::remove(nonAsciiPlugin));
       }
 
       inline boost::filesystem::path getGamePath(GameId game) const {
@@ -77,6 +83,7 @@ namespace libespm2 {
       const boost::filesystem::path missingPlugin;
       const boost::filesystem::path emptyFile;
       const boost::filesystem::path invalidPlugin;
+      const boost::filesystem::path nonAsciiPlugin;
       const boost::filesystem::path blankEsm;
       const boost::filesystem::path blankMasterDependentEsm;
       const boost::filesystem::path blankEsp;
@@ -102,6 +109,10 @@ namespace libespm2 {
 
     TEST_P(PluginTest, loadShouldNotThrowIfValidPluginExists) {
       EXPECT_NO_THROW(plugin.load(blankEsm));
+    }
+
+    TEST_P(PluginTest, loadShouldNotThrowIfAValidPluginWithANonAsciiPathExists) {
+      EXPECT_NO_THROW(plugin.load(nonAsciiPlugin));
     }
 
     TEST_P(PluginTest, loadingAnEmptyFileShouldThrow) {
