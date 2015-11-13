@@ -31,7 +31,7 @@ namespace libespm2 {
   private:
     std::set<uint32_t> formIds;
 
-    static const std::string groupType;
+    static const uint32_t groupType = 0x50555247;  //"GRUP"
     static const int typeLength = 4;
   public:
     inline void read(std::istream& input, GameId gameId, bool skipSubrecords) {
@@ -80,10 +80,9 @@ namespace libespm2 {
       }
     }
 
-    inline std::string peekNextType(std::istream& input) const {
-      std::string type;
-      type.resize(typeLength);
-      input.read(reinterpret_cast<char*>(&type[0]), typeLength);
+    inline uint32_t peekNextType(std::istream& input) const {
+      uint32_t type;
+      input.read(reinterpret_cast<char*>(&type), typeLength);
       input.seekg(-typeLength, std::ios_base::cur);
 
       return type;
@@ -96,8 +95,6 @@ namespace libespm2 {
         return 16;
     }
   };
-
-  const std::string Group::groupType = "GRUP";
 }
 
 #endif
