@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <set>
 
 #include "Record.h"
 
