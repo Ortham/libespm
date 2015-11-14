@@ -10,6 +10,7 @@ A free software library for reading Elder Scrolls Plugin (`.esp`) and Elder Scro
 * TES V: Skyrim
 * Fallout 3
 * Fallout: New Vegas
+* Fallout 4
 
 Libespm focuses on providing a useful API to [libloadorder](https://github.com/WrinklyNinja/libloadorder) and [LOOT](https://github.com/loot/loot), rather than a general-purpose plugin parser.
 

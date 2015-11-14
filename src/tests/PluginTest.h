@@ -101,6 +101,7 @@ namespace libespm {
                             GameId::OBLIVION,
                             GameId::FALLOUT3,
                             GameId::FALLOUTNV,
+                            GameId::FALLOUT4,
                             GameId::MORROWIND));
 
     TEST_P(PluginTest, loadShouldThrowIfPluginDoesNotExist) {
