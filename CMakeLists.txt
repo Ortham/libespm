@@ -3,7 +3,7 @@
 ##############################
 
 cmake_minimum_required(VERSION 2.8)
-project(libespm2)
+project(libespm)
 
 option(PROJECT_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
 
@@ -14,12 +14,12 @@ set (Boost_USE_STATIC_RUNTIME ${PROJECT_STATIC_RUNTIME})
 find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem system locale)
 
-set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm2/FormId.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/GameId.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/Group.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/Plugin.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/Record.h"
-                    "${CMAKE_SOURCE_DIR}/include/libespm2/Subrecord.h")
+set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm/FormId.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm/GameId.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm/Group.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm/Plugin.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm/Record.h"
+                    "${CMAKE_SOURCE_DIR}/include/libespm/Subrecord.h")
 
 set(TESTER_SRC "${CMAKE_SOURCE_DIR}/src/tests/main.cpp")
 
