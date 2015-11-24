@@ -64,14 +64,14 @@ namespace libespm {
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
       if (gameId == GameId::MORROWIND) {
-        while (bufferStream.good() && bufferStream.tellg() < fileSize) {
+        while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
           Record record;
           record.read(bufferStream, gameId, false);
           formIds.insert(FormId(name, masters, record.getFormId()));
         }
       }
       else {
-        while (bufferStream.good() && bufferStream.tellg() < fileSize) {
+        while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
           Group group;
           group.read(bufferStream, gameId, true);
           std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
