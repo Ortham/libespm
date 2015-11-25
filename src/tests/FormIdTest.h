@@ -91,6 +91,13 @@ namespace libespm {
       EXPECT_NE(formId, otherFormId);
     }
 
+    TEST_F(FormIdTest, formIdsWithEqualModIndicesAndNoMastersAndDifferentParentPluginNamesShouldNotBeEqual) {
+        FormId formId(parentPluginName, std::vector<std::string>(), 0x01);
+        FormId otherFormId(parentPluginName + ".ghost", std::vector<std::string>(), 0x01);
+
+        EXPECT_NE(formId, otherFormId);
+    }
+
     TEST_F(FormIdTest, identicalFormIdsShouldBeEqual) {
       FormId formId(parentPluginName, masters, 0x01);
       FormId otherFormId(parentPluginName, masters, 0x01);

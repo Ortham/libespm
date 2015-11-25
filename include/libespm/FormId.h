@@ -66,10 +66,9 @@ namespace libespm {
     inline bool operator == (const FormId& rhs) const {
       std::string rhsPluginName = rhs.getPluginName();
 
-      return objectIndex == rhs.getObjectIndex() && std::equal(begin(pluginName),
-                                                               end(pluginName),
-                                                               begin(rhs.getPluginName()),
-                                                               [](char lhs, char rhs) {
+      return objectIndex == rhs.getObjectIndex()
+        && pluginName.size() == rhs.getPluginName().size()
+        && std::equal(begin(pluginName), end(pluginName), begin(rhs.getPluginName()), [](char lhs, char rhs) {
         return tolower(lhs) == tolower(rhs);
       });
     }
