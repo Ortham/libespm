@@ -27,6 +27,7 @@
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/locale/encoding.hpp>
 
 #include "FormId.h"
 #include "Group.h"
@@ -102,7 +103,7 @@ namespace libespm {
         });
       }
       else
-        return headerRecord.isMasterFlagSet();
+        return (headerRecord.getFlags() & 0x00000001) != 0;
     }
 
     inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId) {
@@ -117,11 +118,32 @@ namespace libespm {
     }
 
     inline std::vector<std::string> getMasters() const {
-      return headerRecord.getMasters();
+      std::vector<std::string> masterFilenames;
+      for (const auto& subrecord : headerRecord.getSubrecords()) {
+        if (subrecord.getType() == "MAST") {
+          auto rawData = subrecord.getRawData();
+          std::string masterFilename(rawData.first.get());
+          masterFilenames.push_back(convertToUtf8(masterFilename));
+        }
+      }
+      return masterFilenames;
     }
 
     inline std::string getDescription() const {
-      return headerRecord.getDescription();
+      std::string targetSubrecordType("SNAM");
+      ptrdiff_t descriptionOffset(0);
+      if (gameId == GameId::MORROWIND) {
+        targetSubrecordType = "HEDR";
+        descriptionOffset = 40;
+      }
+
+      for (const auto& subrecord : headerRecord.getSubrecords()) {
+        if (subrecord.getType() == targetSubrecordType) {
+          auto rawData = subrecord.getRawData();
+          return convertToUtf8(std::string(rawData.first.get() + descriptionOffset));
+        }
+      }
+      return "";
     }
 
     inline std::set<FormId> getFormIds() const {
@@ -129,6 +151,25 @@ namespace libespm {
         throw std::domain_error("Cannot get FormIDs for a Morrowind plugin: Morrowind does not use FormIDs.");
 
       return formIds;
+    }
+
+    inline uint32_t getRecordAndGroupCount() const {
+      ptrdiff_t countOffset(4);
+      if (gameId == GameId::MORROWIND)
+        countOffset = 296;
+
+      for (const auto& subrecord : headerRecord.getSubrecords()) {
+        if (subrecord.getType() == "HEDR") {
+          auto rawData = subrecord.getRawData();
+          return *reinterpret_cast<uint32_t*>(rawData.first.get() + countOffset);
+        }
+      }
+      return 0;
+    }
+
+  private:
+    inline static std::string convertToUtf8(const std::string& windows1252String) {
+      return boost::locale::conv::to_utf<char>(windows1252String, "Windows-1252", boost::locale::conv::stop);
     }
   };
 }

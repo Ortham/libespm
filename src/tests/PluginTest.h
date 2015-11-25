@@ -270,5 +270,27 @@ namespace libespm {
 
       EXPECT_TRUE(plugin.getFormIds().empty());
     }
+
+    TEST_P(PluginTest, gettingTheRecordAndGroupCountShouldWorkWhenLoadingPlugin) {
+      ASSERT_NO_THROW(plugin.load(blankEsm));
+
+      if (gameId == GameId::MORROWIND)
+        EXPECT_EQ(10, plugin.getRecordAndGroupCount());
+      else if (gameId == GameId::OBLIVION)
+        EXPECT_EQ(14, plugin.getRecordAndGroupCount());
+      else
+        EXPECT_EQ(15, plugin.getRecordAndGroupCount());
+    }
+
+    TEST_P(PluginTest, gettingTheRecordAndGroupCountShouldWorkWhenLoadingPluginHeaderOnly) {
+      ASSERT_NO_THROW(plugin.load(blankEsm, true));
+
+      if (gameId == GameId::MORROWIND)
+        EXPECT_EQ(10, plugin.getRecordAndGroupCount());
+      else if (gameId == GameId::OBLIVION)
+        EXPECT_EQ(14, plugin.getRecordAndGroupCount());
+      else
+        EXPECT_EQ(15, plugin.getRecordAndGroupCount());
+    }
   }
 }

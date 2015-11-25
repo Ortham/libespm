@@ -24,8 +24,6 @@
 #include <fstream>
 #include <cstdint>
 
-#include <boost/locale/encoding.hpp>
-
 #include "Subrecord.h"
 
 namespace libespm {
@@ -33,9 +31,7 @@ namespace libespm {
   private:
     uint32_t flags;
     uint32_t formId;
-
-    std::vector<std::string> masterFilenames;
-    std::string description;
+    std::vector<Subrecord> subrecords;
 
     static const int typeLength = 4;
   public:
@@ -49,16 +45,12 @@ namespace libespm {
         readSubrecords(input, gameId, totalSubrecordsSize);
     }
 
-    inline bool isMasterFlagSet() const {
-      return (flags & 0x00000001) != 0;
+    inline uint32_t getFlags() const {
+      return flags;
     }
 
-    inline std::vector<std::string> getMasters() const {
-      return masterFilenames;
-    }
-
-    inline std::string getDescription() const {
-      return description;
+    inline const std::vector<Subrecord>& getSubrecords() const {
+      return subrecords;
     }
 
     inline uint32_t getFormId() const {
@@ -97,26 +89,7 @@ namespace libespm {
       while (input.good() && input.tellg() - startingInputPos < totalSubrecordsSize) {
         Subrecord subrecord;
         subrecord.read(input, gameId);
-
-        if (subrecord.getType() == "MAST") {
-          auto rawData = subrecord.getRawData();
-          std::string masterFilename(rawData.first.get());
-          masterFilenames.push_back(convertToUtf8(masterFilename));
-        }
-        else {
-          if (gameId == GameId::MORROWIND) {
-            if (subrecord.getType() == "HEDR") {
-              auto rawData = subrecord.getRawData();
-              description = convertToUtf8(std::string(rawData.first.get() + 40));
-            }
-          }
-          else {
-            if (subrecord.getType() == "SNAM") {
-              auto rawData = subrecord.getRawData();
-              description = convertToUtf8(std::string(rawData.first.get()));
-            }
-          }
-        }
+        subrecords.push_back(subrecord);
       }
     }
 
@@ -125,10 +98,6 @@ namespace libespm {
         return 4;
       else
         return 8;
-    }
-
-    inline std::string convertToUtf8(const std::string& windows1252String) {
-      return boost::locale::conv::to_utf<char>(windows1252String, "Windows-1252", boost::locale::conv::stop);
     }
   };
 }
