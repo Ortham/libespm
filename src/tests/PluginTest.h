@@ -217,6 +217,32 @@ namespace libespm {
       }), plugin.getFormIds());
     }
 
+    TEST_P(PluginTest, gettingTheFormIdsOfAGhostedBlankEsmShouldTrimTheGhostExtensionInTheFormIdObject) {
+      // No point testing for Morrowind, we know it throws from another test.
+      if (gameId == GameId::MORROWIND)
+        return;
+
+      ASSERT_NO_THROW(boost::filesystem::copy(blankEsm, blankEsm.string() + ".ghost"));
+
+      EXPECT_NO_THROW(plugin.load(blankEsm.string() + ".ghost"));
+
+      std::vector<std::string> masters = plugin.getMasters();
+      EXPECT_EQ(std::set<FormId>({
+        FormId(blankEsm.filename().string(), masters, 0xCF0),
+        FormId(blankEsm.filename().string(), masters, 0xCF1),
+        FormId(blankEsm.filename().string(), masters, 0xCF2),
+        FormId(blankEsm.filename().string(), masters, 0xCF3),
+        FormId(blankEsm.filename().string(), masters, 0xCF4),
+        FormId(blankEsm.filename().string(), masters, 0xCF5),
+        FormId(blankEsm.filename().string(), masters, 0xCF6),
+        FormId(blankEsm.filename().string(), masters, 0xCF7),
+        FormId(blankEsm.filename().string(), masters, 0xCF8),
+        FormId(blankEsm.filename().string(), masters, 0xCF9),
+      }), plugin.getFormIds());
+
+      ASSERT_NO_THROW(boost::filesystem::remove(blankEsm.string() + ".ghost"));
+    }
+
     TEST_P(PluginTest, blankMasterDependentEsmShouldHave8RecordsWithTheCorrectFormIdsForNonMorrowindGames) {
       // No point testing for Morrowind, we know it throws from another test.
       if (gameId == GameId::MORROWIND)

@@ -62,22 +62,24 @@ namespace libespm {
 
       headerRecord.read(bufferStream, gameId, false);
 
+      // If the filename ends in ".ghost", trim that extension.
+      std::string trimmedName = trimToEspm(name);
+
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
       if (gameId == GameId::MORROWIND) {
         while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
           Record record;
           record.read(bufferStream, gameId, false);
-          formIds.insert(FormId(name, masters, record.getFormId()));
+          formIds.insert(FormId(trimmedName, masters, record.getFormId()));
         }
       }
       else {
         while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
           Group group;
           group.read(bufferStream, gameId, true);
-          std::set<uint32_t> groupRecordFormIds = group.getRecordFormIds();
-          for (auto formId : groupRecordFormIds) {
-            formIds.insert(FormId(name, masters, formId));
+          for (const auto& formId : group.getRecordFormIds()) {
+            formIds.insert(FormId(trimmedName, masters, formId));
           }
         }
       }
@@ -168,6 +170,18 @@ namespace libespm {
     }
 
   private:
+    inline static std::string trimToEspm(const std::string& filename) {
+      size_t pos = filename.find(".esp");
+      if (pos != std::string::npos && pos != filename.length() - 4)
+        return filename.substr(0, pos + 4);
+
+      pos = filename.find(".esm");
+      if (pos != std::string::npos && pos != filename.length() - 4)
+        return filename.substr(0, pos + 4);
+
+      return filename;
+    }
+
     inline static std::string convertToUtf8(const std::string& windows1252String) {
       return boost::locale::conv::to_utf<char>(windows1252String, "Windows-1252", boost::locale::conv::stop);
     }
