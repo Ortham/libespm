@@ -115,10 +115,10 @@ namespace libespm {
         return (headerRecord.getFlags() & 0x00000001) != 0;
     }
 
-    inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId) {
+    inline static bool isValid(const boost::filesystem::path& filepath, GameId gameId, bool loadHeaderOnly = false) {
       Plugin plugin(gameId);
       try {
-        plugin.load(filepath);
+        plugin.load(filepath, loadHeaderOnly);
         return true;
       }
       catch (std::exception&) {

@@ -148,6 +148,21 @@ namespace libespm {
       EXPECT_FALSE(Plugin::isValid(blankBsa, gameId));
     }
 
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAValidPluginWhenOnlyTheHeaderIsChecked) {
+      EXPECT_TRUE(Plugin::isValid(blankEsm, gameId, true));
+    }
+
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPluginWhenOnlyTheHeaderIsChecked) {
+      EXPECT_FALSE(Plugin::isValid(invalidPlugin, gameId, true));
+    }
+
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyASkyrimBsaAsAnInvalidPluginWhenOnlyTheHeaderIsChecked) {
+      if (GetParam() != GameId::SKYRIM)
+        return;
+
+      EXPECT_FALSE(Plugin::isValid(blankBsa, gameId, true));
+    }
+
     TEST_P(PluginTest, blankDotEsmShouldHaveCorrectName) {
       ASSERT_NO_THROW(plugin.load(blankEsm));
 
