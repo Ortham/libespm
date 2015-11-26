@@ -50,16 +50,23 @@ namespace libespm {
       boost::filesystem::ifstream input(filepath, std::ios::binary);
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
-      if (loadHeaderOnly) {
-        headerRecord.read(input, gameId, false);
-        return;
-      }
+      headerRecord.read(input, gameId, false);
+      if (gameId == GameId::MORROWIND && headerRecord.getType() != "TES3"
+          || gameId != GameId::MORROWIND && headerRecord.getType() != "TES4")
+          throw std::runtime_error(name + " is not a valid plugin.");
 
-      // Read the whole file in at once.
+      if (loadHeaderOnly)
+        return;
+
+      // Read the rest of the file in at once.
       std::stringstream bufferStream;
       bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
+
+      // Jump back to the beginning of the file.
+      input.seekg(0, std::ios_base::beg);
       bufferStream << input.rdbuf();
 
+      // Re-read the header record.
       headerRecord.read(bufferStream, gameId, false);
 
       // If the filename ends in ".ghost", trim that extension.

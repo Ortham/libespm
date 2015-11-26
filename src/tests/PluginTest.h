@@ -36,7 +36,8 @@ namespace libespm {
         nonAsciiPlugin(dataPath / "Русский.esm"),
         blankEsm(dataPath / "Blank.esm"),
         blankMasterDependentEsm(dataPath / "Blank - Master Dependent.esm"),
-        blankEsp(dataPath / "Blank.esp") {}
+        blankEsp(dataPath / "Blank.esp"),
+        blankBsa(dataPath / "Blank.bsa") {}
 
       inline virtual void SetUp() {
         ASSERT_FALSE(boost::filesystem::exists(missingPlugin));
@@ -87,6 +88,7 @@ namespace libespm {
       const boost::filesystem::path blankEsm;
       const boost::filesystem::path blankMasterDependentEsm;
       const boost::filesystem::path blankEsp;
+      const boost::filesystem::path blankBsa;
 
       Plugin plugin;
       GameId gameId;
@@ -124,12 +126,26 @@ namespace libespm {
       EXPECT_ANY_THROW(plugin.load(invalidPlugin));
     }
 
+    TEST_P(PluginTest, loadingASkyrimBsaShouldThrow) {
+      if (GetParam() != GameId::SKYRIM)
+        return;
+
+      EXPECT_ANY_THROW(plugin.load(blankBsa));
+    }
+
     TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAValidPlugin) {
       EXPECT_TRUE(Plugin::isValid(blankEsm, gameId));
     }
 
     TEST_P(PluginTest, isValidShouldCorrectlyIdentifyAnInvalidPlugin) {
       EXPECT_FALSE(Plugin::isValid(invalidPlugin, gameId));
+    }
+
+    TEST_P(PluginTest, isValidShouldCorrectlyIdentifyASkyrimBsaAsAnInvalidPlugin) {
+      if (GetParam() != GameId::SKYRIM)
+        return;
+
+      EXPECT_FALSE(Plugin::isValid(blankBsa, gameId));
     }
 
     TEST_P(PluginTest, blankDotEsmShouldHaveCorrectName) {

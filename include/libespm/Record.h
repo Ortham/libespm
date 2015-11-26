@@ -29,20 +29,27 @@
 namespace libespm {
   class Record {
   private:
+    std::string type;
     uint32_t flags;
     uint32_t formId;
     std::vector<Subrecord> subrecords;
 
     static const int typeLength = 4;
   public:
-    Record() : flags(0), formId(0) {}
+    Record() : flags(0), formId(0), type(typeLength, '\0') {}
 
     inline void read(std::istream& input, GameId gameId, bool skipSubrecords) {
+      subrecords.clear();
+
       uint32_t totalSubrecordsSize = readHeader(input, gameId);
       if (skipSubrecords)
         input.ignore(totalSubrecordsSize);
       else
         readSubrecords(input, gameId, totalSubrecordsSize);
+    }
+
+    inline std::string getType() const {
+      return type;
     }
 
     inline uint32_t getFlags() const {
@@ -61,8 +68,8 @@ namespace libespm {
     inline uint32_t readHeader(std::istream& input, GameId gameId) {
       uint32_t totalSubrecordsSize = 0;
 
-      // Skip the record type.
-      input.ignore(typeLength);
+      // Read in the record type.
+      input.read(&type[0], typeLength);
 
       // Read the total subrecords size.
       input.read(reinterpret_cast<char*>(&totalSubrecordsSize), sizeof(totalSubrecordsSize));
