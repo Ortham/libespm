@@ -28,6 +28,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/locale/encoding.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/iostreams/stream.hpp>
 
 #include "FormId.h"
 #include "Group.h"
@@ -47,7 +49,10 @@ namespace libespm {
     inline void load(const boost::filesystem::path& filepath, bool loadHeaderOnly = false) {
       name = filepath.filename().string();
 
-      boost::filesystem::ifstream input(filepath, std::ios::binary);
+      // Memory-map the file, this can save memory and significantly improve
+      // performance when reading large plugins.
+      boost::iostreams::mapped_file_source mmap(filepath);
+      boost::iostreams::stream<boost::iostreams::mapped_file_source> input(mmap, std::ios::binary);
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       headerRecord.read(input, gameId, false);
@@ -58,33 +63,22 @@ namespace libespm {
       if (loadHeaderOnly)
         return;
 
-      // Read the rest of the file in at once.
-      std::stringstream bufferStream;
-      bufferStream.exceptions(std::ios_base::badbit | std::ios_base::failbit);
-
-      // Jump back to the beginning of the file.
-      input.seekg(0, std::ios_base::beg);
-      bufferStream << input.rdbuf();
-
-      // Re-read the header record.
-      headerRecord.read(bufferStream, gameId, false);
-
       // If the filename ends in ".ghost", trim that extension.
       std::string trimmedName = trimToEspm(name);
 
       std::vector<std::string> masters = getMasters();
       uintmax_t fileSize = boost::filesystem::file_size(filepath);
       if (gameId == GameId::MORROWIND) {
-        while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
+        while (input.good() && (uintmax_t)input.tellg() < fileSize) {
           Record record;
-          record.read(bufferStream, gameId, false);
+          record.read(input, gameId, false);
           formIds.insert(FormId(trimmedName, masters, record.getFormId()));
         }
       }
       else {
-        while (bufferStream.good() && (uintmax_t)bufferStream.tellg() < fileSize) {
+        while (input.good() && (uintmax_t)input.tellg() < fileSize) {
           Group group;
-          group.read(bufferStream, gameId, true);
+          group.read(input, gameId, true);
           for (const auto& formId : group.getRecordFormIds()) {
             formIds.insert(FormId(trimmedName, masters, formId));
           }

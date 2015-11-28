@@ -16,7 +16,7 @@ Libespm focuses on providing a useful API to [libloadorder](https://github.com/W
 
 ## Requirements
 
-* [Boost](http://www.boost.org) Filesystem and Locale libraries (tested with v1.55.0 and v1.59.0)
+* [Boost](http://www.boost.org) Filesystem, Iostreams and Locale libraries (tested with v1.55.0 and v1.59.0)
 
 ## Build Instructions
 
