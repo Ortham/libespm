@@ -16,14 +16,10 @@ addons:
       - gcc-5
       - g++-5
 
-
 before_script:
   # Use GCC 5.
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
   - mkdir build && cd build
-  # Fetch plugins to test with.
-  - wget https://github.com/WrinklyNinja/testing-plugins/archive/1.0.0.tar.gz -O - | tar -xz
-  - mv testing-plugins-1.0.0/* ./
   # Travis machines are 64 bit, and the dependencies use dynamic linking.
   - cmake .. -DPROJECT_STATIC_RUNTIME=OFF
 

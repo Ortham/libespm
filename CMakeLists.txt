@@ -27,6 +27,13 @@ ExternalProject_Get_Property(GTest SOURCE_DIR BINARY_DIR)
 set (GTEST_INCLUDE_DIRS "${SOURCE_DIR}/include")
 set (GTEST_LIBRARIES "${BINARY_DIR}/${BUILD_SUBDIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
+ExternalProject_Add(testing-plugins
+                    PREFIX "external"
+                    URL "https://github.com/WrinklyNinja/testing-plugins/archive/1.0.0.tar.gz"
+                    CONFIGURE_COMMAND ""
+                    BUILD_COMMAND ""
+                    INSTALL_COMMAND "")
+
 set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm/FormId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm/GameId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm/Group.h"
@@ -85,5 +92,12 @@ endif ()
 ##############################
 
 add_executable        (tests ${TESTER_SRC} ${PROJECT_HEADERS} ${TESTER_HEADERS})
-add_dependencies      (tests GTest)
+add_dependencies      (tests GTest testing-plugins)
 target_link_libraries (tests ${GTEST_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_LIBRARIES})
+
+# Copy testing plugins
+ExternalProject_Get_Property(testing-plugins SOURCE_DIR)
+add_custom_command(TARGET tests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${SOURCE_DIR}
+        $<TARGET_FILE_DIR:tests>)
