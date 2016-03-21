@@ -4,15 +4,28 @@
 
 cmake_minimum_required(VERSION 2.8)
 project(libespm)
+include(ExternalProject)
 
 option(PROJECT_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
+if (MSVC)
+    set(BUILD_SUBDIRECTORY $<CONFIGURATION>)
+else()
+    set(BUILD_SUBDIRECTORY "")
+endif()
 
 set (Boost_USE_STATIC_LIBS ${PROJECT_STATIC_RUNTIME})
 set (Boost_USE_MULTITHREADED ON)
 set (Boost_USE_STATIC_RUNTIME ${PROJECT_STATIC_RUNTIME})
 
-find_package(GTest REQUIRED)
 find_package(Boost REQUIRED COMPONENTS iostreams filesystem system locale)
+
+ExternalProject_Add(GTest
+                    PREFIX "external"
+                    URL "https://github.com/google/googletest/archive/release-1.7.0.tar.gz"
+                    INSTALL_COMMAND "")
+ExternalProject_Get_Property(GTest SOURCE_DIR BINARY_DIR)
+set (GTEST_INCLUDE_DIRS "${SOURCE_DIR}/include")
+set (GTEST_LIBRARIES "${BINARY_DIR}/${BUILD_SUBDIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
 set(PROJECT_HEADERS "${CMAKE_SOURCE_DIR}/include/libespm/FormId.h"
                     "${CMAKE_SOURCE_DIR}/include/libespm/GameId.h"
@@ -67,11 +80,10 @@ else (MSVC)
     ENDIF ()
 endif ()
 
-
-
 ##############################
 # Define Targets
 ##############################
 
 add_executable        (tests ${TESTER_SRC} ${PROJECT_HEADERS} ${TESTER_HEADERS})
-target_link_libraries (tests ${GTEST_BOTH_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_LIBRARIES})
+add_dependencies      (tests GTest)
+target_link_libraries (tests ${GTEST_LIBRARIES} ${Boost_LIBRARIES} ${PROJECT_LIBRARIES})
