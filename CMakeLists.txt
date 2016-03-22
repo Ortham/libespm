@@ -7,11 +7,6 @@ project(libespm)
 include(ExternalProject)
 
 option(PROJECT_STATIC_RUNTIME "Build with static runtime libs (/MT)" ON)
-if (MSVC)
-    set(BUILD_SUBDIRECTORY $<CONFIGURATION>)
-else()
-    set(BUILD_SUBDIRECTORY "")
-endif()
 
 set (Boost_USE_STATIC_LIBS ${PROJECT_STATIC_RUNTIME})
 set (Boost_USE_MULTITHREADED ON)
@@ -25,7 +20,7 @@ ExternalProject_Add(GTest
                     INSTALL_COMMAND "")
 ExternalProject_Get_Property(GTest SOURCE_DIR BINARY_DIR)
 set (GTEST_INCLUDE_DIRS "${SOURCE_DIR}/include")
-set (GTEST_LIBRARIES "${BINARY_DIR}/${BUILD_SUBDIRECTORY}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX}")
+set (GTEST_LIBRARIES "${BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}gtest${CMAKE_STATIC_LIBRARY_SUFFIX}")
 
 ExternalProject_Add(testing-plugins
                     PREFIX "external"
@@ -65,12 +60,12 @@ ENDIF ()
 
 # GCC and MinGW settings.
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_C_FLAGS "-O3 -std=c++11")
-    set(CMAKE_CXX_FLAGS "-O3 -std=c++11")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -std=c++11")
     IF (PROJECT_STATIC_RUNTIME)
-        set (CMAKE_EXE_LINKER_FLAGS "-static-libstdc++ -static-libgcc")
-        set (CMAKE_SHARED_LINKER_FLAGS "-static-libstdc++ -static-libgcc")
-        set (CMAKE_MODULE_LINKER_FLAGS "-static-libstdc++ -static-libgcc")
+        set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+        set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
+        set (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
     ENDIF ()
 
     set(PROJECT_LIBRARIES "pthread")
