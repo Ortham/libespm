@@ -21,9 +21,8 @@
 #define LIBESPM_PLUGIN
 
 #include <string>
-#include <fstream>
+#include <istream>
 #include <vector>
-#include <sstream>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>

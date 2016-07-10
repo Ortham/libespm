@@ -21,7 +21,7 @@
 #define LIBESPM_SUBRECORD
 
 #include <string>
-#include <fstream>
+#include <istream>
 #include <cstdint>
 
 #include "GameId.h"

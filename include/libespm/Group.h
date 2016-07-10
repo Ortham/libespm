@@ -21,7 +21,7 @@
 #define LIBESPM_GROUP
 
 #include <cstdint>
-#include <fstream>
+#include <istream>
 #include <set>
 
 #include "Record.h"
