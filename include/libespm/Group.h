@@ -59,7 +59,7 @@ namespace libespm {
       // Skip to the end of the header.
       input.ignore(headerLengthToSkip);
 
-      return groupSize - 24;
+      return groupSize - (typeLength + sizeof(groupSize) + headerLengthToSkip);
     }
 
     inline void readRecords(std::istream& input, GameId gameId, uint32_t totalRecordsSize, bool skipSubrecords) {
