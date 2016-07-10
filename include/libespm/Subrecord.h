@@ -48,7 +48,7 @@ namespace libespm {
       else
         input.read(reinterpret_cast<char*>(&rawDataLength), normalFieldSizeLength);
 
-      rawData = std::shared_ptr<char>(new char[rawDataLength]);
+      rawData = std::shared_ptr<char>(new char[rawDataLength], std::default_delete<char[]>());
       input.read(rawData.get(), rawDataLength);
     }
 
