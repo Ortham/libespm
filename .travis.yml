@@ -1,6 +1,8 @@
 sudo: false
 language: cpp
-compiler: gcc
+compiler:
+  - clang
+  - gcc
 
 # Need GCC 5 and Boost 1.54+, which aren't in the 12.04 repositories - install
 # from PPAs.
@@ -8,6 +10,7 @@ addons:
   apt:
     sources:
       - boost-latest
+      - llvm-toolchain-precise-3.8
       - ubuntu-toolchain-r-test
     packages:
       - libboost-filesystem1.55-dev
@@ -15,9 +18,12 @@ addons:
       - libboost-locale1.55-dev
       - gcc-5
       - g++-5
+      - clang-3.8
+      - libstdc++-5-dev
 
 before_script:
-  # Use GCC 5.
+  # Use the latest version of Clang/GCC.
+  - if [ "$CXX" = "clang++" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
   - mkdir build && cd build
   # Travis machines are 64 bit, and the dependencies use dynamic linking.
