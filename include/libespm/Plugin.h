@@ -55,8 +55,8 @@ namespace libespm {
       input.exceptions(std::ios_base::badbit | std::ios_base::failbit);
 
       headerRecord.read(input, gameId, false);
-      if (gameId == GameId::MORROWIND && headerRecord.getType() != "TES3"
-          || gameId != GameId::MORROWIND && headerRecord.getType() != "TES4")
+      if ((gameId == GameId::MORROWIND && headerRecord.getType() != "TES3")
+          || (gameId != GameId::MORROWIND && headerRecord.getType() != "TES4"))
           throw std::runtime_error(name + " is not a valid plugin.");
 
       if (loadHeaderOnly)
