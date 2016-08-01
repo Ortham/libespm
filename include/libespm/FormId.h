@@ -53,22 +53,19 @@ namespace libespm {
       if (objectIndex != rhs.getObjectIndex())
         return objectIndex < rhs.getObjectIndex();
 
-      std::string rhsPluginName = rhs.getPluginName();
       return std::lexicographical_compare(begin(pluginName),
                                           end(pluginName),
-                                          begin(rhsPluginName),
-                                          end(rhsPluginName),
+                                          begin(rhs.pluginName),
+                                          end(rhs.pluginName),
                                           [](char lhs, char rhs) {
         return tolower(lhs) < tolower(rhs);
       });
     }
 
     inline bool operator == (const FormId& rhs) const {
-      std::string rhsPluginName = rhs.getPluginName();
-
       return objectIndex == rhs.getObjectIndex()
-        && pluginName.size() == rhs.getPluginName().size()
-        && std::equal(begin(pluginName), end(pluginName), begin(rhs.getPluginName()), [](char lhs, char rhs) {
+        && pluginName.size() == rhs.pluginName.size()
+        && std::equal(begin(pluginName), end(pluginName), begin(rhs.pluginName), [](char lhs, char rhs) {
         return tolower(lhs) == tolower(rhs);
       });
     }
