@@ -40,13 +40,17 @@ namespace libespm {
       type.resize(typeLength);
     }
 
-    inline void read(std::istream& input, GameId gameId) {
+    inline void read(std::istream& input, GameId gameId, uint32_t dataLengthOverride = 0) {
       input.read(reinterpret_cast<char*>(&type[0]), typeLength);
 
-      if (gameId == GameId::MORROWIND)
+      if (gameId == GameId::MORROWIND) {
         input.read(reinterpret_cast<char*>(&rawDataLength), sizeof(rawDataLength));
-      else
+      } else if (dataLengthOverride != 0) {
+        input.ignore(normalFieldSizeLength);
+        rawDataLength = dataLengthOverride;
+      } else {
         input.read(reinterpret_cast<char*>(&rawDataLength), normalFieldSizeLength);
+      }
 
       rawData = std::shared_ptr<char>(new char[rawDataLength], std::default_delete<char[]>());
       input.read(rawData.get(), rawDataLength);

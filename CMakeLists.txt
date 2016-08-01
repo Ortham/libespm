@@ -24,7 +24,7 @@ set (GTEST_LIBRARIES "${BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_STATIC_LIBRARY_P
 
 ExternalProject_Add(testing-plugins
                     PREFIX "external"
-                    URL "https://github.com/WrinklyNinja/testing-plugins/archive/1.0.0.tar.gz"
+                    URL "https://github.com/WrinklyNinja/testing-plugins/archive/1.2.0.tar.gz"
                     CONFIGURE_COMMAND ""
                     BUILD_COMMAND ""
                     INSTALL_COMMAND "")

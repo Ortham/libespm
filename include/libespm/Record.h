@@ -92,11 +92,18 @@ namespace libespm {
     }
 
     inline void readSubrecords(std::istream& input, GameId gameId, uint32_t totalSubrecordsSize) {
-      std::streampos startingInputPos = input.tellg();
+      const std::streampos startingInputPos = input.tellg();
+      uint32_t largeSubrecordSize = 0;
       while (input.good() && input.tellg() - startingInputPos < totalSubrecordsSize) {
         Subrecord subrecord;
-        subrecord.read(input, gameId);
-        subrecords.push_back(subrecord);
+        subrecord.read(input, gameId, largeSubrecordSize);
+
+        if (subrecord.getType() == "XXXX") {
+          largeSubrecordSize = *reinterpret_cast<uint32_t*>(subrecord.getRawData().first.get());
+        } else {
+          largeSubrecordSize = 0;
+          subrecords.push_back(subrecord);
+        }
       }
     }
 
