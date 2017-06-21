@@ -92,6 +92,14 @@ namespace libespm {
     }
 
     inline void readSubrecords(std::istream& input, GameId gameId, uint32_t totalSubrecordsSize) {
+      // Subrecords can be compressed, in which case they must be uncompressed
+      // before they can be read. However, there's currently no need to
+      // actually read such subrecords, so just skip over them.
+      if (areFieldsCompressed()) {
+        input.ignore(totalSubrecordsSize);
+        return;
+      }
+
       const std::streampos startingInputPos = input.tellg();
       uint32_t largeSubrecordSize = 0;
       while (input.good() && input.tellg() - startingInputPos < totalSubrecordsSize) {
@@ -112,6 +120,10 @@ namespace libespm {
         return 4;
       else
         return 8;
+    }
+
+    inline bool areFieldsCompressed() const {
+      return (flags & 0x00040000) != 0;
     }
   };
 }
