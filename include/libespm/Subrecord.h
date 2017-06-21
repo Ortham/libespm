@@ -60,7 +60,7 @@ namespace libespm {
       return type;
     }
 
-    inline std::pair<std::shared_ptr<char>, uint16_t> getRawData() const {
+    inline std::pair<std::shared_ptr<char>, uint32_t> getRawData() const {
       return std::make_pair(rawData, rawDataLength);
     }
   };
