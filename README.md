@@ -3,6 +3,8 @@ Libespm
 
 [![Build Status](https://travis-ci.org/WrinklyNinja/libespm.svg?branch=master)](https://travis-ci.org/WrinklyNinja/libespm)
 
+**Note: Libespm has been deprecated in favour of [esplugin](https://github.com/WrinklyNinja/esplugin), a library that exposes similar functionality through Rust and C APIs.**
+
 A free software library for reading Elder Scrolls Plugin (`.esp`) and Elder Scrolls Master (`.esm`) files. It can currently parse plugins for the following games:
 
 * TES III: Morrowind
